@@ -1,4 +1,4 @@
-name: Extract AshteMobile zip
+name: Extract install-fix zip
 
 on:
   workflow_dispatch:
@@ -15,14 +15,14 @@ jobs:
       - name: Unzip into the repository
         run: |
           mkdir -p /tmp/x
-          unzip -q AshteMobile.zip -d /tmp/x
-          rsync -a --exclude '.github' --exclude '.git' /tmp/x/AshteMobile/ ./
-          rm -f AshteMobile.zip
+          unzip -q install-fix.zip -d /tmp/x
+          rsync -a /tmp/x/changed/ ./
+          rm -f install-fix.zip
 
       - name: Commit extracted files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Extract AshteMobile project files"
+          git commit -m "Apply install fix"
           git push

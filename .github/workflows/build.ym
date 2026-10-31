@@ -1,0 +1,55 @@
+name: Build AshteMobile IPA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unzip project
+        run: |
+          mkdir -p src
+          unzip -q AshteMobile.zip -d src
+          XPROJ=$(find src -maxdepth 3 -name Feather.xcodeproj | head -1)
+          echo "PROJ=$(cd "$(dirname "$XPROJ")" && pwd)" >> $GITHUB_ENV
+
+      - name: Fetch dependencies (Zsign, IDeviceKit)
+        working-directory: ${{ env.PROJ }}
+        run: |
+          rm -rf Zsign IDeviceKitten
+          git clone --depth 1 -b package https://github.com/khcrysalis/Zsign-Package Zsign
+          git clone --depth 1 https://github.com/khcrysalis/IDeviceKit IDeviceKitten
+
+      - name: Select Xcode
+        run: |
+          if [ -d "/Applications/Xcode_26.3.0.app" ]; then sudo xcode-select -s /Applications/Xcode_26.3.0.app
+          elif [ -d "/Applications/Xcode_26.app" ]; then sudo xcode-select -s /Applications/Xcode_26.app; fi
+          xcodebuild -version
+
+      - name: Build
+        working-directory: ${{ env.PROJ }}
+        run: make
+
+      - name: Package IPA
+        working-directory: ${{ env.PROJ }}
+        run: |
+          mkdir -p ../../output
+          cd _build && zip -qry9 ../../../output/AshteMobile.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AshteMobile-IPA
+          path: output/AshteMobile.ipa
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: AshteMobile build ${{ github.run_number }}
+          files: output/AshteMobile.ipa

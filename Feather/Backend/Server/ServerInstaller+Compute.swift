@@ -39,7 +39,7 @@ extension ServerInstaller {
 	}
 	
     var externalServerLink: String {
-        var components = URLComponents(string: "https://api.palera.in/genPlist")
+        var components = URLComponents(string: "https://install.ashtemobile.site/genPlist")
         components?.queryItems = [
             URLQueryItem(name: "bundleid", value: app.identifier ?? ""),
             URLQueryItem(name: "name", value: app.name ?? "AshteMobile"),

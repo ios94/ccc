@@ -61,28 +61,32 @@ class ServerInstaller: Identifiable, ObservableObject {
 	private func _configureRoutes() throws {
 		_server?.get("*") { [weak self] req in
 			guard let self else { return Response(status: .badGateway) }
+			
+			// Never let iOS cache anything (manifest / ipa / page)
+			var headers = HTTPHeaders()
+			headers.add(name: .cacheControl, value: "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0")
+			headers.add(name: .pragma, value: "no-cache")
+			headers.add(name: .expires, value: "0")
+			
 			switch req.url.path {
-			case plistEndpoint.path:
+			case self.plistEndpoint.path:
 				self._updateStatus(.sendingManifest)
-				return Response(status: .ok, version: req.version, headers: [
-					"Content-Type": "text/xml",
-				], body: .init(data: installManifestData))
-			case displayImageSmallEndpoint.path:
-				return Response(status: .ok, version: req.version, headers: [
-					"Content-Type": "image/png",
-				], body: .init(data: displayImageSmallData))
-			case displayImageLargeEndpoint.path:
-				return Response(status: .ok, version: req.version, headers: [
-					"Content-Type": "image/png",
-				], body: .init(data: displayImageLargeData))
-			case payloadEndpoint.path:
-				guard let packageUrl = packageUrl else {
+				headers.add(name: .contentType, value: "text/xml")
+				return Response(status: .ok, version: req.version, headers: headers, body: .init(data: self.installManifestData))
+			case self.displayImageSmallEndpoint.path:
+				headers.add(name: .contentType, value: "image/png")
+				return Response(status: .ok, version: req.version, headers: headers, body: .init(data: self.displayImageSmallData))
+			case self.displayImageLargeEndpoint.path:
+				headers.add(name: .contentType, value: "image/png")
+				return Response(status: .ok, version: req.version, headers: headers, body: .init(data: self.displayImageLargeData))
+			case self.payloadEndpoint.path:
+				guard let packageUrl = self.packageUrl else {
 					return Response(status: .notFound)
 				}
 				
 				self._updateStatus(.sendingPayload)
 				
-				return req.fileio.streamFile(
+				let response = req.fileio.streamFile(
 					at: packageUrl.path
 				) { result in
 					switch result {
@@ -91,12 +95,17 @@ class ServerInstaller: Identifiable, ObservableObject {
 					case .failure(let error):
 						self._updateStatus(.broken(error))
 					}
-
 				}
+				response.headers.add(name: .cacheControl, value: "no-store, no-cache, must-revalidate, max-age=0")
+				return response
 			case "/install":
-				var headers = HTTPHeaders()
 				headers.add(name: .contentType, value: "text/html")
-				return Response(status: .ok, headers: headers, body: .init(string: self.html))
+				var finalHTML = self.html
+				let uuidBuster = UUID().uuidString.replacingOccurrences(of: "-", with: "")
+				if finalHTML.contains("\"</script>") {
+					finalHTML = finalHTML.replacingOccurrences(of: "\"</script>", with: "%26cb%3D\(uuidBuster)\"</script>")
+				}
+				return Response(status: .ok, headers: headers, body: .init(string: finalHTML))
 			default:
 				return Response(status: .notFound)
 			}

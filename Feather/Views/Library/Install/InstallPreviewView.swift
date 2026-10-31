@@ -19,7 +19,7 @@ struct InstallPreviewView: View {
 	@AppStorage("Feather.serverMethod") private var _serverMethod: Int = 0
 	@State private var _isWebviewPresenting = false
 	@State private var progressTask: Task<Void, Never>?
-    @State private var installLinkTask: Task<Void, Never>?
+    @State private var installRequestWatchdog: Task<Void, Never>?
     @State private var didRequestInstallation = false
     @State private var didStartPreparation = false
 	
@@ -61,24 +61,19 @@ struct InstallPreviewView: View {
 		}
 		.onReceive(viewModel.$status) { newStatus in
 			if _installationMethod == 0 {
-                if case .ready = newStatus, !didRequestInstallation {
-                    didRequestInstallation = true
-                    installLinkTask = Task { @MainActor in
-                        let branded = await installer.verifiedBrandedInstallLink()
-                        guard !Task.isCancelled else { return }
-                        if let branded {
-                            _ = await UIApplication.shared.open(branded)
-                        } else if _serverMethod == 0, let local = URL(string: installer.iTunesLink) {
-                            // Static-only Hosting has no dynamic manifest. Keep the existing
-                            // installation method working until the optional endpoint is deployed.
-                            _ = await UIApplication.shared.open(local)
-                        } else if _serverMethod == 1 {
-                            _isWebviewPresenting = true
-                        }
-                    }
-                }
+				if case .ready = newStatus, !didRequestInstallation {
+					didRequestInstallation = true
+					_launchOTAInstall()
+				}
+				
+				if case .sendingManifest = newStatus {
+					installRequestWatchdog?.cancel()
+					installRequestWatchdog = nil
+				}
 
-				if case .sendingPayload = newStatus, _serverMethod == 1 {
+				if case .sendingPayload = newStatus {
+					installRequestWatchdog?.cancel()
+					installRequestWatchdog = nil
 					_isWebviewPresenting = false
 				}
 				
@@ -112,8 +107,8 @@ struct InstallPreviewView: View {
 		#endif
 		
         .onDisappear {
-            installLinkTask?.cancel()
-            installLinkTask = nil
+            installRequestWatchdog?.cancel()
+            installRequestWatchdog = nil
             progressTask?.cancel()
 			progressTask = nil
 			
@@ -210,6 +205,38 @@ struct InstallPreviewView: View {
             }
         }
 
+	}
+	
+	private func _launchOTAInstall() {
+		guard let url = URL(string: installer.iTunesLinkExternal) else {
+			viewModel.status = .broken(NSError(
+				domain: "AshteMobile.Install", code: 1,
+				userInfo: [NSLocalizedDescriptionKey: "Unable to create the AshteMobile installation link."]
+			))
+			return
+		}
+
+		UIApplication.shared.open(url) { opened in
+			guard opened else {
+				viewModel.status = .broken(NSError(
+					domain: "AshteMobile.Install", code: 2,
+					userInfo: [NSLocalizedDescriptionKey: "iOS could not open the AshteMobile installation link. Please retry."]
+				))
+				return
+			}
+
+			installRequestWatchdog?.cancel()
+			installRequestWatchdog = Task { @MainActor in
+				try? await Task.sleep(nanoseconds: 12_000_000_000)
+				guard !Task.isCancelled else { return }
+				if case .ready = viewModel.status {
+					viewModel.status = .broken(NSError(
+						domain: "AshteMobile.Install", code: 3,
+						userInfo: [NSLocalizedDescriptionKey: "iOS did not request the installation. Keep AshteMobile open and retry."]
+					))
+				}
+			}
+		}
 	}
 	
 	private func startInstallProgressPolling(

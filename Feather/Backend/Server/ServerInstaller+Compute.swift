@@ -22,8 +22,8 @@ extension ServerInstaller {
 
 	var payloadEndpoint: URL {
 		var comps = URLComponents()
-		comps.scheme = self.getServerMethod() == 1 ? "http" : "https"
-		comps.host = sni()
+		comps.scheme = "http"
+		comps.host = "127.0.0.1"
 		comps.path = "/\(id).ipa"
 		comps.port = port
 		return comps.url!
@@ -31,44 +31,39 @@ extension ServerInstaller {
 	
 	var pageEndpoint: URL {
 		var comps = URLComponents()
-		comps.scheme = self.getServerMethod() == 1 ? "http" : "https"
-		comps.host = sni()
+		comps.scheme = "http"
+		comps.host = "127.0.0.1"
 		comps.path = "/install"
 		comps.port = port
 		return comps.url!
 	}
 	
-    var externalServerLink: String {
-        var components = URLComponents(string: "https://install.ashtemobile.site/genPlist")
-        components?.queryItems = [
-            URLQueryItem(name: "bundleid", value: app.identifier ?? ""),
-            URLQueryItem(name: "name", value: app.name ?? "AshteMobile"),
-            URLQueryItem(name: "version", value: app.version ?? "1.0"),
-            URLQueryItem(name: "fetchurl", value: payloadEndpoint.absoluteString)
-        ]
-        let encodedQuery = components?.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
-        components?.percentEncodedQuery = encodedQuery
-        return components?.url?.absoluteString ?? ""
-    }
+	var externalManifestURL: URL {
+		var components = URLComponents()
+		components.scheme = "https"
+		components.host = "install.ashtemobile.site"
+		components.path = "/genPlist"
+		components.queryItems = [
+			.init(name: "bundleid", value: app.identifier),
+			.init(name: "name", value: app.name),
+			.init(name: "version", value: app.version),
+			.init(name: "fetchurl", value: payloadEndpoint.absoluteString),
+		]
+		return components.url!
+	}
 
 	var iTunesLink: String {
 		_iTunesLink(with: plistEndpoint.absoluteString)
 	}
 	
 	var iTunesLinkExternal: String {
-		_iTunesLink(with: externalServerLink)
+		_iTunesLink(with: externalManifestURL.absoluteString)
 	}
 	
-    private func _iTunesLink(with url: String) -> String {
-        var components = URLComponents()
-        components.scheme = "itms-services"
-        components.host = ""
-        components.queryItems = [URLQueryItem(name: "action", value: "download-manifest"),
-                                 URLQueryItem(name: "url", value: url)]
-        let encodedQuery = components.percentEncodedQuery?.replacingOccurrences(of: "+", with: "%2B")
-        components.percentEncodedQuery = encodedQuery
-        return components.url?.absoluteString ?? ""
-    }
+	private func _iTunesLink(with url: String) -> String {
+		let encodedManifestURL = url.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
+		return "itms-services://?action=download-manifest&url=\(encodedManifestURL)"
+	}
 
     // AshteMobile does not use any third-party branded manifest host; the standard local install flow is used.
     var brandedManifestEndpoint: URL? { nil }

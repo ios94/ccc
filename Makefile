@@ -1,6 +1,7 @@
-NAME := AshteMobile
+NAME := Feather
+IPA_NAME := AshteMobile
 PLATFORM := iphoneos
-SCHEMES := AshteMobile
+SCHEMES := Feather
 TMP := $(TMPDIR)/$(NAME)
 STAGE := $(TMP)/stage
 APP := $(TMP)/Build/Products/Release-$(PLATFORM)
@@ -27,7 +28,7 @@ deps:
 
 $(SCHEMES): deps
 	xcodebuild \
-	    -project AshteMobile.xcodeproj \
+	    -project Feather.xcodeproj \
 	    -scheme "$@" \
 	    -configuration Release \
 	    -arch arm64 \
@@ -50,6 +51,6 @@ $(SCHEMES): deps
 
 	rm -rf "$(STAGE)/Payload/$(NAME).app/_CodeSignature"
 	ln -sf "$(STAGE)/Payload" Payload
-	
+
 	mkdir -p packages
-	zip -r9 "packages/$(NAME).ipa" Payload
+	zip -r9 "packages/$(IPA_NAME).ipa" Payload

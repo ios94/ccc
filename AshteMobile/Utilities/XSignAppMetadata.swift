@@ -22,7 +22,7 @@ enum XSignAppMetadata {
     nonisolated static func readInfo(at url: URL) throws -> NSMutableDictionary {
         let data = try Data(contentsOf: url)
         guard let dictionary = try PropertyListSerialization.propertyList(from: data, options: [], format: nil) as? [String: Any] else {
-            throw NSError(domain: "XSign.Metadata", code: 400, userInfo: [NSLocalizedDescriptionKey: "ملف معلومات التطبيق أو الصلاحيات غير صالح."])
+            throw NSError(domain: "XSign.Metadata", code: 400, userInfo: [NSLocalizedDescriptionKey: AL("ملف معلومات التطبيق أو الصلاحيات غير صالح.")])
         }
         return NSMutableDictionary(dictionary: dictionary)
     }
@@ -35,22 +35,22 @@ enum XSignAppMetadata {
 
     nonisolated static func errorMessage(for value: String, field: Field) -> String? {
         let value = value.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !value.isEmpty else { return "أدخل قيمة أو استخدم القيمة الأصلية." }
+        guard !value.isEmpty else { return AL("أدخل قيمة أو استخدم القيمة الأصلية.") }
         guard !value.unicodeScalars.contains(where: { CharacterSet.controlCharacters.contains($0) }) else {
-            return "القيمة تحتوي على محارف غير صالحة."
+            return AL("القيمة تحتوي على محارف غير صالحة.")
         }
         switch field {
         case .name:
-            return value.count <= 255 ? nil : "اسم التطبيق طويل جدًا."
+            return value.count <= 255 ? nil : AL("اسم التطبيق طويل جدًا.")
         case .bundleIdentifier:
             guard value.utf8.count <= 255,
                   value.range(of: "^[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)+$", options: .regularExpression) != nil else {
-                return "استخدم بندل مثل com.example.app بحروف إنجليزية وأرقام وشرطات ونقاط."
+                return AL("استخدم بندل مثل com.example.app بحروف إنجليزية وأرقام وشرطات ونقاط.")
             }
             return nil
         case .version:
             return value.range(of: "^[0-9]+(?:\\.[0-9]+){0,2}$", options: .regularExpression) != nil
-                ? nil : "اكتب الإصدار بالأرقام مثل 2.0 أو 2.0.1."
+                ? nil : AL("اكتب الإصدار بالأرقام مثل 2.0 أو 2.0.1.")
         }
     }
 

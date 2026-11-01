@@ -12,6 +12,7 @@ import AltSourceKit
 import SwiftUI
 import Combine
 import NaturalLanguage
+import Translation
 import NimbleViews
 import NukeUI
 import Nuke
@@ -356,58 +357,58 @@ enum AppStoreBilingualEngine {
 		let nameAndID = "\(app.name ?? "") \(app.id ?? "")".lowercased()
 		
 		if nameAndID.contains("instagram") || nameAndID.contains("insta") || nameAndID.contains("rocket") {
-			return "تواصل، شارك الصور والريلز بميزات إضافية"
+			return AL("تواصل، شارك الصور والريلز بميزات إضافية")
 		}
 		if nameAndID.contains("whatsapp") || nameAndID.contains("watusi") {
-			return "مراسلة فورية مع مزايا الخصوصية والتحميل"
+			return AL("مراسلة فورية مع مزايا الخصوصية والتحميل")
 		}
 		if nameAndID.contains("tiktok") || nameAndID.contains("lrd") {
-			return "فيديوهات قصيرة وحفظ بدون علامة مائية"
+			return AL("فيديوهات قصيرة وحفظ بدون علامة مائية")
 		}
 		if nameAndID.contains("snapchat") || nameAndID.contains("wicked") || nameAndID.contains("shadow") {
-			return "شارك اللحظات مع أدوات الحفظ المتقدمة"
+			return AL("شارك اللحظات مع أدوات الحفظ المتقدمة")
 		}
 		if nameAndID.contains("youtube") || nameAndID.contains("uyou") || nameAndID.contains("uplus") {
-			return "مشاهدة بدون إعلانات وتشغيل في الخلفية"
+			return AL("مشاهدة بدون إعلانات وتشغيل في الخلفية")
 		}
 		if nameAndID.contains("telegram") || nameAndID.contains("swiftgram") || nameAndID.contains("nicegram") {
-			return "مراسلة سحابية سريعة وآمنة بلا حدود"
+			return AL("مراسلة سحابية سريعة وآمنة بلا حدود")
 		}
 		if nameAndID.contains("twitter") || nameAndID.contains("bhx") {
-			return "أحدث الأخبار والتغريدات مع تحميل الوسائط"
+			return AL("أحدث الأخبار والتغريدات مع تحميل الوسائط")
 		}
 		if nameAndID.contains("spotify") || nameAndID.contains("eevee") {
-			return "استمع للموسيقى والبودكاست بجودة عالية"
+			return AL("استمع للموسيقى والبودكاست بجودة عالية")
 		}
 		if nameAndID.contains("capcut") || nameAndID.contains("videostar") || nameAndID.contains("alight") || nameAndID.contains("inshot") {
-			return "تحرير ومونتاج الفيديو باحترافية عالية"
+			return AL("تحرير ومونتاج الفيديو باحترافية عالية")
 		}
 		if nameAndID.contains("picsart") || nameAndID.contains("lightroom") || nameAndID.contains("photoshop") || nameAndID.contains("remini") {
-			return "تعديل الصور والفلاتر الاحترافية"
+			return AL("تعديل الصور والفلاتر الاحترافية")
 		}
 		if nameAndID.contains("canva") {
-			return "تصميم الجرافيك والشعارات بسهولة"
+			return AL("تصميم الجرافيك والشعارات بسهولة")
 		}
 		if nameAndID.contains("pubg") {
-			return "معارك باتل رويال جماعية مشوقة"
+			return AL("معارك باتل رويال جماعية مشوقة")
 		}
 		if nameAndID.contains("pool") || nameAndID.contains("8ball") {
-			return "لعبة البلياردو العالمية رقم 1"
+			return AL("لعبة البلياردو العالمية رقم 1")
 		}
 		if nameAndID.contains("roblox") {
-			return "استمتع بلعب ملايين الألعاب والعوالم"
+			return AL("استمتع بلعب ملايين الألعاب والعوالم")
 		}
 		if nameAndID.contains("minecraft") {
-			return "ابنِ عالمك واستكشف بلا حدود"
+			return AL("ابنِ عالمك واستكشف بلا حدود")
 		}
 		if nameAndID.contains("subway") || nameAndID.contains("minion") || nameAndID.contains("temple") || nameAndID.contains("sonic") {
-			return "انضم إلى مرح دائم من الركض والقفز!"
+			return AL("انضم إلى مرح دائم من الركض والقفز!")
 		}
 		if nameAndID.contains("filza") {
-			return "مدير ملفات متكامل لنظام iOS"
+			return AL("مدير ملفات متكامل لنظام iOS")
 		}
 		if nameAndID.contains("esign") || nameAndID.contains("feather") || nameAndID.contains("scarlet") || nameAndID.contains("sign") {
-			return "توقيع وتثبيت تطبيقات IPA بسهولة"
+			return AL("توقيع وتثبيت تطبيقات IPA بسهولة")
 		}
 		
 		return category.defaultArabicSubtitle
@@ -430,7 +431,7 @@ struct AppStoreAppItem: Identifiable, Hashable, Sendable {
 	init(id: String, sourceURL: URL?, repository: ASRepository, app: ASRepository.App) {
 		self.id = id
 		self.sourceURL = sourceURL
-        self.sourceName = repository.name ?? "المصدر"
+        self.sourceName = repository.name ?? AL("المصدر")
         self.sourceCategories = repository.categories ?? []
 		self.app = app
 		
@@ -556,6 +557,8 @@ enum AppStore2026Category: String, CaseIterable, Identifiable, Sendable {
 	case photoVideo = "صور وفيديو"
 	
 	var id: String { rawValue }
+	/// Category name in the language chosen inside the app (the raw value stays Arabic for matching).
+	var localizedTitle: String { AL(rawValue) }
 	
 	nonisolated var isGameCategory: Bool {
 		switch self {
@@ -568,20 +571,20 @@ enum AppStore2026Category: String, CaseIterable, Identifiable, Sendable {
 	
 	nonisolated var defaultArabicSubtitle: String {
 		switch self {
-		case .topApps, .bestSellingApps: return "تطبيق مميز للآيفون"
-		case .topGames, .bestSellingGames: return "لعبة رائجة ومختارة"
-		case .puzzleGames: return "ألغاز وتحديات ذكاء ممتعة"
-		case .simulationGames: return "محاكاة واقعية وبناء عوالم"
-		case .social: return "تواصل اجتماعي ومراسلة فورية"
-		case .casualGames: return "ألعاب تسالي سريعة وممتعة"
-		case .timePass: return "ترفيه وتسلية في كل وقت"
-		case .mediaReaders: return "مشاهدة الفيديو والموسيقى"
-		case .productivity: return "إنتاجية وأدوات ذكية يومية"
-		case .strategyGames: return "تخطيط، معارك، وإستراتيجية"
-		case .pvpGames: return "منافسات جماعية لاعب ضد لاعب"
-		case .devTools: return "أدوات النظام والتوقيع والمطورين"
-		case .visualArts: return "تصميم جرافيك وفنون رقمية"
-		case .photoVideo: return "تصوير ومونتاج وتحرير احترافي"
+		case .topApps, .bestSellingApps: return AL("تطبيق مميز للآيفون")
+		case .topGames, .bestSellingGames: return AL("لعبة رائجة ومختارة")
+		case .puzzleGames: return AL("ألغاز وتحديات ذكاء ممتعة")
+		case .simulationGames: return AL("محاكاة واقعية وبناء عوالم")
+		case .social: return AL("تواصل اجتماعي ومراسلة فورية")
+		case .casualGames: return AL("ألعاب تسالي سريعة وممتعة")
+		case .timePass: return AL("ترفيه وتسلية في كل وقت")
+		case .mediaReaders: return AL("مشاهدة الفيديو والموسيقى")
+		case .productivity: return AL("إنتاجية وأدوات ذكية يومية")
+		case .strategyGames: return AL("تخطيط، معارك، وإستراتيجية")
+		case .pvpGames: return AL("منافسات جماعية لاعب ضد لاعب")
+		case .devTools: return AL("أدوات النظام والتوقيع والمطورين")
+		case .visualArts: return AL("تصميم جرافيك وفنون رقمية")
+		case .photoVideo: return AL("تصوير ومونتاج وتحرير احترافي")
 		}
 	}
 	
@@ -957,7 +960,7 @@ final class AppStoreCacheManager: ObservableObject {
                 self.rebuildCacheIfNeeded(sources: self.requestedSources, repositoriesMap: viewModel.sources)
                 await self.publicationTask?.value
                 if self.catalogErrorMessage == nil, !viewModel.errors.isEmpty {
-                    self.catalogErrorMessage = "تعذّر تحديث أحد المصادر. البيانات المحفوظة ما زالت متاحة؛ اسحب لأسفل للمحاولة مجددًا."
+                    self.catalogErrorMessage = AL("تعذّر تحديث أحد المصادر. البيانات المحفوظة ما زالت متاحة؛ اسحب لأسفل للمحاولة مجددًا.")
                 }
                 self.nextRefreshAllowed = Date().addingTimeInterval(succeeded ? 300 : 15)
             } while self.refreshAgain && !Task.isCancelled
@@ -983,7 +986,7 @@ final class AppStoreCacheManager: ObservableObject {
                 else { failures += 1 }
             }
         }
-        catalogErrorMessage = failures > 0 ? "تعذّر تحديث أحد المصادر. سنعيد المحاولة تلقائيًا؛ المحتوى المحفوظ متاح." : nil
+        catalogErrorMessage = failures > 0 ? AL("تعذّر تحديث أحد المصادر. سنعيد المحاولة تلقائيًا؛ المحتوى المحفوظ متاح.") : nil
         return successes > 0 && failures == 0
     }
 
@@ -1117,7 +1120,7 @@ final class AppStoreCacheManager: ObservableObject {
                 let uniqueKey = "\(app.stableCatalogIdentifier)_\(sourceURLString)"
 				let item: AppStoreAppItem
                 if let existing = previousByID[uniqueKey], Self.sameAppContent(existing.app, app),
-                   existing.sourceName == (repo.name ?? "المصدر"), existing.sourceCategories == (repo.categories ?? []) {
+                   existing.sourceName == (repo.name ?? AL("المصدر")), existing.sourceCategories == (repo.categories ?? []) {
                     item = existing
                 } else {
                     item = AppStoreAppItem(
@@ -1147,7 +1150,7 @@ final class AppStoreCacheManager: ObservableObject {
 						primaryNews.append(
 							TodayEditorialInstruction(
 								id: newsItem.id,
-								badge: newsItem.notify ? "تنبيه" : "يحدث الآن",
+								badge: newsItem.notify ? AL("تنبيه") : AL("يحدث الآن"),
 								title: newsItem.title,
 								caption: newsItem.caption,
 								imageURL: newsItem.imageURL,
@@ -1341,13 +1344,6 @@ final class AutoSignPipelineManager: ObservableObject {
 	@Published var activeStates: [String: Stage] = [:]
 	@Published var downloadProgress: [String: Int] = [:]
 	@Published var readyToInstallApp: AnyApp? = nil
-	struct DownloadBannerInfo: Equatable {
-		let name: String
-		let iconURL: URL?
-	}
-	/// Name + icon shown in the top download banner, keyed like `activeStates`.
-	@Published var bannerInfo: [String: DownloadBannerInfo] = [:]
-	private var userCancelledKeys: Set<String> = []
     private var packagePipeline = XSignBoundedPipeline<ASRepository.App, URL>()
     private var pendingInstallApps: [AnyApp] = []
     private var activeNetworkTask: URLSessionDownloadTask?
@@ -1414,7 +1410,7 @@ final class AutoSignPipelineManager: ObservableObject {
 	
     func downloadAndAutoSign(app: ASRepository.App) {
         if let reason = XSignRemoteManager.shared.blockingReason {
-            UIAlertController.showAlertWithOk(title: "تنبيه", message: reason)
+            UIAlertController.showAlertWithOk(title: AL("تنبيه"), message: reason)
             return
         }
         downloadPreflightBlocked = false
@@ -1427,22 +1423,13 @@ final class AutoSignPipelineManager: ObservableObject {
         }
         guard let url = app.currentDownloadUrl ?? app.versions?.first?.downloadURL,
               ["https", "http"].contains(url.scheme?.lowercased() ?? "") else {
-            activeStates[key] = .failed("رابط التنزيل غير صالح.")
+            activeStates[key] = .failed(AL("رابط التنزيل غير صالح."))
             return
         }
-        bannerInfo[key] = DownloadBannerInfo(name: app.currentName, iconURL: app.iconURL)
         guard packagePipeline.enqueue(key: key, job: app) else { return }
         activeStates[key] = .queued
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         startNextDownload()
-    }
-
-    /// Stop button of the top download banner.
-    func cancelActiveDownload(key: String) {
-        guard activeStates[key] == .downloading, packagePipeline.activeDownload?.key == key else { return }
-        userCancelledKeys.insert(key)
-        activeNetworkTask?.cancel()
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 
     func applyRemotePolicy() {
@@ -1477,7 +1464,7 @@ final class AutoSignPipelineManager: ObservableObject {
         let app = entry.value
         let key = entry.key
         guard let url = app.currentDownloadUrl ?? app.versions?.first?.downloadURL else {
-            failNetworkDownload(key: key, message: "رابط التنزيل غير صالح.")
+            failNetworkDownload(key: key, message: AL("رابط التنزيل غير صالح."))
             return
         }
         activeStates[key] = .downloading
@@ -1489,7 +1476,7 @@ final class AutoSignPipelineManager: ObservableObject {
             guard error == nil, let location,
                   let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
                 Task { @MainActor in
-                    self.failNetworkDownload(key: key, message: error?.localizedDescription ?? "تعذّر تنزيل التطبيق من الخادم.")
+                    self.failNetworkDownload(key: key, message: error?.localizedDescription ?? AL("تعذّر تنزيل التطبيق من الخادم."))
                 }
                 return
             }
@@ -1499,7 +1486,7 @@ final class AutoSignPipelineManager: ObservableObject {
                 let attributes = try FileManager.default.attributesOfItem(atPath: location.path)
                 guard let size = attributes[.size] as? NSNumber, size.int64Value > 0 else {
                     throw NSError(domain: "XSign.Download", code: 1,
-                                  userInfo: [NSLocalizedDescriptionKey: "الملف الذي نزله الخادم فارغ."])
+                                  userInfo: [NSLocalizedDescriptionKey: AL("الملف الذي نزله الخادم فارغ.")])
                 }
                 try FileManager.default.moveItem(at: location, to: file)
             } catch {
@@ -1538,7 +1525,7 @@ final class AutoSignPipelineManager: ObservableObject {
         }
         guard packagePipeline.completeDownload(key: key, file: file) else {
             try? FileManager.default.removeItem(at: file)
-            failNetworkDownload(key: key, message: "تعذّر إدراج الملف في طابور التجهيز.")
+            failNetworkDownload(key: key, message: AL("تعذّر إدراج الملف في طابور التجهيز."))
             return
         }
         activeNetworkTask = nil
@@ -1568,7 +1555,7 @@ final class AutoSignPipelineManager: ObservableObject {
                 request.fetchLimit = 1
                 request.predicate = NSPredicate(format: "uuid == %@", uuid)
                 guard let imported = (try? Storage.shared.context.fetch(request))?.first else {
-                    self.finishDownload(key: key, error: "تعذّر العثور على التطبيق المستورد.")
+                    self.finishDownload(key: key, error: AL("تعذّر العثور على التطبيق المستورد."))
                     return
                 }
                 self.triggerInstantZSign(for: imported, appKey: key)
@@ -1581,12 +1568,7 @@ final class AutoSignPipelineManager: ObservableObject {
         activeNetworkTask = nil
         progressObservations.removeValue(forKey: key)
         downloadProgress.removeValue(forKey: key)
-        if userCancelledKeys.remove(key) != nil {
-            activeStates.removeValue(forKey: key)
-            bannerInfo.removeValue(forKey: key)
-        } else {
-            activeStates[key] = .failed(message)
-        }
+        activeStates[key] = .failed(message)
         startNextProcessing()
         startNextDownload()
     }
@@ -1600,7 +1582,7 @@ final class AutoSignPipelineManager: ObservableObject {
 
     func triggerInstantZSign(for importedApp: Imported, appKey: String) {
         guard let cert = cachedCertificate ?? Self.fetchActiveCertificate() else {
-            finishDownload(key: appKey, error: "تم الاستيراد. أضف شهادة من الإعدادات للتوقيع.")
+            finishDownload(key: appKey, error: AL("تم الاستيراد. أضف شهادة من الإعدادات للتوقيع."))
             return
         }
         activeStates[appKey] = .signing
@@ -1615,7 +1597,7 @@ final class AutoSignPipelineManager: ObservableObject {
                 request.fetchLimit = 1
                 request.predicate = NSPredicate(format: "uuid == %@", uuid)
                 guard let signed = (try? Storage.shared.context.fetch(request))?.first else {
-                    self.finishDownload(key: appKey, error: "تعذّر العثور على التطبيق الموقّع.")
+                    self.finishDownload(key: appKey, error: AL("تعذّر العثور على التطبيق الموقّع."))
                     return
                 }
                 self.activeStates[appKey] = .ready
@@ -1693,7 +1675,7 @@ struct AppStore2026DetailView: View {
 		if let appleDesc = appleMetadata?.description, !appleDesc.isEmpty {
 			return appleDesc
 		}
-		return "نسخة معدلة ومحدثة جاهزة للتثبيت الفوري عبر AshteMobile."
+		return AL("نسخة معدلة ومحدثة جاهزة للتثبيت الفوري عبر AshteMobile.")
 	}
 	
 	private var displayReleaseNotes: String {
@@ -1704,7 +1686,7 @@ struct AppStore2026DetailView: View {
 		if let appleNotes = appleMetadata?.releaseNotes, !appleNotes.isEmpty {
 			return appleNotes
 		}
-		return "نسخة معدلة ومحدثة."
+		return AL("نسخة معدلة ومحدثة.")
 	}
 	
 	private var displayDeveloper: String {
@@ -1767,31 +1749,31 @@ struct AppStore2026DetailView: View {
 				ScrollView(.horizontal, showsIndicators: false) {
 					HStack(spacing: 0) {
 						AppStoreStatBadge(
-							topTitle: "تقييم App Store",
+							topTitle: AL("تقييم App Store"),
 							mainValue: appleMetadata?.rating.map { String(format: "%.1f", $0) } ?? "—",
-							bottomText: appleMetadata?.rating == nil ? "غير متوفر" : "App Store"
+							bottomText: appleMetadata?.rating == nil ? AL("غير متوفر") : "App Store"
 						)
 						
 						Divider().frame(height: 36).background(Color.primary.opacity(0.12))
 						
 						AppStoreStatBadge(
-							topTitle: "العمر",
+							topTitle: AL("العمر"),
 							mainValue: appleMetadata?.contentRating ?? "—",
-							bottomText: "سنة"
+							bottomText: AL("سنة")
 						)
 						
 						Divider().frame(height: 36).background(Color.primary.opacity(0.12))
 						
 						AppStoreStatBadge(
-							topTitle: "الفئة",
-							mainValue: item.category.rawValue,
-							bottomText: "التصنيف"
+							topTitle: AL("الفئة"),
+							mainValue: item.category.localizedTitle,
+							bottomText: AL("التصنيف")
 						)
 						
 						Divider().frame(height: 36).background(Color.primary.opacity(0.12))
 						
 						AppStoreStatBadge(
-							topTitle: "الحجم",
+							topTitle: AL("الحجم"),
 							mainValue: formattedSize,
 							bottomText: "iOS"
 						)
@@ -1804,7 +1786,7 @@ struct AppStore2026DetailView: View {
 					Divider().background(Color.primary.opacity(0.1)).padding(.horizontal, 18)
 					
 					VStack(alignment: .leading, spacing: 14) {
-						Text("معاينة")
+						Text(AL("معاينة"))
 							.font(.title2.bold())
 							.foregroundStyle(.primary)
 							.padding(.horizontal, 18)
@@ -1858,11 +1840,11 @@ struct AppStore2026DetailView: View {
 				
 				VStack(alignment: .leading, spacing: 10) {
 					HStack {
-						Text("ما الجديد")
+						Text(AL("ما الجديد"))
 							.font(.title2.bold())
 							.foregroundStyle(.primary)
 						Spacer()
-						Text("الإصدار \(item.app.currentVersion ?? "—")")
+						Text(ALf("الإصدار %@", "\(item.app.currentVersion ?? "—")"))
 							.font(.subheadline)
 							.foregroundStyle(.secondary)
 					}
@@ -1883,15 +1865,15 @@ struct AppStore2026DetailView: View {
 				Divider().background(Color.primary.opacity(0.1)).padding(.horizontal, 18)
 				
 				VStack(alignment: .leading, spacing: 14) {
-					Text("المعلومات")
+					Text(AL("المعلومات"))
 						.font(.title2.bold())
 						.foregroundStyle(.primary)
 					
-					AppStoreInfoRow(label: "المصدر", value: item.sourceName)
-					AppStoreInfoRow(label: "المطور", value: displayDeveloper)
-					AppStoreInfoRow(label: "الحجم", value: formattedSize)
-					AppStoreInfoRow(label: "الفئة", value: item.category.rawValue)
-					AppStoreInfoRow(label: "الإصدار", value: item.app.currentVersion ?? "—")
+					AppStoreInfoRow(label: AL("المصدر"), value: item.sourceName)
+					AppStoreInfoRow(label: AL("المطور"), value: displayDeveloper)
+					AppStoreInfoRow(label: AL("الحجم"), value: formattedSize)
+					AppStoreInfoRow(label: AL("الفئة"), value: item.category.localizedTitle)
+					AppStoreInfoRow(label: AL("الإصدار"), value: item.app.currentVersion ?? "—")
 				}
 				.padding(.horizontal, 18)
 				.padding(.bottom, 36)
@@ -1979,7 +1961,7 @@ struct AppStoreTodayView: View {
                         }
                         Spacer()
                         AppStoreAccountAppIconButton { showSettingsSheet = true }
-                    }.padding(.top, 12).zIndex(10)
+                    }.padding(.top, 12)
 
                     ForEach(cache.primaryEditorialNews) { instruction in
                         XSignAnnouncementCard(instruction: instruction)
@@ -2007,7 +1989,7 @@ struct AppStoreTodayView: View {
                         }.foregroundStyle(.secondary).frame(maxWidth: .infinity).padding(.top, 4)
                     } else {
                         AppStore2026EmptyState(isLoading: cache.isRefreshing || cache.isPreparing,
-                            emptyMessage: cache.catalogErrorMessage ?? "لا توجد تطبيقات في المصدر حتى الآن.",
+                            emptyMessage: cache.catalogErrorMessage ?? AL("لا توجد تطبيقات في المصدر حتى الآن."),
                             retry: { Task { await cache.forceRefresh(sources: sources, viewModel: viewModel) } })
                     }
                 }.padding(.horizontal, 20).padding(.bottom, 110)
@@ -2038,9 +2020,6 @@ struct XSignTodayFeatureCard: View {
                         LazyImage(url: artwork) { state in
                             if let image = state.image { image.resizable().scaledToFill().opacity(0.5) }
                         }.processors([.resize(size: CGSize(width: 700, height: 700))])
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .clipped()
-                            .allowsHitTesting(false)
                     } else {
                         VStack {
                             Spacer(minLength: 16)
@@ -2055,7 +2034,7 @@ struct XSignTodayFeatureCard: View {
                         Text(item.app.currentName).font(.system(.largeTitle, design: .rounded).bold()).lineLimit(2)
                         Text(item.arabicSubtitle).font(.subheadline.weight(.medium)).lineLimit(2).foregroundStyle(.white.opacity(0.85))
                     }.foregroundStyle(.white).frame(maxWidth: .infinity, alignment: .leading).padding(24)
-                }.frame(height: 350).clipped().contentShape(Rectangle())
+                }.frame(height: 350).clipped()
             }.buttonStyle(.plain)
             HStack(spacing: 12) {
                 NavigationLink { AppStore2026DetailView(item: item) } label: {
@@ -2083,7 +2062,7 @@ struct XSignTodaySmallCard: View {
                 AppStoreIconView(url: item.app.iconURL, size: 64)
                 Spacer(minLength: 0)
             }
-            Text(item.category.rawValue).font(.caption.weight(.semibold)).foregroundStyle(Color.accentColor).lineLimit(1)
+            Text(item.category.localizedTitle).font(.caption.weight(.semibold)).foregroundStyle(Color.accentColor).lineLimit(1)
             Text(item.app.currentName).font(.headline).foregroundStyle(.primary).lineLimit(2)
             Text(item.arabicSubtitle).font(.caption).foregroundStyle(.secondary).lineLimit(2)
         }.frame(maxWidth: .infinity, minHeight: 190, alignment: .topLeading)
@@ -2130,13 +2109,13 @@ struct SourcesView: View {
 			ScrollView(.vertical, showsIndicators: false) {
 				LazyVStack(alignment: .leading, spacing: 24) {
 					AppStore2026TopHeader(
-						title: "التطبيقات",
+						title: AL("التطبيقات"),
 						onSettingsTap: { _isSettingsPresenting = true }
 					)
 					
 					if cache.pureAppsOnly.isEmpty {
                         AppStore2026EmptyState(isLoading: cache.isRefreshing || cache.isPreparing,
-                            emptyMessage: cache.catalogErrorMessage ?? "لا توجد تطبيقات في المصادر المفعّلة.",
+                            emptyMessage: cache.catalogErrorMessage ?? AL("لا توجد تطبيقات في المصادر المفعّلة."),
                             retry: { Task { await cache.forceRefresh(sources: _sources, viewModel: viewModel) } })
 							.padding(.horizontal, 18)
 							.padding(.top, 30)
@@ -2146,7 +2125,7 @@ struct SourcesView: View {
 								Button {
 									_selectedAppCategory = nil
 								} label: {
-									Text("الكل")
+									Text(AL("الكل"))
 										.font(.subheadline.weight(.bold))
 										.foregroundStyle(_selectedAppCategory == nil ? AppStoreTheme.contrastingText(forHex: userTintHex) : Color.primary)
 										.padding(.horizontal, 18)
@@ -2165,7 +2144,7 @@ struct SourcesView: View {
 										HStack(spacing: 6) {
 											Image(systemName: cat.sfSymbol)
 												.font(.caption)
-											Text(cat.rawValue)
+											Text(cat.localizedTitle)
 												.font(.subheadline.weight(.bold))
 										}
 										.foregroundStyle(_selectedAppCategory == cat ? AppStoreTheme.contrastingText(forHex: userTintHex) : Color.primary)
@@ -2198,14 +2177,14 @@ struct SourcesView: View {
 							}
 							
 							AppStore2026ThreeRowSection(
-								title: "مختارات التطبيقات",
-								subtitle: "أفضل التطبيقات المختارة لك",
+								title: AL("مختارات التطبيقات"),
+								subtitle: AL("أفضل التطبيقات المختارة لك"),
 								items: Array(cache.pureAppsOnly.prefix(18))
 							)
 						}
 						
 						HStack {
-							Text(_selectedAppCategory?.rawValue ?? "جميع التطبيقات")
+							Text(_selectedAppCategory?.localizedTitle ?? AL("جميع التطبيقات"))
 								.font(.system(size: 22, weight: .bold))
 								.foregroundStyle(.primary)
 							Spacer()
@@ -2294,13 +2273,13 @@ struct AppStoreGamesView: View {
 			ScrollView(.vertical, showsIndicators: false) {
 				LazyVStack(alignment: .leading, spacing: 24) {
 					AppStore2026TopHeader(
-						title: "الألعاب",
+						title: AL("الألعاب"),
 						onSettingsTap: { showSettingsSheet = true }
 					)
 					
 					if cache.pureGamesOnly.isEmpty {
                         AppStore2026EmptyState(isLoading: cache.isRefreshing || cache.isPreparing,
-                            emptyMessage: cache.catalogErrorMessage ?? "لا توجد تطبيقات في المصادر المفعّلة.",
+                            emptyMessage: cache.catalogErrorMessage ?? AL("لا توجد تطبيقات في المصادر المفعّلة."),
                             retry: { Task { await cache.forceRefresh(sources: _sources, viewModel: viewModel) } })
 							.padding(.horizontal, 18)
 							.padding(.top, 20)
@@ -2310,7 +2289,7 @@ struct AppStoreGamesView: View {
 								Button {
 									selectedGameCategory = nil
 								} label: {
-									Text("كل الألعاب")
+									Text(AL("كل الألعاب"))
 										.font(.subheadline.weight(.bold))
 										.foregroundStyle(selectedGameCategory == nil ? AppStoreTheme.contrastingText(forHex: userTintHex) : Color.primary)
 										.padding(.horizontal, 18)
@@ -2329,7 +2308,7 @@ struct AppStoreGamesView: View {
 										HStack(spacing: 6) {
 											Image(systemName: cat.sfSymbol)
 												.font(.caption)
-											Text(cat.rawValue)
+											Text(cat.localizedTitle)
 												.font(.subheadline.weight(.bold))
 										}
 										.foregroundStyle(selectedGameCategory == cat ? AppStoreTheme.contrastingText(forHex: userTintHex) : Color.primary)
@@ -2354,9 +2333,9 @@ struct AppStoreGamesView: View {
 									TodayLiveEventHeroCard(
 										outerTitle: nil,
 										outerSubtitle: nil,
-										cornerBadge: "يحدث الآن",
-										eventTag: "رائج الآن",
-										headline: "العب مواجهة \(heroGame.app.currentName)",
+										cornerBadge: AL("يحدث الآن"),
+										eventTag: AL("رائج الآن"),
+										headline: ALf("العب مواجهة %@", "\(heroGame.app.currentName)"),
 										descriptionText: heroGame.arabicSubtitle,
 										bannerImageURL: heroGame.screenshots.first,
 										cardColor: accentColor,
@@ -2368,14 +2347,14 @@ struct AppStoreGamesView: View {
 							}
 							
 							AppStore2026ThreeRowSection(
-								title: "مختارات الألعاب",
-								subtitle: "أقوى الألعاب المختارة لك",
+								title: AL("مختارات الألعاب"),
+								subtitle: AL("أقوى الألعاب المختارة لك"),
 								items: Array(cache.pureGamesOnly.prefix(15))
 							)
 						}
 						
 						HStack {
-							Text(selectedGameCategory?.rawValue ?? "جميع الألعاب")
+							Text(selectedGameCategory?.localizedTitle ?? AL("جميع الألعاب"))
 								.font(.system(size: 22, weight: .bold))
 								.foregroundStyle(.primary)
 							Spacer()
@@ -2443,14 +2422,14 @@ struct AppStoreSearchView: View {
 			ScrollView(.vertical, showsIndicators: false) {
 				LazyVStack(alignment: .leading, spacing: 26) {
 					AppStore2026TopHeader(
-						title: "بحث",
+						title: AL("بحث"),
 						onSettingsTap: { showSettingsSheet = true }
 					)
 					if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                         XSignCatalogCategories(cache: cache)
 						VStack(alignment: .leading, spacing: 14) {
 							HStack(spacing: 6) {
-								Text("تصفح")
+								Text(AL("تصفح"))
 									.font(.system(size: 22, weight: .bold))
 									.foregroundStyle(.primary)
 								Image(systemName: "chevron.left")
@@ -2487,8 +2466,8 @@ struct AppStoreSearchView: View {
 						}
 					} else {
                         HStack {
-                            if results.isSearching { ProgressView().controlSize(.small); Text("جاري البحث…") }
-                            else { Text("\(results.total) نتيجة") }
+                            if results.isSearching { ProgressView().controlSize(.small); Text(AL("جاري البحث…")) }
+                            else { Text(ALf("%@ نتيجة", "\(results.total)")) }
                             Spacer()
                         }.font(.caption).foregroundStyle(.secondary).padding(.horizontal, 18)
 						LazyVStack(spacing: 14) {
@@ -2497,7 +2476,7 @@ struct AppStoreSearchView: View {
 									Image(systemName: "magnifyingglass")
 										.font(.system(size: 42))
 										.foregroundStyle(.secondary)
-									Text("لا توجد نتائج لـ \"\(searchText)\"")
+									Text(ALf("لا توجد نتائج لـ \"%@\"", "\(searchText)"))
 										.font(.headline)
 										.foregroundStyle(.primary)
 								}
@@ -2509,7 +2488,7 @@ struct AppStoreSearchView: View {
 								}
 							}
                             if results.visible.count < results.total && !results.isSearching {
-                                Button("عرض المزيد") { results.showMore() }.padding(.vertical, 12)
+                                Button(AL("عرض المزيد")) { results.showMore() }.padding(.vertical, 12)
                             }
 						}
 						.padding(.horizontal, 18)
@@ -2522,7 +2501,7 @@ struct AppStoreSearchView: View {
 			.searchable(
 				text: $searchText,
 				placement: .automatic,
-				prompt: "الألعاب والتطبيقات والمزيد..."
+				prompt: AL("الألعاب والتطبيقات والمزيد...")
 			)
 			.onChange(of: searchText) { newQuery in
 				triggerBackgroundSearch(query: newQuery)
@@ -2582,7 +2561,6 @@ struct AppStore2026TopHeader: View {
 		}
 		.padding(.horizontal, 18)
 		.padding(.top, 10)
-		.zIndex(10)
 	}
 }
 
@@ -2600,7 +2578,6 @@ struct AppStoreAccountAppIconButton: View {
                 }
         }
         .buttonStyle(.plain)
-        .contentShape(Circle())
         .accessibilityLabel(AshteL10n.t("Settings"))
     }
 }
@@ -2663,9 +2640,6 @@ struct TodayLiveEventHeroCard: View {
 									}
 								}
 								.processors([.resize(size: CGSize(width: 500, height: 500))])
-								.frame(maxWidth: .infinity, maxHeight: .infinity)
-								.clipped()
-								.allowsHitTesting(false)
 							} else {
 								AppStoreIconView(
 									url: item.app.iconURL,
@@ -3008,9 +2982,6 @@ struct TodayFullArtworkDockCard: View {
 							}
 						}
 						.processors([.resize(size: CGSize(width: 500, height: 500))])
-								.frame(maxWidth: .infinity, maxHeight: .infinity)
-								.clipped()
-								.allowsHitTesting(false)
 					} else {
 						AppStoreIconView(
 							url: item.app.iconURL,
@@ -3077,7 +3048,7 @@ struct TodayFullArtworkDockCard: View {
 						.font(.system(size: 16, weight: .bold))
 						.foregroundStyle(.white)
 						.lineLimit(1)
-					Text(item.category.rawValue)
+					Text(item.category.localizedTitle)
 						.font(.caption)
 						.foregroundStyle(.white.opacity(0.75))
 						.lineLimit(1)
@@ -3147,23 +3118,23 @@ struct AppStore2026SettingsPopup: View {
 						VStack(alignment: .leading, spacing: 2) {
 							Text("AshteMobile")
 								.font(.headline.weight(.bold))
-							Text("الإعدادات، الشهادات، والمصادر")
+							Text(AL("الإعدادات، الشهادات، والمصادر"))
 								.font(.caption)
 								.foregroundStyle(.secondary)
 						}
 						
 						Spacer()
 						
-						Button("تم") {
+						Button(AL("تم")) {
 							dismiss()
 						}
 						.font(.body.weight(.bold))
 					}
 					
 					Picker("", selection: $selectedSection) {
-						Text("الإعدادات").tag(0)
-						Text("الشهادات").tag(1)
-						Text("مصادري (\(userAddedSourcesOnly.count))").tag(2)
+						Text(AL("الإعدادات")).tag(0)
+						Text(AL("الشهادات")).tag(1)
+						Text(ALf("مصادري (%@)", "\(userAddedSourcesOnly.count)")).tag(2)
 					}
 					.pickerStyle(.segmented)
 				}
@@ -3181,16 +3152,16 @@ struct AppStore2026SettingsPopup: View {
 							Button {
 								isAddingSource = true
 							} label: {
-								Label("إضافة مصدر (سورس) خاص بك", systemImage: "plus.circle.fill")
+								Label(AL("إضافة مصدر (سورس) خاص بك"), systemImage: "plus.circle.fill")
 									.font(.body.weight(.semibold))
 							}
 						} footer: {
-							Text("جميع المصادر المضافة هنا محمية ولا يمكن تصدير أو نسخ روابطها.")
+							Text(AL("جميع المصادر المضافة هنا محمية ولا يمكن تصدير أو نسخ روابطها."))
 								.font(.caption2)
 						}
 						
 						if !userAddedSourcesOnly.isEmpty {
-							Section("المصادر الإضافية") {
+							Section(AL("المصادر الإضافية")) {
 								ForEach(userAddedSourcesOnly) { source in
 									HStack(spacing: 12) {
 										Image(systemName: "shippingbox.fill")
@@ -3200,10 +3171,10 @@ struct AppStore2026SettingsPopup: View {
 											.background(AppStoreTheme.dynamicAccent.opacity(0.14), in: RoundedRectangle(cornerRadius: 10))
 										
 										VStack(alignment: .leading, spacing: 2) {
-											Text(source.name ?? "مصدر مضاف")
+											Text(source.name ?? AL("مصدر مضاف"))
 												.font(.body.weight(.bold))
 												.foregroundStyle(.primary)
-											Text("مصدر مفعل • الرابط مخفي للحماية")
+											Text(AL("مصدر مفعل • الرابط مخفي للحماية"))
 												.font(.caption2)
 												.foregroundStyle(.secondary)
 										}
@@ -3214,7 +3185,7 @@ struct AppStore2026SettingsPopup: View {
 										Button(role: .destructive) {
 											Storage.shared.deleteSource(for: source)
 										} label: {
-											Label("حذف", systemImage: "trash")
+											Label(AL("حذف"), systemImage: "trash")
 										}
 									}
 								}
@@ -3240,7 +3211,7 @@ struct CustomSafeAddSourceSheet: View {
 	var body: some View {
 		NavigationStack {
 			Form {
-				Section("رابط المصدر (JSON URL)") {
+				Section(AL("رابط المصدر (JSON URL)")) {
 					TextField("https://example.com/repo.json", text: $sourceURLText)
 						.keyboardType(.URL)
 						.textInputAutocapitalization(.never)
@@ -3256,7 +3227,7 @@ struct CustomSafeAddSourceSheet: View {
 							if isSaving {
 								ProgressView()
 							} else {
-								Text("إضافة المصدر")
+								Text(AL("إضافة المصدر"))
 									.font(.body.weight(.bold))
 							}
 							Spacer()
@@ -3265,11 +3236,11 @@ struct CustomSafeAddSourceSheet: View {
 					.disabled(sourceURLText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isSaving)
 				}
 			}
-			.navigationTitle("إضافة مصدر")
+			.navigationTitle(AL("إضافة مصدر"))
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
-					Button("إلغاء") {
+					Button(AL("إلغاء")) {
 						dismiss()
 					}
 				}
@@ -3318,14 +3289,14 @@ struct AppStore2026DownloadButton: View {
 		} label: {
 			switch currentStage {
             case .queued:
-                Label("بالانتظار", systemImage: "clock")
+                Label(AL("بالانتظار"), systemImage: "clock")
                     .font(.system(size: 11, weight: .semibold))
                     .foregroundStyle(.secondary)
                     .frame(width: 82, height: 32)
                     .background(AppStoreTheme.controlSurface, in: Capsule())
             case .failed(let message):
                 VStack(spacing: 3) {
-                    Label("أعد المحاولة", systemImage: "arrow.clockwise")
+                    Label(AL("أعد المحاولة"), systemImage: "arrow.clockwise")
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(.red)
                         .frame(width: 82, height: 32)
@@ -3354,7 +3325,7 @@ struct AppStore2026DownloadButton: View {
 				HStack(spacing: 4) {
 					Image(systemName: "bolt.fill")
 						.font(.system(size: 11, weight: .bold))
-					Text(currentStage == .preparing ? "تجهيز..." : "توقيع...")
+					Text(currentStage == .preparing ? AL("تجهيز...") : AL("توقيع..."))
 						.font(.system(size: 11, weight: .bold))
 				}
 				.foregroundStyle(AppStoreTheme.contrastingText(forHex: userTintHex))
@@ -3365,7 +3336,7 @@ struct AppStore2026DownloadButton: View {
 				HStack(spacing: 4) {
 					Image(systemName: "checkmark")
 						.font(.system(size: 11, weight: .bold))
-					Text("تثبيت")
+					Text(AL("تثبيت"))
 						.font(.system(size: 13, weight: .bold))
 				}
 				.foregroundStyle(.white)
@@ -3467,7 +3438,7 @@ struct AppStore2026BrowseCategoryTile: View {
 			.padding(.top, 14)
 			.padding(.trailing, 18)
 			
-			Text(category.rawValue)
+			Text(category.localizedTitle)
 				.font(.system(size: 16, weight: .bold))
 				.foregroundStyle(.white)
 				.multilineTextAlignment(.leading)
@@ -3530,42 +3501,6 @@ struct AppStore2026ThreeRowSection: View {
 struct AppStore2026FeaturedBanner: View {
 	let item: AppStoreAppItem
 	@AppStorage("AshteMobile.userTintColor") private var userTintHex: String = "#005BBB"
-	@State private var liveScreenshots: [URL] = []
-
-	@ViewBuilder private var artwork: some View {
-		let shot = item.screenshots.first ?? liveScreenshots.first
-		ZStack {
-			LinearGradient(
-				colors: [bannerColor.opacity(0.88), AppStoreTheme.deepOcean],
-				startPoint: .topTrailing,
-				endPoint: .bottomLeading
-			)
-			if let shot {
-				LazyImage(url: shot) { state in
-					if let image = state.image {
-						image.resizable().scaledToFill()
-					}
-				}
-				.processors([.resize(size: CGSize(width: 700, height: 400))])
-				.frame(maxWidth: .infinity, maxHeight: .infinity)
-				.clipped()
-				.allowsHitTesting(false)
-			} else {
-				// No screenshot in the source: blurred icon backdrop + tilted icon.
-				AppStoreIconView(url: item.app.iconURL, bundleID: item.app.id, appName: item.app.currentName, size: 220)
-					.blur(radius: 30)
-					.opacity(0.55)
-					.scaleEffect(1.5)
-				AppStoreIconView(url: item.app.iconURL, bundleID: item.app.id, appName: item.app.currentName, size: 92)
-					.rotationEffect(.degrees(-8))
-					.shadow(color: .black.opacity(0.35), radius: 14, y: 8)
-					.offset(y: -28)
-			}
-			LinearGradient(colors: [.clear, .black.opacity(0.3)], startPoint: .center, endPoint: .bottom)
-		}
-		.clipped()
-		.allowsHitTesting(false)
-	}
 	
 	private var bannerColor: Color {
 		item.app.tintColor ?? Color(hex: userTintHex)
@@ -3573,7 +3508,7 @@ struct AppStore2026FeaturedBanner: View {
 	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 6) {
-			Text(item.category.rawValue)
+			Text(item.category.localizedTitle)
 				.font(.caption2.weight(.bold))
 				.foregroundStyle(Color(hex: userTintHex))
 			Text(item.app.currentName)
@@ -3586,7 +3521,11 @@ struct AppStore2026FeaturedBanner: View {
 				.lineLimit(1)
 			
 			ZStack(alignment: .bottom) {
-				artwork
+				LinearGradient(
+					colors: [bannerColor.opacity(0.88), AppStoreTheme.deepOcean],
+					startPoint: .topTrailing,
+					endPoint: .bottomLeading
+				)
 				
 				HStack(spacing: 12) {
 					AppStoreIconView(
@@ -3618,18 +3557,6 @@ struct AppStore2026FeaturedBanner: View {
 			.clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
 		}
 		.frame(width: min(UIScreen.main.bounds.width - 44, 336))
-		.task {
-			guard item.screenshots.isEmpty, liveScreenshots.isEmpty,
-				  !AppStoreLiveMetadataBridge.hasExtractedGitHubIcon(item.app.iconURL) else { return }
-			if let meta = await AppStoreLiveMetadataBridge.shared.fetchMetadata(
-				bundleID: item.app.id,
-				appName: item.app.currentName,
-				iconURL: item.app.iconURL,
-				skipLookup: item.app.skipAppStoreLookup == true
-			) {
-				liveScreenshots = meta.screenshots
-			}
-		}
 	}
 }
 
@@ -3721,7 +3648,7 @@ struct AppStore2026CategoryListView: View {
 			.padding(18)
 		}
 		.background(AppStoreTheme.background.ignoresSafeArea())
-		.navigationTitle(customTitle ?? category.rawValue)
+		.navigationTitle(customTitle ?? category.localizedTitle)
 		.environment(\.layoutDirection, AshteL10n.layoutDirection)
 	}
 }
@@ -3783,7 +3710,7 @@ struct AppStoreIconView: View {
 
 struct AppStore2026EmptyState: View {
     let isLoading: Bool
-    var emptyMessage: String = "لا توجد تطبيقات في المصادر المفعّلة."
+    var emptyMessage: String = AL("لا توجد تطبيقات في المصادر المفعّلة.")
     var retry: (() -> Void)? = nil
 	@AppStorage("AshteMobile.userTintColor") private var userTintHex: String = "#005BBB"
 	
@@ -3794,10 +3721,10 @@ struct AppStore2026EmptyState: View {
             } else {
                 Image(systemName: "square.stack").font(.largeTitle).foregroundStyle(.secondary)
             }
-            Text(isLoading ? "جاري تحديث المصادر…" : emptyMessage)
+            Text(isLoading ? AL("جاري تحديث المصادر…") : emptyMessage)
 				.font(.subheadline.weight(.semibold))
 				.foregroundStyle(.primary)
-            if !isLoading, let retry { Button("إعادة المحاولة", action: retry) }
+            if !isLoading, let retry { Button(AL("إعادة المحاولة"), action: retry) }
 		}
 		.frame(maxWidth: .infinity)
 		.padding(36)
@@ -3808,21 +3735,55 @@ struct AppStore2026EmptyState: View {
 	}
 }
 
-// MARK: - Description (plain text, no translate button)
+// MARK: - XSign Inline Description Translation
 struct XSignTranslatableDescription: View {
     let text: String
     let accentColor: Color
+
+    var body: some View {
+        Group {
+            if #available(iOS 18.0, *) {
+                XSignInlineTranslation(text: text, accentColor: accentColor)
+                    .id(text)
+            } else {
+                XSignLegacyTranslation(text: text, accentColor: accentColor)
+                    .id(text)
+            }
+        }
+    }
+}
+
+private struct XSignDescriptionContent: View {
+    let text: String
+    let translated: String?
+    let accentColor: Color
+    let isBusy: Bool
+    let canTranslate: Bool
+    let translate: () -> Void
+    let restore: () -> Void
     @State private var expanded = false
 
+    private var visibleText: String { translated ?? text }
+
     private var isArabic: Bool {
-        NLLanguageRecognizer.dominantLanguage(for: text) == .arabic
+        NLLanguageRecognizer.dominantLanguage(for: visibleText) == .arabic
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("الوصف").font(.title2.bold())
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    Text(AL("الوصف")).font(.title2.bold())
+                    Spacer(minLength: 12)
+                    translationButton
+                }
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(AL("الوصف")).font(.title2.bold())
+                    translationButton
+                }
+            }
 
-            Text(verbatim: text)
+            Text(verbatim: visibleText)
                 .font(.body)
                 .foregroundStyle(Color.primary.opacity(0.88))
                 .lineSpacing(5)
@@ -3831,7 +3792,7 @@ struct XSignTranslatableDescription: View {
                 .environment(\.layoutDirection, isArabic ? .rightToLeft : .leftToRight)
                 .textSelection(.enabled)
 
-            Button(expanded ? "عرض أقل" : "المزيد") {
+            Button(expanded ? AL("عرض أقل") : AL("المزيد")) {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     expanded.toggle()
                 }
@@ -3840,9 +3801,147 @@ struct XSignTranslatableDescription: View {
             .foregroundStyle(accentColor)
         }
         .buttonStyle(.plain)
+        .onChange(of: translated) { _ in
+            expanded = true
+        }
+    }
+
+    @ViewBuilder private var translationButton: some View {
+        if translated != nil {
+            Button(AL("عرض الأصل"), action: restore)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(accentColor)
+        } else if false && canTranslate && NLLanguageRecognizer.dominantLanguage(for: text) != .arabic { // translate-to-Arabic button removed
+            Button(action: translate) {
+                HStack(spacing: 6) {
+                    if isBusy {
+                        ProgressView().tint(accentColor)
+                    }
+                    Label(
+                        isBusy ? AL("جارٍ الترجمة…") : AL("ترجمة للعربية"),
+                        systemImage: "translate"
+                    )
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(accentColor)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(accentColor.opacity(0.12), in: Capsule())
+            }
+            .disabled(
+                isBusy ||
+                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            )
+        }
     }
 }
-// MARK: - End Description
+
+@available(iOS 18.0, *)
+private struct XSignInlineTranslation: View {
+    let text: String
+    let accentColor: Color
+
+    @State private var configuration: TranslationSession.Configuration?
+    @State private var translated: String?
+    @State private var isBusy = false
+    @State private var showError = false
+
+    var body: some View {
+        XSignDescriptionContent(
+            text: text,
+            translated: translated,
+            accentColor: accentColor,
+            isBusy: isBusy,
+            canTranslate: true,
+            translate: {
+                isBusy = true
+                if configuration == nil {
+                    configuration = TranslationSession.Configuration(
+                        source: nil,
+                        target: Locale.Language(identifier: "ar")
+                    )
+                } else {
+                    configuration?.invalidate()
+                }
+            },
+            restore: {
+                translated = nil
+            }
+        )
+        .translationTask(configuration) { session in
+            do {
+                let response = try await session.translate(text)
+                try Task.checkCancellation()
+
+                await MainActor.run {
+                    translated = response.targetText
+                    isBusy = false
+                }
+            } catch {
+                let cancelled = Task.isCancelled || error is CancellationError
+                await MainActor.run {
+                    isBusy = false
+                    if !cancelled {
+                        showError = true
+                    }
+                }
+            }
+        }
+        .alert(AL("تعذّرت الترجمة"), isPresented: $showError) {
+            Button(AL("حسنًا"), role: .cancel) {}
+        } message: {
+            Text(AL("تأكد من توفر لغات الترجمة واتصال الإنترنت عند تنزيلها، ثم أعد المحاولة."))
+        }
+    }
+}
+
+private struct XSignLegacyTranslation: View {
+    let text: String
+    let accentColor: Color
+
+    @State private var presented = false
+    @State private var translated: String?
+
+    private var content: some View {
+        XSignDescriptionContent(
+            text: text,
+            translated: translated,
+            accentColor: accentColor,
+            isBusy: false,
+            canTranslate: supportsTranslation,
+            translate: {
+                presented = true
+            },
+            restore: {
+                translated = nil
+            }
+        )
+    }
+
+    private var supportsTranslation: Bool {
+        if #available(iOS 17.4, *) {
+            return true
+        }
+        return false
+    }
+
+    var body: some View {
+        Group {
+            if #available(iOS 17.4, *) {
+                content.translationPresentation(
+                    isPresented: $presented,
+                    text: text
+                ) { result in
+                    translated = result
+                    presented = false
+                }
+            } else {
+                content
+            }
+        }
+    }
+}
+// MARK: - End XSign Inline Description Translation
 
 // MARK: - Configured source identity, taxonomy and announcements
 private struct XSignSourceIdentity: View {
@@ -3864,7 +3963,7 @@ private struct XSignCatalogCategories: View {
     var body: some View {
         if !cache.sourceCategories.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
-                Text("تصنيفات \(cache.sourceName)")
+                Text(ALf("تصنيفات %@", "\(cache.sourceName)"))
                     .font(.system(size: 20, weight: .bold))
                     .padding(.horizontal, 18)
                 ScrollView(.horizontal, showsIndicators: false) {

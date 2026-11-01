@@ -24,16 +24,16 @@ struct AshteMySourcesView: View {
 				Button {
 					_isAddingSource = true
 				} label: {
-					Label("إضافة مصدر (سورس) خاص بك", systemImage: "plus.circle.fill")
+					Label(AL("إضافة مصدر (سورس) خاص بك"), systemImage: "plus.circle.fill")
 						.font(.body.weight(.semibold))
 				}
 			} footer: {
-				Text("جميع المصادر المضافة هنا محمية ولا يمكن تصدير أو نسخ روابطها.")
+				Text(AL("جميع المصادر المضافة هنا محمية ولا يمكن تصدير أو نسخ روابطها."))
 					.font(.caption2)
 			}
 
 			if !_userAddedSourcesOnly.isEmpty {
-				Section("المصادر الإضافية") {
+				Section(AL("المصادر الإضافية")) {
 					ForEach(_userAddedSourcesOnly) { source in
 						HStack(spacing: 12) {
 							Image(systemName: "shippingbox.fill")
@@ -43,10 +43,10 @@ struct AshteMySourcesView: View {
 								.background(AppStoreTheme.dynamicAccent.opacity(0.14), in: RoundedRectangle(cornerRadius: 10))
 
 							VStack(alignment: .leading, spacing: 2) {
-								Text(source.name ?? "مصدر مضاف")
+								Text(source.name ?? AL("مصدر مضاف"))
 									.font(.body.weight(.bold))
 									.foregroundStyle(.primary)
-								Text("مصدر مفعل • الرابط مخفي للحماية")
+								Text(AL("مصدر مفعل • الرابط مخفي للحماية"))
 									.font(.caption2)
 									.foregroundStyle(.secondary)
 							}
@@ -57,7 +57,7 @@ struct AshteMySourcesView: View {
 							Button(role: .destructive) {
 								Storage.shared.deleteSource(for: source)
 							} label: {
-								Label("حذف", systemImage: "trash")
+								Label(AL("حذف"), systemImage: "trash")
 							}
 						}
 					}

@@ -41,7 +41,7 @@ actor XSignAppleAppLookup {
                 return app
             }
         }
-        throw NSError(domain: "XSign.AppStore", code: 404, userInfo: [NSLocalizedDescriptionKey: "التطبيق غير متاح في بلد الرابط أو المتاجر التي تم فحصها."])
+        throw NSError(domain: "XSign.AppStore", code: 404, userInfo: [NSLocalizedDescriptionKey: AL("التطبيق غير متاح في بلد الرابط أو المتاجر التي تم فحصها.")])
     }
 }
 
@@ -61,7 +61,7 @@ final class XSignAppStoreLinkModel: ObservableObject {
         app = nil; message = nil; requestedAppID = nil
         guard let reference = XSignAppStoreReference.parse(text) else {
             self.reference = nil
-            message = "ألصق رابطًا صحيحًا من apps.apple.com يحتوي على رقم التطبيق."
+            message = AL("ألصق رابطًا صحيحًا من apps.apple.com يحتوي على رقم التطبيق.")
             return
         }
         self.reference = reference
@@ -94,7 +94,7 @@ final class XSignAppStoreLinkModel: ObservableObject {
                 guard let self, !Task.isCancelled, current == self.generation else { return }
                 _ = DownloadManager.shared.startDownload(from: url, id: "AshteMobileManualDownload_" + UUID().uuidString, requireUnencryptedBinary: true)
                 self.requestedAppID = app.trackId
-                self.message = "بدأ التنزيل. بعد فحص الملف واستيراده سيظهر في قسم التوقيع؛ يمكنك تعديل الاسم والبندل والإصدار قبل توقيعه."
+                self.message = AL("بدأ التنزيل. بعد فحص الملف واستيراده سيظهر في قسم التوقيع؛ يمكنك تعديل الاسم والبندل والإصدار قبل توقيعه.")
                 self.isRequestingIPA = false
             } catch {
                 guard let self, !Task.isCancelled, current == self.generation else { return }
@@ -121,10 +121,10 @@ struct XSignAppStoreLinkView: View {
                         .environment(\.layoutDirection, .leftToRight)
                         .submitLabel(.search).onSubmit { model.resolve(link) }
                     Button { model.resolve(link) } label: {
-                        HStack { Text("عرض معلومات التطبيق"); Spacer(); if model.isLoading { ProgressView() } }
+                        HStack { Text(AL("عرض معلومات التطبيق")); Spacer(); if model.isLoading { ProgressView() } }
                     }.disabled(link.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || model.isLoading)
-                } header: { Text("رابط App Store") } footer: {
-                    Text("معلومات التطبيق من Apple. طلب ملف IPA مستقل عن مصادر المتجر، ويُرسل إلى مزود خارجي عند ضغط زر الطلب.")
+                } header: { Text(AL("رابط App Store")) } footer: {
+                    Text(AL("معلومات التطبيق من Apple. طلب ملف IPA مستقل عن مصادر المتجر، ويُرسل إلى مزود خارجي عند ضغط زر الطلب."))
                 }
                 if let app = model.app {
                     Section {
@@ -137,22 +137,22 @@ struct XSignAppStoreLinkView: View {
                         }
                         Button { model.requestIPA() } label: {
                             HStack {
-                                Label("طلب IPA واستيراده", systemImage: "arrow.down.app")
+                                Label(AL("طلب IPA واستيراده"), systemImage: "arrow.down.app")
                                 Spacer()
                                 if model.isRequestingIPA { ProgressView() }
                             }
                         }.disabled(model.isRequestingIPA || model.isLoading)
-                    } header: { Text("التطبيق المرتبط بالرابط") } footer: {
-                        Text("المزود: \(XSignIPAProvider.providerName). توفر الملف وصلاحية التنزيل يعتمدان على المزود. يتحقق XSign من تشفير التنفيذ بعد الاستيراد؛ السيرفر الداخلي يخدم ملفات التثبيت، والتوقيع يجري محليًا بواسطة Zsign.")
+                    } header: { Text(AL("التطبيق المرتبط بالرابط")) } footer: {
+                        Text(ALf("المزود: %@. توفر الملف وصلاحية التنزيل يعتمدان على المزود. يتحقق XSign من تشفير التنفيذ بعد الاستيراد؛ السيرفر الداخلي يخدم ملفات التثبيت، والتوقيع يجري محليًا بواسطة Zsign.", "\(XSignIPAProvider.providerName)"))
                     }
                 }
                 if let message = model.message { Section { Text(message).font(.subheadline) } }
                 if let reference = model.reference {
-                    Section { Link(destination: reference.url) { Label("فتح في App Store", systemImage: "arrow.up.right.square") } }
+                    Section { Link(destination: reference.url) { Label(AL("فتح في App Store"), systemImage: "arrow.up.right.square") } }
                 }
             }
-            .navigationTitle("رابط App Store").navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("إغلاق") { dismiss() } } }
+            .navigationTitle(AL("رابط App Store")).navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button(AL("إغلاق")) { dismiss() } } }
         }
         .environment(\.layoutDirection, .rightToLeft)
         .onDisappear { model.cancel() }

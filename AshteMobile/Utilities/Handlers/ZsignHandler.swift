@@ -50,7 +50,7 @@ final class ZsignHandler {
                   let key = Storage.shared.getFile(.certificate, from: cert),
                   FileManager.default.isReadableFile(atPath: provision.path),
                   FileManager.default.isReadableFile(atPath: key.path) else {
-                throw NSError(domain: "XSign.Signing", code: 401, userInfo: [NSLocalizedDescriptionKey: "الشهادة غير متاحة أو منتهية أو ملغاة. اختر شهادة صالحة."])
+                throw NSError(domain: "XSign.Signing", code: 401, userInfo: [NSLocalizedDescriptionKey: AL("الشهادة غير متاحة أو منتهية أو ملغاة. اختر شهادة صالحة.")])
             }
             return (provision.path, key.path, cert.password ?? "")
         }

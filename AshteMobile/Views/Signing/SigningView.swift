@@ -254,9 +254,9 @@ extension SigningView {
 		HStack(spacing: 12) {
 			Label {
 				VStack(alignment: .leading, spacing: 2) {
-					Text("الاستنساخ")
+					Text(AL("الاستنساخ"))
 						.font(.body)
-					Text("إضافة أو إزالة (1) من البندل لتكرار التطبيق")
+					Text(AL("إضافة أو إزالة (1) من البندل لتكرار التطبيق"))
 						.font(.caption2)
 						.foregroundStyle(.secondary)
 				}
@@ -399,7 +399,7 @@ extension SigningView {
                 _ = try XSignAppMetadata.validated(_temporaryOptions.appIdentifier, field: .bundleIdentifier, original: app.identifier)
                 _ = try XSignAppMetadata.validated(_temporaryOptions.appVersion, field: .version, original: app.version)
             } catch {
-                UIAlertController.showAlertWithOk(title: "معلومات التطبيق", message: error.localizedDescription)
+                UIAlertController.showAlertWithOk(title: AL("معلومات التطبيق"), message: error.localizedDescription)
                 return
             }
         }

@@ -88,19 +88,19 @@ struct LibraryView: View {
 	) private var _sources: FetchedResults<AltSource>
 	
 	var body: some View {
-		NBNavigationView("التوقيع") {
+		NBNavigationView(AL("التوقيع")) {
 			NBListAdaptable {
                 Section {
                     Button { _isAppStoreLinkPresenting = true } label: {
-                        Label("رابط App Store", systemImage: "link.badge.plus")
+                        Label(AL("رابط App Store"), systemImage: "link.badge.plus")
                     }
                     if _filteredSignedApps.isEmpty && _filteredImportedApps.isEmpty {
-                        Text("استورد ملف IPA لتعديل معلوماته وتوقيعه، أو افتح رابط التطبيق في App Store.")
+                        Text(AL("استورد ملف IPA لتعديل معلوماته وتوقيعه، أو افتح رابط التطبيق في App Store."))
                             .font(.footnote).foregroundStyle(.secondary)
                     }
                 }
 				Section {
-					Picker("العرض", selection: $_selectedScope) {
+					Picker(AL("العرض"), selection: $_selectedScope) {
 						ForEach(Scope.allCases, id: \.displayName) { scope in
 							Text(scope.displayName).tag(scope)
 						}
@@ -125,7 +125,7 @@ struct LibraryView: View {
 				}
 				
 				if !_filteredImportedApps.isEmpty && (_selectedScope == .all || _selectedScope == .imported) {
-					NBSection("جاهزة للتوقيع اللحظي", secondary: _filteredImportedApps.count.description) {
+					NBSection(AL("جاهزة للتوقيع اللحظي"), secondary: _filteredImportedApps.count.description) {
 						ForEach(_filteredImportedApps, id: \.uuid) { app in
 							VStack(spacing: 8) {
 								LibraryCellView(
@@ -146,12 +146,12 @@ struct LibraryView: View {
 												ProgressView()
 													.tint(AppStoreTheme.contrastingText(forHex: userTintHex))
 													.scaleEffect(0.8)
-												Text("توقيع لحظي...")
+												Text(AL("توقيع لحظي..."))
 													.font(.footnote.weight(.bold))
 											} else {
 												Image(systemName: "bolt.fill")
 													.font(.footnote.weight(.bold))
-												Text("توقيع وتثبيت لحظي")
+												Text(AL("توقيع وتثبيت لحظي"))
 													.font(.footnote.weight(.bold))
 											}
 										}
@@ -184,7 +184,7 @@ struct LibraryView: View {
 				}
 				
 				if !_filteredSignedApps.isEmpty && (_selectedScope == .all || _selectedScope == .signed) {
-					NBSection("الموقعة والجاهزة للتثبيت", secondary: _filteredSignedApps.count.description) {
+					NBSection(AL("الموقعة والجاهزة للتثبيت"), secondary: _filteredSignedApps.count.description) {
 						ForEach(_filteredSignedApps, id: \.uuid) { app in
 							LibraryCellView(
 								app: app,
@@ -198,7 +198,7 @@ struct LibraryView: View {
 					}
 				}
 			}
-			.searchable(text: $_searchText, placement: .platform(), prompt: "بحث في التوقيع (عربي / إنجليزي)...")
+			.searchable(text: $_searchText, placement: .platform(), prompt: AL("بحث في التوقيع (عربي / إنجليزي)..."))
 			.scrollDismissesKeyboard(.interactively)
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
@@ -211,7 +211,7 @@ struct LibraryView: View {
                             _batchApps = _allSelectedApps
                             _isBulkSigningPresenting = true
                         } label: { Image(systemName: "signature") }
-                        .accessibilityLabel("توقيع التطبيقات المحددة")
+                        .accessibilityLabel(AL("توقيع التطبيقات المحددة"))
                         .disabled(_allSelectedApps.isEmpty || _isImportingFiles)
 						Button(role: .destructive) {
 							_bulkDeleteSelectedApps()
@@ -221,13 +221,13 @@ struct LibraryView: View {
 						.disabled(_selectedAppUUIDs.isEmpty)
 					} else {
 						Menu {
-							Button("استيراد ملفات IPA", systemImage: "arrow.down.doc") {
+							Button(AL("استيراد ملفات IPA"), systemImage: "arrow.down.doc") {
 								_isImportingPresenting = true
 							}
-                            Button("رابط App Store", systemImage: "link.badge.plus") {
+                            Button(AL("رابط App Store"), systemImage: "link.badge.plus") {
                                 _isAppStoreLinkPresenting = true
                             }
-							Button("استيراد وتوقيع من رابط مباشر", systemImage: "link") {
+							Button(AL("استيراد وتوقيع من رابط مباشر"), systemImage: "link") {
 								_isDownloadingPresenting = true
 							}
 						} label: {
@@ -273,13 +273,13 @@ struct LibraryView: View {
 			.navigationDestination(isPresented: $_isSettingsPresenting) {
 				SettingsView(embedded: true)
 			}
-			.alert("استيراد وتوقيع من رابط مباشر", isPresented: $_isDownloadingPresenting) {
+			.alert(AL("استيراد وتوقيع من رابط مباشر"), isPresented: $_isDownloadingPresenting) {
 				TextField("https://example.com/app.ipa", text: $_alertDownloadString)
 					.textInputAutocapitalization(.never)
-				Button("إلغاء", role: .cancel) {
+				Button(AL("إلغاء"), role: .cancel) {
 					_alertDownloadString = ""
 				}
-				Button("تنزيل وتوقيع") {
+				Button(AL("تنزيل وتوقيع")) {
 					if let url = URL(string: _alertDownloadString) {
 						_ = downloadManager.startDownload(from: url, id: "AshteMobileManualDownload_\(UUID().uuidString)")
 					}
@@ -315,7 +315,7 @@ struct LibraryView: View {
             var failures: [String] = []
             defer { _isImportingFiles = false }
             for (index, url) in urls.enumerated() {
-                _oneClickStatusMessage = "استيراد \(index + 1) من \(urls.count)…"
+                _oneClickStatusMessage = ALf("استيراد %@ من %@…", "\(index + 1)", "\(urls.count)")
                 let hasAccess = url.startAccessingSecurityScopedResource()
                 let result: Result<String, Error> = await withCheckedContinuation { continuation in
                     FR.importPackageFile(url) { continuation.resume(returning: $0) }
@@ -325,7 +325,7 @@ struct LibraryView: View {
                 case .success(let uuid):
                     if let app = AutoSignPipelineManager.fetchImportedApps().first(where: { $0.uuid == uuid }) {
                         imported.append(app)
-                    } else { failures.append(url.lastPathComponent + ": تعذّر العثور على التطبيق المستورد.") }
+                    } else { failures.append(url.lastPathComponent + AL(": تعذّر العثور على التطبيق المستورد.")) }
                 case .failure(let error): failures.append(url.lastPathComponent + ": " + error.localizedDescription)
                 }
             }
@@ -335,7 +335,7 @@ struct LibraryView: View {
                 else if !imported.isEmpty { _batchApps = imported; _isBulkSigningPresenting = true }
             }
             if !failures.isEmpty {
-                UIAlertController.showAlertWithOk(title: "تعذّر استيراد بعض الملفات", message: failures.prefix(5).joined(separator: "\n"), action: presentResult)
+                UIAlertController.showAlertWithOk(title: AL("تعذّر استيراد بعض الملفات"), message: failures.prefix(5).joined(separator: "\n"), action: presentResult)
             } else { presentResult() }
         }
     }
@@ -353,8 +353,8 @@ struct LibraryView: View {
 		guard let cert = activeCert else {
 			_oneClickStatusMessage = nil
 			UIAlertController.showAlertWithOk(
-				title: "لا توجد شهادة",
-				message: "يرجى إضافة شهادة توقيع أولاً من أيقونة الحساب في الأعلى."
+				title: AL("لا توجد شهادة"),
+				message: AL("يرجى إضافة شهادة توقيع أولاً من أيقونة الحساب في الأعلى.")
 			)
 			return
 		}
@@ -362,7 +362,7 @@ struct LibraryView: View {
 		let uuid = app.uuid ?? ""
 		UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
 		_signingInProgressUUIDs.insert(uuid)
-		_oneClickStatusMessage = "توقيع لحظي لـ \(app.name ?? "التطبيق")..."
+		_oneClickStatusMessage = ALf("توقيع لحظي لـ %@...", "\(app.name ?? "التطبيق")")
 		
 		let options = OptionsManager.shared.options
 		
@@ -380,7 +380,7 @@ struct LibraryView: View {
                 case .failure(let error):
 					UINotificationFeedbackGenerator().notificationOccurred(.error)
 					UIAlertController.showAlertWithOk(
-						title: "فشل التوقيع",
+						title: AL("فشل التوقيع"),
 						message: error.localizedDescription
 					)
                 case .success(let uuid):
@@ -405,9 +405,9 @@ struct LibraryView: View {
 		
 		var displayName: String {
 			switch self {
-			case .all:      return "الكل"
-			case .imported: return "جاهزة للتوقيع"
-			case .signed:   return "الموقعة"
+			case .all:      return AL("الكل")
+			case .imported: return AL("جاهزة للتوقيع")
+			case .signed:   return AL("الموقعة")
 			}
 		}
 	}

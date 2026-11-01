@@ -150,7 +150,7 @@ final class SigningHandler: NSObject {
 		
 		guard let appUrl = _fileManager.getPath(in: app, for: "app") else {
             throw NSError(domain: "XSign.Signing", code: 1,
-                          userInfo: [NSLocalizedDescriptionKey: "تعذّر العثور على محتويات التطبيق الموقّع."])
+                          userInfo: [NSLocalizedDescriptionKey: AL("تعذّر العثور على محتويات التطبيق الموقّع.")])
 		}
 		
 		try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in

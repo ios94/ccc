@@ -37,7 +37,7 @@ struct SigningPropertiesView: View {
                 Text(message).font(.footnote).foregroundStyle(.red)
             }
             if let originalValue {
-                Button("استخدام القيمة الأصلية: \(originalValue)") {
+                Button(ALf("استخدام القيمة الأصلية: %@", "\(originalValue)")) {
                     bindingValue = nil
                     dismiss()
                 }.font(.footnote)

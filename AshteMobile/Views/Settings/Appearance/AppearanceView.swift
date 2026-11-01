@@ -12,12 +12,12 @@ struct AppearanceView: View {
     private var userInterfaceStyle: Int = UIUserInterfaceStyle.unspecified.rawValue
 
     var body: some View {
-        NBList("المظهر") {
+        NBList(AL("المظهر")) {
             Section {
-                Picker("المظهر", selection: $userInterfaceStyle) {
-                    Text("النظام").tag(UIUserInterfaceStyle.unspecified.rawValue)
-                    Text("فاتح").tag(UIUserInterfaceStyle.light.rawValue)
-                    Text("داكن").tag(UIUserInterfaceStyle.dark.rawValue)
+                Picker(AL("المظهر"), selection: $userInterfaceStyle) {
+                    Text(AL("النظام")).tag(UIUserInterfaceStyle.unspecified.rawValue)
+                    Text(AL("فاتح")).tag(UIUserInterfaceStyle.light.rawValue)
+                    Text(AL("داكن")).tag(UIUserInterfaceStyle.dark.rawValue)
                 }
                 .pickerStyle(.segmented)
             }

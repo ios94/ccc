@@ -8,10 +8,10 @@ enum XSignIPAProviderError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .permissionDenied:
-            return "رفض مزود IPA الطلب (403). تحتاج الخدمة إلى صلاحية من مالكها؛ لا يمكن للسيرفر الداخلي إنشاء ملف مفكوك التشفير بدلًا منها."
-        case .invalidResponse: return "رد مزود IPA غير صالح أو لا يحتوي على رابط HTTPS مباشر."
+            return AL("رفض مزود IPA الطلب (403). تحتاج الخدمة إلى صلاحية من مالكها؛ لا يمكن للسيرفر الداخلي إنشاء ملف مفكوك التشفير بدلًا منها.")
+        case .invalidResponse: return AL("رد مزود IPA غير صالح أو لا يحتوي على رابط HTTPS مباشر.")
         case .unavailable(let message): return message
-        case .http(let status): return "تعذّر طلب IPA من المزود (HTTP \(status))."
+        case .http(let status): return ALf("تعذّر طلب IPA من المزود (HTTP %@).", "\(status)")
         }
     }
 }
@@ -65,7 +65,7 @@ actor XSignIPAProvider {
             throw XSignIPAProviderError.invalidResponse
         }
         guard value.success else {
-            let text = value.error ?? value.message ?? "لا يتوفر ملف IPA لهذا التطبيق لدى المزود."
+            let text = value.error ?? value.message ?? AL("لا يتوفر ملف IPA لهذا التطبيق لدى المزود.")
             throw XSignIPAProviderError.unavailable(String(text.prefix(500)))
         }
         guard let text = value.download_url, let url = URL(string: text),

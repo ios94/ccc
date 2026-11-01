@@ -214,19 +214,19 @@ final class XSignSecurityEnforcer: ObservableObject {
 		injectedDylibCount: Int
 	) -> (allowed: Bool, errorMessage: String?) {
 		if (locks.require_online_handshake ?? false) && !didCompleteOnlineHandshake {
-			return (false, "يجب الاتصال بالإنترنت للتحقق من صلاحيات التوقيع والأمان.")
+			return (false, AL("يجب الاتصال بالإنترنت للتحقق من صلاحيات التوقيع والأمان."))
 		}
 		if isVPNOrProxyDetected {
-			return (false, locks.vpn_warning_message ?? "يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً.")
+			return (false, locks.vpn_warning_message ?? AL("يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً."))
 		}
 		if !locks.allowsAppMetadataEditing && (originalName != newName || originalBundleID != newBundleID) {
-			return (false, "غير مسموح بتعديل اسم التطبيق أو معرف الحزمة (Bundle ID).")
+			return (false, AL("غير مسموح بتعديل اسم التطبيق أو معرف الحزمة (Bundle ID)."))
 		}
 		if (locks.lock_icon_change ?? false) && didModifyIcon {
-			return (false, "غير مسموح بتغيير أو استبدال أيقونة التطبيق الأصلية.")
+			return (false, AL("غير مسموح بتغيير أو استبدال أيقونة التطبيق الأصلية."))
 		}
 		if (locks.lock_dylib_injection ?? false) && injectedDylibCount > 0 {
-			return (false, "غير مسموح بحقن أدوات خارجية (.dylib / .deb) داخل التطبيق.")
+			return (false, AL("غير مسموح بحقن أدوات خارجية (.dylib / .deb) داخل التطبيق."))
 		}
 		return (true, nil)
 	}
@@ -268,10 +268,10 @@ final class XSignRemoteManager: ObservableObject {
         return false
     }
     var blockingReason: String? {
-        if isMaintenanceActive { return config?.maintenance?.message ?? "التطبيق قيد الصيانة." }
-        if isForceUpdateRequired { return config?.force_update?.message ?? "يرجى تحديث التطبيق أولاً." }
+        if isMaintenanceActive { return config?.maintenance?.message ?? AL("التطبيق قيد الصيانة.") }
+        if isForceUpdateRequired { return config?.force_update?.message ?? AL("يرجى تحديث التطبيق أولاً.") }
         let security = XSignSecurityEnforcer.shared
-        if security.isVPNOrProxyDetected { return security.locks.vpn_warning_message ?? "يرجى إيقاف VPN أو Proxy." }
+        if security.isVPNOrProxyDetected { return security.locks.vpn_warning_message ?? AL("يرجى إيقاف VPN أو Proxy.") }
         return nil
     }
 
@@ -474,7 +474,7 @@ struct AshteMobileApp: App {
 				
 				if securityEnforcer.isVPNOrProxyDetected {
 					XSignVPNBlockedOverlayView(
-						message: securityEnforcer.locks.vpn_warning_message ?? "عذراً، لا يمكن استخدام التطبيق أو التحميل أثناء تشغيل VPN أو مراقب شبكة."
+						message: securityEnforcer.locks.vpn_warning_message ?? AL("عذراً، لا يمكن استخدام التطبيق أو التحميل أثناء تشغيل VPN أو مراقب شبكة.")
 					) {
 						securityEnforcer.evaluateNetworkSecurity()
 					}
@@ -540,8 +540,8 @@ struct AshteMobileApp: App {
 		XSignSecurityEnforcer.shared.evaluateNetworkSecurity()
 		if XSignSecurityEnforcer.shared.isVPNOrProxyDetected {
 			UIAlertController.showAlertWithOk(
-				title: "تنبيه أمني",
-				message: XSignSecurityEnforcer.shared.locks.vpn_warning_message ?? "يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً."
+				title: AL("تنبيه أمني"),
+				message: XSignSecurityEnforcer.shared.locks.vpn_warning_message ?? AL("يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً.")
 			)
 			return
 		}
@@ -658,7 +658,7 @@ struct XSignVPNBlockedOverlayView: View {
 					.font(.system(size: 58))
 					.foregroundColor(.red)
 				
-				Text("تم إيقاف الاتصال لحماية التطبيق")
+				Text(AL("تم إيقاف الاتصال لحماية التطبيق"))
 					.font(.title3.bold())
 					.foregroundColor(.primary)
 				
@@ -669,7 +669,7 @@ struct XSignVPNBlockedOverlayView: View {
 					.padding(.horizontal, 28)
 				
 				Button(action: onRetry) {
-					Text("إعادة الفحص بعد إيقاف الـ VPN")
+					Text(AL("إعادة الفحص بعد إيقاف الـ VPN"))
 						.font(.headline.bold())
 						.foregroundColor(.white)
 						.frame(maxWidth: .infinity)
@@ -701,15 +701,15 @@ struct XSignRemoteGateOverlayView: View {
 					.foregroundColor(tintColor)
 				
 				Text(remoteManager.isMaintenanceActive
-					 ? (remoteManager.config?.maintenance?.title ?? "التطبيق قيد الصيانة")
-					 : "تحديث إجباري مطلوب")
+					 ? (remoteManager.config?.maintenance?.title ?? AL("التطبيق قيد الصيانة"))
+					 : AL("تحديث إجباري مطلوب"))
 					.font(.title2.bold())
 					.foregroundColor(.primary)
 					.multilineTextAlignment(.center)
 				
 				Text(remoteManager.isMaintenanceActive
-					 ? (remoteManager.config?.maintenance?.message ?? "يرجى المحاولة لاحقاً.")
-					 : (remoteManager.config?.force_update?.message ?? "يرجى تحديث التطبيق لأحدث إصدار."))
+					 ? (remoteManager.config?.maintenance?.message ?? AL("يرجى المحاولة لاحقاً."))
+					 : (remoteManager.config?.force_update?.message ?? AL("يرجى تحديث التطبيق لأحدث إصدار.")))
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.multilineTextAlignment(.center)
@@ -723,7 +723,7 @@ struct XSignRemoteGateOverlayView: View {
 						UIApplication.shared.open(url)
 					}
 				} label: {
-					Text(remoteManager.isMaintenanceActive ? "متابعة قناة التيليجرام" : "تحديث التطبيق الآن")
+					Text(remoteManager.isMaintenanceActive ? AL("متابعة قناة التيليجرام") : AL("تحديث التطبيق الآن"))
 						.font(.headline.bold())
 						.foregroundColor(AppStoreTheme.contrastingText(forHex: userTintHex))
 						.frame(maxWidth: .infinity)
@@ -1092,10 +1092,10 @@ private struct XSignStorageLoadView: View {
         VStack(spacing: 16) {
             if storage.storeLoadError != nil {
                 Image(systemName: "externaldrive.badge.exclamationmark").font(.largeTitle)
-                Text("تعذّر فتح البيانات المحفوظة").font(.headline)
-                Text("أعد المحاولة لفتح مكتبتك.").foregroundStyle(.secondary)
-                Button("إعادة المحاولة") { storage.retryLoadingStore() }
-            } else { ProgressView(); Text("جارٍ فتح مكتبتك…").foregroundStyle(.secondary) }
+                Text(AL("تعذّر فتح البيانات المحفوظة")).font(.headline)
+                Text(AL("أعد المحاولة لفتح مكتبتك.")).foregroundStyle(.secondary)
+                Button(AL("إعادة المحاولة")) { storage.retryLoadingStore() }
+            } else { ProgressView(); Text(AL("جارٍ فتح مكتبتك…")).foregroundStyle(.secondary) }
         }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
         .environment(\.layoutDirection, AshteL10n.layoutDirection)
     }

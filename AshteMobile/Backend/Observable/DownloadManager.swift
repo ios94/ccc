@@ -116,7 +116,7 @@ class DownloadManager: NSObject, ObservableObject {
         Task { @MainActor in
             if let reason = await XSignRemoteManager.shared.prepareProtectedOperation() {
                 self.cancelDownload(download)
-                UIAlertController.showAlertWithOk(title: "تنبيه", message: reason)
+                UIAlertController.showAlertWithOk(title: AL("تنبيه"), message: reason)
             } else if self.downloads.contains(where: { $0.id == download.id }) {
                 task.resume()
             }
@@ -158,7 +158,7 @@ class DownloadManager: NSObject, ObservableObject {
             Task { @MainActor in
                 if let reason = await XSignRemoteManager.shared.prepareProtectedOperation() {
                     self.cancelDownload(download)
-                    UIAlertController.showAlertWithOk(title: "تنبيه", message: reason)
+                    UIAlertController.showAlertWithOk(title: AL("تنبيه"), message: reason)
                 } else if self.downloads.contains(where: { $0.id == download.id }) { task.resume() }
             }
 			
@@ -171,7 +171,7 @@ class DownloadManager: NSObject, ObservableObject {
             Task { @MainActor in
                 if let reason = await XSignRemoteManager.shared.prepareProtectedOperation() {
                     self.cancelDownload(download)
-                    UIAlertController.showAlertWithOk(title: "تنبيه", message: reason)
+                    UIAlertController.showAlertWithOk(title: AL("تنبيه"), message: reason)
                 } else if self.downloads.contains(where: { $0.id == download.id }) { task.resume() }
             }
 			
@@ -225,7 +225,7 @@ extension DownloadManager: URLSessionDownloadDelegate {
 			if err != nil {
 				let generator = UINotificationFeedbackGenerator()
 				generator.notificationOccurred(.error)
-                UIAlertController.showAlertWithOk(title: "تعذّر استيراد IPA", message: err?.localizedDescription ?? "ملف التطبيق غير صالح.")
+                UIAlertController.showAlertWithOk(title: AL("تعذّر استيراد IPA"), message: err?.localizedDescription ?? AL("ملف التطبيق غير صالح."))
 			}
 			
 			DispatchQueue.main.async {
@@ -272,7 +272,7 @@ extension DownloadManager: URLSessionDownloadDelegate {
 		} catch {
             DispatchQueue.main.async {
                 self.cancelDownload(download)
-                UIAlertController.showAlertWithOk(title: "تعذّر تنزيل IPA", message: error.localizedDescription)
+                UIAlertController.showAlertWithOk(title: AL("تعذّر تنزيل IPA"), message: error.localizedDescription)
             }
 		}
 	}
@@ -312,7 +312,7 @@ extension DownloadManager: URLSessionDownloadDelegate {
 		DispatchQueue.main.async {
             self.cancelDownload(download)
             if let error, (error as? URLError)?.code != .cancelled {
-                UIAlertController.showAlertWithOk(title: "تعذّر تنزيل IPA", message: error.localizedDescription)
+                UIAlertController.showAlertWithOk(title: AL("تعذّر تنزيل IPA"), message: error.localizedDescription)
             }
 		}
 	}

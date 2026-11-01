@@ -366,6 +366,8 @@ struct AshteMobileApp: App {
 	
 	let heartbeat = HeartbeatManager.shared
 	
+	init() { AshteL10n.bootstrap() }
+	
 	@StateObject var downloadManager = DownloadManager.shared
 	@StateObject private var storeCache = AppStoreCacheManager.shared
     @StateObject private var autoSign = AutoSignPipelineManager.shared
@@ -374,6 +376,7 @@ struct AshteMobileApp: App {
 	@StateObject private var securityEnforcer = XSignSecurityEnforcer.shared
 	@StateObject private var storage = Storage.shared
 	
+	@AppStorage(AshteL10n.storageKey) private var _appLanguage: String = AshteL10n.defaultCode
 	@AppStorage("AshteMobile.userTintColor") private var userTintHex: String = "#005BBB"
     @AppStorage("AshteMobile.userInterfaceStyle")
     private var userInterfaceStyle: Int = UIUserInterfaceStyle.unspecified.rawValue
@@ -482,6 +485,8 @@ struct AshteMobileApp: App {
             .tint(activeTintColor)
             .accentColor(activeTintColor)
 			.preferredColorScheme(preferredAppColorScheme)
+			.environment(\.locale, AshteL10n.locale)
+			.environment(\.layoutDirection, AshteL10n.layoutDirection)
             .sheet(item: $autoSign.readyToInstallApp, onDismiss: {
                 autoSign.presentNextReadyApp()
             }) { signedApp in

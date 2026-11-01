@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import ObjectiveC
 
 // MARK: - Branding (name, logo, social links)
 enum AshteBranding {
@@ -25,8 +26,8 @@ struct AshteLanguage: Identifiable, Hashable {
 
 enum AshteL10n {
 	static let storageKey = "ashtemobile.language"
-	/// The language the app starts with. Change to "en" to start in English.
-	static let defaultCode = "ar"
+	/// The language the app starts with. English is the default.
+	static let defaultCode = "en"
 
 	static let languages: [AshteLanguage] = [
 		.init(code: "en", nativeName: "English"),
@@ -43,15 +44,37 @@ enum AshteL10n {
 		UserDefaults.standard.string(forKey: storageKey) ?? defaultCode
 	}
 
-	/// English text is the key. Other languages are looked up in `table`; missing keys fall back to English.
+	/// Locale matching the language chosen inside the app (not the phone language).
+	static var locale: Locale { Locale(identifier: current) }
+
+	/// `.lproj` bundle of the chosen language (nil for English / when it does not exist).
+	static func languageBundle(for code: String = AshteL10n.current) -> Bundle? {
+		guard code != "en",
+			  let path = Bundle.main.path(forResource: code, ofType: "lproj") else { return nil }
+		return Bundle(path: path)
+	}
+
+	/// English text is the key.
+	/// Order: small built-in table -> Localizable.xcstrings of the chosen language -> English key.
 	static func t(_ key: String) -> String {
 		let code = current
-		guard code != defaultCode else { return key }
-		return table[code]?[key] ?? key
+		guard code != "en" else { return key }
+		if let v = table[code]?[key] { return v }
+		if let b = languageBundle(for: code) {
+			let v = b.localizedString(forKey: key, value: nil, table: nil)
+			if v != key { return v }
+		}
+		return key
 	}
 
 	static func t(_ key: String, _ args: CVarArg...) -> String {
 		String(format: t(key), arguments: args)
+	}
+
+	/// Call once at launch: makes EVERY `NSLocalizedString` / `.localized()` / `Text("key")`
+	/// follow the language chosen inside the app instead of the phone language.
+	static func bootstrap() {
+		object_setClass(Bundle.main, AshteLocalizedBundle.self)
 	}
 
 	private static let table: [String: [String: String]] = [
@@ -88,4 +111,18 @@ enum AshteL10n {
 			"Social": "تۆڕە کۆمەڵایەتییەکان", "My Sources": "سەرچاوەکانم", "Back": "گەڕانەوە"
 		]
 	]
+}
+
+// MARK: - Bundle override (follow the in-app language)
+private final class AshteLocalizedBundle: Bundle {
+	override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
+		if let b = AshteL10n.languageBundle() {
+			return b.localizedString(forKey: key, value: value, table: tableName)
+		}
+		// English: use the development-language (en / Base) strings, never the phone language.
+		if let path = Bundle.main.path(forResource: "en", ofType: "lproj"), let b = Bundle(path: path) {
+			return b.localizedString(forKey: key, value: value, table: tableName)
+		}
+		return value ?? key
+	}
 }

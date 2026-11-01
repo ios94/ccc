@@ -14,8 +14,11 @@ jobs:
 
       - name: Unzip into the repository
         run: |
+          test -f install-fix.zip
           mkdir -p /tmp/x
           unzip -q install-fix.zip -d /tmp/x
+          # replace the old icon files completely
+          rm -rf Feather/Resources/AppIcon.icon Feather/Resources/Assets.xcassets/AppIcon.appiconset
           rsync -a /tmp/x/changed/ ./
           rm -f install-fix.zip
 
@@ -24,5 +27,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Apply install fix"
+          git commit -m "AshteMobile UI: settings, language, logo, branding" || echo "nothing to commit"
           git push

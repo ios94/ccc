@@ -1094,6 +1094,6 @@ private struct XSignStorageLoadView: View {
                 Button("إعادة المحاولة") { storage.retryLoadingStore() }
             } else { ProgressView(); Text("جارٍ فتح مكتبتك…").foregroundStyle(.secondary) }
         }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
-        .environment(\.layoutDirection, .rightToLeft)
+        .environment(\.layoutDirection, AshteL10n.layoutDirection)
     }
 }

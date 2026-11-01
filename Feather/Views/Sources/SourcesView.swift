@@ -1879,7 +1879,7 @@ struct AppStore2026DetailView: View {
 		}
 		.background(AppStoreTheme.background.ignoresSafeArea())
 		.navigationBarTitleDisplayMode(.inline)
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
 		.task {
 			if AppStoreLiveMetadataBridge.hasExtractedGitHubIcon(item.app.iconURL) {
 				isLoadingMetadata = false
@@ -1995,11 +1995,11 @@ struct AppStoreTodayView: View {
             .background(AppStoreTheme.background.ignoresSafeArea())
             .toolbar(.hidden, for: .navigationBar)
             .refreshable { await cache.forceRefresh(sources: sources, viewModel: viewModel) }
-            .sheet(isPresented: $showSettingsSheet, onDismiss: { AutoSignPipelineManager.shared.presentNextReadyApp() }) {
-                AppStore2026SettingsPopup(sources: sources, viewModel: viewModel)
+            .navigationDestination(isPresented: $showSettingsSheet) {
+                SettingsView(embedded: true)
             }
         }
-        .environment(\.layoutDirection, .rightToLeft)
+        .environment(\.layoutDirection, AshteL10n.layoutDirection)
         .task(id: sources.map { $0.sourceURL?.absoluteString ?? "" }.sorted()) {
             await cache.ensureFetched(sources: sources, viewModel: viewModel)
         }
@@ -2221,12 +2221,12 @@ struct SourcesView: View {
 			.refreshable {
 				await cache.forceRefresh(sources: _sources, viewModel: viewModel)
 			}
-			.sheet(isPresented: $_isSettingsPresenting, onDismiss: { AutoSignPipelineManager.shared.presentNextReadyApp() }) {
-				AppStore2026SettingsPopup(sources: _sources, viewModel: viewModel)
+			.navigationDestination(isPresented: $_isSettingsPresenting) {
+				SettingsView(embedded: true)
 			}
 		}
         .onChange(of: _selectedAppCategory) { _ in visibleAppCount = 60 }
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
         .task(id: _sources.map { $0.sourceURL?.absoluteString ?? "" }.sorted()) {
             await cache.ensureFetched(sources: _sources, viewModel: viewModel)
         }
@@ -2390,12 +2390,12 @@ struct AppStoreGamesView: View {
 			.refreshable {
 				await cache.forceRefresh(sources: _sources, viewModel: viewModel)
 			}
-			.sheet(isPresented: $showSettingsSheet, onDismiss: { AutoSignPipelineManager.shared.presentNextReadyApp() }) {
-				AppStore2026SettingsPopup(sources: _sources, viewModel: viewModel)
-			}
+			.navigationDestination(isPresented: $showSettingsSheet) {
+                SettingsView(embedded: true)
+            }
 		}
         .onChange(of: selectedGameCategory) { _ in visibleGameCount = 60 }
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
         .task(id: _sources.map { $0.sourceURL?.absoluteString ?? "" }.sorted()) {
             await cache.ensureFetched(sources: _sources, viewModel: viewModel)
         }
@@ -2506,11 +2506,11 @@ struct AppStoreSearchView: View {
 			}
             .onChange(of: cache.catalogRevision) { _ in triggerBackgroundSearch(query: searchText) }
             .onDisappear { results.cancel() }
-			.sheet(isPresented: $showSettingsSheet, onDismiss: { AutoSignPipelineManager.shared.presentNextReadyApp() }) {
-				AppStore2026SettingsPopup(sources: _sources, viewModel: viewModel)
-			}
+			.navigationDestination(isPresented: $showSettingsSheet) {
+                SettingsView(embedded: true)
+            }
 		}
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
         .task(id: _sources.map { $0.sourceURL?.absoluteString ?? "" }.sorted()) {
             triggerBackgroundSearch(query: searchText)
             await cache.ensureFetched(sources: _sources, viewModel: viewModel)
@@ -3197,7 +3197,7 @@ struct AppStore2026SettingsPopup: View {
 				CustomSafeAddSourceSheet()
 			}
 		}
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
 	}
 }
 
@@ -3244,7 +3244,7 @@ struct CustomSafeAddSourceSheet: View {
 				}
 			}
 		}
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
 	}
 	
 	private func addSource() {
@@ -3647,7 +3647,7 @@ struct AppStore2026CategoryListView: View {
 		}
 		.background(AppStoreTheme.background.ignoresSafeArea())
 		.navigationTitle(customTitle ?? category.rawValue)
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
 	}
 }
 

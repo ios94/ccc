@@ -20,6 +20,6 @@ struct TabbarView: View {
 					.tag(tab)
 			}
 		}
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
 	}
 }

@@ -46,6 +46,6 @@ struct ExtendedTabbarView: View {
 		}
 		.tabViewStyle(.sidebarAdaptable)
 		.tabViewCustomization($customization)
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
 	}
 }

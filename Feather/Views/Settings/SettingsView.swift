@@ -9,19 +9,37 @@ import UIKit
 
 // MARK: - View
 struct SettingsView: View {
+	/// `true` when pushed inside an existing NavigationStack (back button + inline title).
+	var embedded: Bool = false
+
 	@AppStorage(AshteL10n.storageKey) private var _language: String = AshteL10n.defaultCode
 	@AppStorage("Feather.installationMethod") private var _installationMethod: Int = 0
 	@State private var _showMethodChangedAlert = false
 
 	// MARK: Body
 	var body: some View {
-		NBNavigationView(AshteL10n.t("Settings")) {
-			Form {
-				_channelSection()
-				_installationTypeSection()
-				_featuresSection()
-				_resetSection()
+		Group {
+			if embedded {
+				_content()
+					.navigationTitle(AshteL10n.t("Settings"))
+					.navigationBarTitleDisplayMode(.inline)
+					.toolbar(.visible, for: .navigationBar)
+			} else {
+				NBNavigationView(AshteL10n.t("Settings")) {
+					_content()
+				}
 			}
+		}
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
+	}
+
+	@ViewBuilder
+	private func _content() -> some View {
+		Form {
+			_channelSection()
+			_installationTypeSection()
+			_featuresSection()
+			_resetSection()
 		}
 		.alert(.localized("Advanced Installation Method"), isPresented: $_showMethodChangedAlert) {
 			Button(.localized("Switch Back"), role: .destructive) {
@@ -125,6 +143,9 @@ extension SettingsView {
 	@ViewBuilder
 	private func _featuresSection() -> some View {
 		NBSection(AshteL10n.t("Features")) {
+			NavigationLink(destination: AshteMySourcesView()) {
+				Label(AshteL10n.t("My Sources"), systemImage: "shippingbox")
+			}
 			NavigationLink(destination: ConfigurationView()) {
 				Label(AshteL10n.t("Signing Options"), systemImage: "signature")
 			}

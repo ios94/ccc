@@ -270,8 +270,8 @@ struct LibraryView: View {
             .sheet(isPresented: $_isAppStoreLinkPresenting, onDismiss: { AutoSignPipelineManager.shared.presentNextReadyApp() }) {
                 XSignAppStoreLinkView()
             }
-			.sheet(isPresented: $_isSettingsPresenting, onDismiss: { AutoSignPipelineManager.shared.presentNextReadyApp() }) {
-				AppStore2026SettingsPopup(sources: _sources, viewModel: sourcesViewModel)
+			.navigationDestination(isPresented: $_isSettingsPresenting) {
+				SettingsView(embedded: true)
 			}
 			.alert("استيراد وتوقيع من رابط مباشر", isPresented: $_isDownloadingPresenting) {
 				TextField("https://example.com/app.ipa", text: $_alertDownloadString)
@@ -296,7 +296,7 @@ struct LibraryView: View {
 				}
 			}
 		}
-		.environment(\.layoutDirection, .rightToLeft)
+		.environment(\.layoutDirection, AshteL10n.layoutDirection)
 	}
 	
 	// MARK: - Direct Native Importer + Instant Auto-Sign

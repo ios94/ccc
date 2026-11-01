@@ -25,13 +25,19 @@ struct AshteLanguage: Identifiable, Hashable {
 
 enum AshteL10n {
 	static let storageKey = "ashtemobile.language"
-	static let defaultCode = "en"
+	/// The language the app starts with. Change to "en" to start in English.
+	static let defaultCode = "ar"
 
 	static let languages: [AshteLanguage] = [
 		.init(code: "en", nativeName: "English"),
 		.init(code: "ar", nativeName: "العربية"),
 		.init(code: "ckb", nativeName: "کوردی")
 	]
+
+	/// Arabic and Kurdish (Sorani) are right-to-left, English is left-to-right.
+	static var layoutDirection: LayoutDirection {
+		["ar", "ckb"].contains(current) ? .rightToLeft : .leftToRight
+	}
 
 	static var current: String {
 		UserDefaults.standard.string(forKey: storageKey) ?? defaultCode
@@ -63,7 +69,7 @@ enum AshteL10n {
 			"Some screens may need the app to be reopened.": "قد تحتاج بعض الشاشات إلى إعادة فتح التطبيق.",
 			"More from %@": "المزيد من %@", "Discover your next app": "اكتشف تطبيقك القادم",
 			"AshteMobile Pick": "اختيار AshteMobile", "Get": "تنزيل", "Sign with AshteMobile": "توقيع عبر AshteMobile",
-			"Social": "التواصل"
+			"Social": "التواصل", "My Sources": "مصادري", "Back": "رجوع"
 		],
 		"ckb": [
 			"Today": "ئەمڕۆ", "Games": "یاری", "Apps": "ئەپەکان", "Signing": "واژۆکردن",
@@ -79,7 +85,7 @@ enum AshteL10n {
 			"Some screens may need the app to be reopened.": "هەندێک شاشە پێویستیان بە کردنەوەی دووبارەی ئەپەکە هەیە.",
 			"More from %@": "زیاتر لە %@", "Discover your next app": "ئەپی داهاتووت بدۆزەرەوە",
 			"AshteMobile Pick": "هەڵبژاردەی AshteMobile", "Get": "داگرتن", "Sign with AshteMobile": "واژۆکردن بە AshteMobile",
-			"Social": "تۆڕە کۆمەڵایەتییەکان"
+			"Social": "تۆڕە کۆمەڵایەتییەکان", "My Sources": "سەرچاوەکانم", "Back": "گەڕانەوە"
 		]
 	]
 }

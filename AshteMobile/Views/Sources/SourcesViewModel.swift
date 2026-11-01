@@ -70,11 +70,11 @@ enum XSignCatalogError: LocalizedError {
     case invalidURL, invalidResponse, http(Int), tooLarge, invalidJSON
     var errorDescription: String? {
         switch self {
-        case .invalidURL: return AL("رابط السورس غير صالح.")
-        case .invalidResponse: return AL("الخادم لم يُرجع بيانات سورس JSON.")
-        case .http(let status): return ALf("تعذّر جلب السورس (HTTP %@).", "\(status)")
-        case .tooLarge: return AL("حجم السورس يتجاوز الحد المسموح.")
-        case .invalidJSON: return AL("بيانات السورس ليست بصيغة AltStore صالحة.")
+        case .invalidURL: return AshteL10n.t("رابط السورس غير صالح.")
+        case .invalidResponse: return AshteL10n.t("الخادم لم يُرجع بيانات سورس JSON.")
+        case .http(let status): return AshteL10n.t("تعذّر جلب السورس (HTTP %ld).", status)
+        case .tooLarge: return AshteL10n.t("حجم السورس يتجاوز الحد المسموح.")
+        case .invalidJSON: return AshteL10n.t("بيانات السورس ليست بصيغة AltStore صالحة.")
         }
     }
 }

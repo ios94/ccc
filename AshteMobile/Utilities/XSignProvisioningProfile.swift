@@ -10,10 +10,10 @@ struct XSignProvisioningProfile: Sendable {
         case malformed, expired, unsupportedBundle, mismatch
         var errorDescription: String? {
             switch self {
-            case .malformed: return AL("تعذّر قراءة App ID من ملف البروفايل.")
-            case .expired: return AL("ملف البروفايل منتهي الصلاحية. اختر شهادة أخرى.")
-            case .unsupportedBundle: return AL("صيغة App ID في الشهادة غير مدعومة للمطابقة.")
-            case .mismatch: return AL("بندل التطبيق لا يطابق نطاق البروفايل. عدّل البندل أو اختر شهادة مناسبة.")
+            case .malformed: return AshteL10n.t("تعذّر قراءة App ID من ملف البروفايل.")
+            case .expired: return AshteL10n.t("ملف البروفايل منتهي الصلاحية. اختر شهادة أخرى.")
+            case .unsupportedBundle: return AshteL10n.t("صيغة App ID في الشهادة غير مدعومة للمطابقة.")
+            case .mismatch: return AshteL10n.t("بندل التطبيق لا يطابق نطاق البروفايل. عدّل البندل أو اختر شهادة مناسبة.")
             }
         }
     }

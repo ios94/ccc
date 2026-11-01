@@ -178,6 +178,8 @@
 				it,
 				"zh-Hans",
 				ko,
+				ar,
+				ckb,
 			);
 			mainGroup = 3379C1B02DA869A1004372DA;
 			minimizedProjectReferenceProxies = 1;

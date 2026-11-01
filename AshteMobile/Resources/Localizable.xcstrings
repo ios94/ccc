@@ -194,6 +194,12 @@
         "ckb" : {
           "variations" : {
             "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ئەپ"
+                }
+              },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
@@ -397,6 +403,12 @@
         "ckb" : {
           "variations" : {
             "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ڕۆژ"
+                }
+              },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
@@ -481,7 +493,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld دایلیبی پێویستی سیستەم نیشان نادرێت."
+            "value" : "%lld dylib ی پێویستی سیستەم پیشان نادرێت."
           }
         }
       }
@@ -629,15 +641,9 @@
           }
         },
         "ckb" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld سەرچاوە"
-                }
-              }
-            }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "سەرچاوەکان: %lld"
           }
         }
       }
@@ -714,7 +720,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "💜 بەبێ پشتیوانەکانم ئەمە نەدەکرا!"
+            "value" : "💜 ئەمە بێ پاڵپشتەکانم نەدەبوو!"
           }
         }
       }
@@ -999,7 +1005,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بڕوانامەکانی واژۆکردنی ئەپەکان زیاد بکە و بەڕێوەیان ببە."
+            "value" : "ئەو بڕوانامانە زیاد بکە و بەڕێوەیان ببە کە بۆ واژۆکردنی ئەپەکان بەکاردێن."
           }
         }
       }
@@ -1141,7 +1147,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "باسکردنی وەرگێڕدراوی ئەپەکە زیاد دەکات."
+            "value" : "وەسفی وەرگێڕدراوی ئەپەکە زیاد دەکات."
           }
         }
       }
@@ -1283,7 +1289,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "شێوازی دامەزراندنی پێشکەوتوو"
+            "value" : "ڕێگای دامەزراندنی پێشکەوتوو"
           }
         }
       }
@@ -1437,7 +1443,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هەموو فایلەکانی ئەپەکە لە بوخچەی بەڵگەنامەکاندان، ئەمانە بەستەری خێران بۆیان."
+            "value" : "هەموو فایلەکانی ئەپەکە لە بوخچەی Documents دان، لێرە چەند بەستەرێکی خێرا هەیە بۆیان."
           }
         }
       }
@@ -1515,7 +1521,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هەموو کۆگاکان"
+            "value" : "هەموو Repository ەکان"
           }
         }
       }
@@ -1592,7 +1598,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئایکۆنی جێگرەوە"
+            "value" : "ئایکۆنە جێگرەوەکان"
           }
         }
       }
@@ -2305,7 +2311,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "باسکردنی گەورە"
+            "value" : "وەسفی گەورە"
           }
         }
       }
@@ -2382,7 +2388,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "باندڵ"
+            "value" : "Bundle"
           }
         }
       }
@@ -2447,7 +2453,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بە شێوەی بنەڕەت ناونیشانە وەرگێڕدراوەکانی ئەپ ناگۆڕدرێن، بەڵام ئەم هەڵبژاردەیە دەیگۆڕێت."
+            "value" : "بە شێوەی بنەڕەتی ناونیشانە وەرگێڕدراوەکانی ئەپەکە ناگۆڕدرێن، بەڵام ئەم هەڵبژاردنە ئەوە ڕێک دەخات."
           }
         }
       }
@@ -2939,7 +2945,13 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "گۆڕینی نازناو"
+            "value" : "گۆڕینی ناوی نازناو"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تغيير الاسم المستعار"
           }
         }
       }
@@ -2962,7 +2974,13 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پشکنینی نوێکارییەکان"
+            "value" : "پشکنینی نوێکردنەوە"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "التحقق من التحديثات"
           }
         }
       }
@@ -3468,7 +3486,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "شێوازی دامەزراندنی ئەپەکان، ئاستی پەستانی zip و دەستکارییە تایبەتەکانی ئەپەکان ڕێکبخە."
+            "value" : "شێوازی دامەزراندنی ئەپەکان، ئاستی پەستانی zip و دەستکاری تایبەت بۆ ئەپەکان ڕێک بخە."
           }
         }
       }
@@ -3628,7 +3646,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لەبەرگرتنەوەی بەستەری داگرتن"
+            "value" : "لەبەرگرتنەوەی بەستەری دابەزاندن"
           }
         }
       }
@@ -3723,7 +3741,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سوپاس و ناوەکان"
+            "value" : "سوپاس و پێزانین"
           }
         }
       }
@@ -4238,7 +4256,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "شێوازی بنەڕەتی ئەپ، تەنها ژێرناونیشان لەخۆدەگرێت."
+            "value" : "شێوازی بنەڕەتی ئەپەکە، تەنها ژێرناونیشان لەخۆدەگرێت."
           }
         }
       }
@@ -4451,7 +4469,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "باسکردن"
+            "value" : "وەسف"
           }
         }
       }
@@ -4528,6 +4546,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ناچالاککردنی Liquid Glass"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعطيل Liquid Glass"
           }
         }
       }
@@ -4622,7 +4646,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لابردن"
+            "value" : "داخستن"
           }
         }
       }
@@ -4705,7 +4729,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ناوە نیشاندراوەکان"
+            "value" : "ناوەکانی پیشاندان"
           }
         }
       }
@@ -4723,6 +4747,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "دەتەوێت ئەم فایلە دابگریت و دایبمەزرێنیت؟"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هل تريد تنزيل هذا الملف وتثبيته؟"
           }
         }
       }
@@ -4781,7 +4811,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دەتەوێت بڕوانامەکەت بنێریت بۆ ئەپێکی دەرەکی؟ ئەو ئەپە دەتوانێت بە بڕوانامەکەت ئەپەکان واژۆ بکات."
+            "value" : "دەتەوێت بڕوانامەکەت بۆ ئەپێکی دەرەکی هەناردە بکەیت؟ ئەو ئەپە دەتوانێت بە بڕوانامەکەت ئەپەکان واژۆ بکات."
           }
         }
       }
@@ -5044,7 +5074,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "داگرتنی StosVPN"
+            "value" : "دابەزاندنی StosVPN"
           }
         }
       }
@@ -5067,7 +5097,13 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "داگرتنی نوێکاری"
+            "value" : "دابەزاندنی نوێکردنەوە"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنزيل التحديث"
           }
         }
       }
@@ -5150,7 +5186,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دایلیبەکان"
+            "value" : "Dylib ەکان"
           }
         }
       }
@@ -5203,7 +5239,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئایکۆنی دینامیکی"
+            "value" : "ئایکۆنە جوڵاوەکان"
           }
         }
       }
@@ -5345,7 +5381,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "چالاککردنی هەر پارێزگارییەک دەقێکی هەڕەمەکی دەخاتە سەر bundle identifier ی ئەو ئەپانەی واژۆیان دەکەیت، بۆ ئەوەی Apple ID ەکەت نیشانە نەکرێت. بەڵام کاتێک خزمەتگوزاری واژۆکردن بەکاردەهێنیت دەتوانیت پشتگوێی بخەیت."
+            "value" : "چالاککردنی هەر جۆرە پاراستنێک ڕیزێکی هەڕەمەکی دەخاتە سەر Bundle ID ی ئەو ئەپانەی واژۆیان دەکەیت، بۆ ئەوەی Apple ID ەکەت نیشان نەکرێت. بەڵام ئەگەر خزمەتگوزاری واژۆکردن بەکاربهێنیت، دەتوانیت پشتگوێی بخەیت."
           }
         }
       }
@@ -5411,7 +5447,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ بەدڵتە؟"
+            "value" : "چێژ لە %@ وەردەگریت؟"
           }
         }
       }
@@ -5743,7 +5779,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "وشەی نهێنی تایبەت بە کلیلە تایبەتەکە بنووسە. ئەگەر پێویست نییە بەتاڵی بهێڵەرەوە."
+            "value" : "وشەی نهێنیی پەیوەست بە کلیلە تایبەتەکە بنووسە. ئەگەر پێویست نییە بەتاڵی بهێڵەرەوە."
           }
         }
       }
@@ -5820,7 +5856,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "مۆڵەتەکان"
+            "value" : "ڕێپێدانەکان"
           }
         }
       }
@@ -6039,7 +6075,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دایلیبە بەردەستەکان"
+            "value" : "Dylib ە بەردەستەکان"
           }
         }
       }
@@ -6104,7 +6140,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تاقیکردنەوەکان"
+            "value" : "تاقیکارییەکان"
           }
         }
       }
@@ -6348,7 +6384,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ناردن"
+            "value" : "هەناردەکردن"
           }
         }
       }
@@ -6407,7 +6443,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ناردنی بڕوانامە"
+            "value" : "هەناردەکردنی بڕوانامە"
           }
         }
       }
@@ -6484,7 +6520,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "داگرتن سەرکەوتوو نەبوو، پەیوەندی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵبدەرەوە."
+            "value" : "دابەزاندن سەرکەوتوو نەبوو، پەیوەندی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە."
           }
         }
       }
@@ -6549,7 +6585,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دیار"
+            "value" : "تایبەت"
           }
         }
       }
@@ -6710,7 +6746,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بڵاوکردنەوەی فایل"
+            "value" : "هاوبەشکردنی فایل"
           }
         }
       }
@@ -6864,7 +6900,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فلتەر بە پێی"
+            "value" : "پاڵاوتن بە"
           }
         }
       }
@@ -6941,7 +6977,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "زۆرەملێی وەرگێڕان"
+            "value" : "ناچارکردنی وەرگێڕان"
           }
         }
       }
@@ -7018,7 +7054,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فرەیمۆرکەکان"
+            "value" : "Frameworks"
           }
         }
       }
@@ -7095,7 +7131,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فرەیمۆرک و پلەگینەکان"
+            "value" : "Frameworks و PlugIns"
           }
         }
       }
@@ -7456,7 +7492,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بە بەخشین دەستت دەگات بە Discord ی نهێنیمان، کە تێیدا باسی نوێکارییە داهاتووەکان، بێتاکان و ڕێگاکانی باشترکردنی ئەزموونەکەت دەکەین."
+            "value" : "بە بەخشین دەستت دەگات بە Discord ی نهێنیمان، کە تیایدا باسی نوێکردنەوەکانی داهاتوو، بێتاکان و ڕێگای باشترکردنی ئەزموونەکەت دەکەین."
           }
         }
       }
@@ -7534,7 +7570,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "زانیاری"
+            "value" : "وەرگرتنی زانیاری"
           }
         }
       }
@@ -7599,7 +7635,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دەست پێبکە بە زیادکردنی یەکەم کۆگا."
+            "value" : "بە زیادکردنی یەکەم Repository ت دەست پێ بکە."
           }
         }
       }
@@ -7664,7 +7700,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دەست پێبکە بە هاوردەکردنی یەکەم فایلی IPA."
+            "value" : "بە هاوردەکردنی یەکەم فایلی IPA دەست پێ بکە."
           }
         }
       }
@@ -7729,7 +7765,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دەست بە واژۆکردن بکە بە هاوردەکردنی یەکەم بڕوانامە."
+            "value" : "بە هاوردەکردنی یەکەم بڕوانامەت دەست بکە بە واژۆکردن."
           }
         }
       }
@@ -7824,7 +7860,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "کۆگای GitHub"
+            "value" : "GitHub Repository"
           }
         }
       }
@@ -7889,7 +7925,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سەردانی GitHub ەکەمان بکە و ئەستێرەیەکمان بدەرێ!"
+            "value" : "بڕۆ بۆ GitHub ی ئێمە و ئەستێرەیەکمان پێ بدە!"
           }
         }
       }
@@ -8481,7 +8517,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئاگاداری idevice"
+            "value" : "ئاگادارکردنەوەی idevice"
           }
         }
       }
@@ -8546,7 +8582,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئەگەر هەر کێشەیەک لە ئەپەکەدا ڕوویدا تکایە لە ڕێگەی کۆگای GitHub ەوە ڕاپۆرتی بکە. لە کاتی ناردنی کێشەکە زانیاری ورد بنێرە."
+            "value" : "ئەگەر هەر کێشەیەک لە ئەپەکەدا ڕوویدا تکایە لە ڕێگەی GitHub repository ەوە ڕاپۆرتی بکە. کاتێک کێشەیەک دەنێریت، دڵنیابە زانیاری ورد دەنێریت."
           }
         }
       }
@@ -8642,7 +8678,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هاوردە"
+            "value" : "هاوردەکردن"
           }
         }
       }
@@ -8797,7 +8833,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هاوردە لە فایلەکانەوە"
+            "value" : "هاوردەکردن لە فایلەکانەوە"
           }
         }
       }
@@ -8875,7 +8911,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هاوردە لە بەستەرەوە"
+            "value" : "هاوردەکردن لە بەستەرەوە"
           }
         }
       }
@@ -9283,7 +9319,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "خستنە ناو درێژکراوەکان"
+            "value" : "تێخستن بۆ ناو Extensions"
           }
         }
       }
@@ -9354,7 +9390,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بوخچەی خستنە ناو"
+            "value" : "بوخچەی تێخستن"
           }
         }
       }
@@ -9425,7 +9461,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ڕێڕەوی خستنە ناو"
+            "value" : "ڕێڕەوی تێخستن"
           }
         }
       }
@@ -9603,6 +9639,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "دامەزراندنی وەشانی ئێستا"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تثبيت الإصدار الحالي"
           }
         }
       }
@@ -9809,7 +9851,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "خەریکی دامەزراندنە"
+            "value" : "دادەمەزرێت"
           }
         }
       }
@@ -9886,7 +9928,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPad بە شاشەی تەواو"
+            "value" : "iPad شاشەی تەواو"
           }
         }
       }
@@ -9970,7 +10012,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بڵاوکردنەوەی فایل لە iTunes"
+            "value" : "هاوبەشکردنی فایل لە ڕێگەی iTunes"
           }
         }
       }
@@ -10029,7 +10071,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بەشداربە لە Discord"
+            "value" : "بەشداری Discord ی ئێمە بکە"
           }
         }
       }
@@ -10094,7 +10136,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "زیاتر بزانە چۆن کۆگایەک ڕێکبخەیت…"
+            "value" : "زیاتر بزانە چۆن Repository ڕێک دەخرێت…"
           }
         }
       }
@@ -10130,6 +10172,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "کەمتر"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أقل"
           }
         }
       }
@@ -10296,7 +10344,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ڕووکاری خانەی کتێبخانە"
+            "value" : "ڕووکاری خانەکانی کتێبخانە"
           }
         }
       }
@@ -10372,7 +10420,13 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تێکەڵکردنی مۆڵەتەکان"
+            "value" : "تێکەڵکردنی ڕێپێدانەکان"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دمج الصلاحيات"
           }
         }
       }
@@ -10604,7 +10658,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دەستکاریکردن"
+            "value" : "دەستکاری"
           }
         }
       }
@@ -10996,7 +11050,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نازناو (دڵخوازانە)"
+            "value" : "ناوی نازناو (ئارەزوومەندانە)"
           }
         }
       }
@@ -11256,7 +11310,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هیچ مۆڵەتێک لیست نەکراوە."
+            "value" : "هیچ ڕێپێدانێک لە لیستدا نییە."
           }
         }
       }
@@ -11392,7 +11446,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هیچ فرەیمۆرک یان پلەگینێک نەدۆزرایەوە."
+            "value" : "هیچ Frameworks یان PlugIns نەدۆزرایەوە."
           }
         }
       }
@@ -11534,7 +11588,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فایلی Pairing نەدۆزرایەوە، تکایە هاوردەی بکە."
+            "value" : "هیچ فایلی Pairing نەدۆزرایەوە، تکایە هاوردەی بکە."
           }
         }
       }
@@ -11587,7 +11641,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هیچ مۆڵەتێکی تایبەتمەندی لیست نەکراوە."
+            "value" : "هیچ مۆڵەتێکی نهێنیپارێزی لە لیستدا نییە."
           }
         }
       }
@@ -11652,7 +11706,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هیچ کۆگایەک نییە"
+            "value" : "هیچ Repository ێک نییە"
           }
         }
       }
@@ -12084,7 +12138,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئەگەر دەتەوێت سەرچاوەکەت دیار بێت، [کێشەیەک](https://github.com/khcrysalis/Feather/issues) لە GitHub بکەرەوە."
+            "value" : "ئەگەر دەتەوێت سەرچاوەکەت بکرێتە تایبەت، [issue] یەک لەسەر GitHub بکەرەوە."
           }
         }
       }
@@ -12315,7 +12369,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "کردنەوەی بەڵگەنامەکان"
+            "value" : "کردنەوەی Documents"
           }
         }
       }
@@ -12873,7 +12927,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تکایە وشەی نهێنی بپشکنە و دووبارە هەوڵبدەرەوە."
+            "value" : "تکایە وشەی نهێنییەکە بپشکنە و دووبارە هەوڵ بدەرەوە."
           }
         }
       }
@@ -13098,7 +13152,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پارێزگاری PPQ"
+            "value" : "پاراستنی PPQ"
           }
         }
       }
@@ -13514,7 +13568,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پارێزگاری"
+            "value" : "پاراستن"
           }
         }
       }
@@ -13591,7 +13645,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Provision بۆ هەموو ئامێرەکان"
+            "value" : "دابینکردن بۆ هەموو ئامێرەکان"
           }
         }
       }
@@ -13668,7 +13722,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئامێرە Provision کراوەکان"
+            "value" : "ئامێرە دابینکراوەکان"
           }
         }
       }
@@ -13964,7 +14018,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئاگادارکردنەوە بێزارکەرەکانی وەک ئەمە لاببە دوای وەرگرتنی دەستگەیشتنی بێتا!"
+            "value" : "دوای وەرگرتنی دەستگەیشتن بە بێتا ئەم جۆرە ئاگادارکردنەوە بێزارکەرانە لابەرە!"
           }
         }
       }
@@ -14343,7 +14397,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لابردنی فایلی provisioning وا دەکات فایلی mobileprovision لە کاتی واژۆکردندا نەخرێتە ناو ئەپەکە، بۆ ڕێگریکردن لە دۆزینەوە."
+            "value" : "لابردنی فایلی provisioning واتە فایلی mobileprovision لە کاتی واژۆکردندا ناخرێتە ناو ئەپەکەوە، بۆ ڕێگریکردن لە دۆزینەوە."
           }
         }
       }
@@ -14408,7 +14462,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "جێگرتنەوەی Substrate بە ElleKit"
+            "value" : "لەبریدانانی Substrate بە ElleKit"
           }
         }
       }
@@ -14491,7 +14545,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "جێگرەوە"
+            "value" : "لەبریدانان"
           }
         }
       }
@@ -14568,7 +14622,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "کۆگاکان"
+            "value" : "Repository ەکان"
           }
         }
       }
@@ -14633,7 +14687,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئەم کۆگایە پێشتر زیادکراوە."
+            "value" : "Repository پێشتر زیاد کراوە."
           }
         }
       }
@@ -15609,7 +15663,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پاشەکەوتکردن"
+            "value" : "هەڵگرتن"
           }
         }
       }
@@ -15662,7 +15716,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سکرینشۆتەکان"
+            "value" : "وێنەی شاشە"
           }
         }
       }
@@ -15817,7 +15871,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "وادیارە فایلی Pairing ەکەت دەستکەوتووە!"
+            "value" : "وادیارە فایلی Pairing ی خۆتت دەستکەوتووە!"
           }
         }
       }
@@ -15895,7 +15949,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئایکۆنی جێگرەوە هەڵبژێرە"
+            "value" : "ئایکۆنێکی جێگرەوە هەڵبژێرە"
           }
         }
       }
@@ -15973,7 +16027,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فایلی مۆڵەتەکان هەڵبژێرە"
+            "value" : "فایلی ڕێپێدانەکان هەڵبژێرە"
           }
         }
       }
@@ -16115,7 +16169,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ناردنی Manifest"
+            "value" : "Manifest دەنێردرێت"
           }
         }
       }
@@ -16180,7 +16234,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ناردنی Payload"
+            "value" : "Payload دەنێردرێت"
           }
         }
       }
@@ -16245,7 +16299,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سێرڤەر"
+            "value" : "Server"
           }
         }
       }
@@ -16310,7 +16364,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سێرڤەر (پێشنیارکراو):\nسێرڤەرێکی ناوخۆیی و itms-services:// بەکاردەهێنێت بۆ دامەزراندنی ئەپەکان.\n\nIDevice (پێشکەوتوو):\nVPN و فایلی Pairing بەکاردەهێنێت. لە AFC دەنووسێت و installd بە دەست بانگ دەکات، و پێشکەوتنی دامەزراندن بە callback چاودێری دەکات.\nسوود: زۆر متمانەپێکراوە، پێویستی بە بڕوانامەی SSL یان سێرڤەری دەرەکی نییە، و وەک کۆمپیوتەر کار دەکات."
+            "value" : "Server (پێشنیارکراو):\nسێرڤەرێکی ناوخۆیی و itms-services:// بەکاردێنێت بۆ دامەزراندنی ئەپەکان.\n\nIDevice (پێشکەوتوو):\nVPN و فایلی Pairing بەکاردێنێت. دەنووسێت بۆ AFC و installd بە دەست بانگ دەکات، لەکاتێکدا پێشکەوتنی دامەزراندن بە callback چاودێری دەکات.\nباشی: زۆر متمانەپێکراوە، پێویستی بە بڕوانامەی SSL یان سێرڤەری دەرەکی نییە، وەک کۆمپیوتەر کار دەکات."
           }
         }
       }
@@ -16387,7 +16441,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سێرڤەر و SSL"
+            "value" : "Server و SSL"
           }
         }
       }
@@ -16452,7 +16506,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "جۆری سێرڤەر"
+            "value" : "جۆری Server"
           }
         }
       }
@@ -16620,7 +16674,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نیشاندانی Sheet لە کاتی ناردن"
+            "value" : "پیشاندانی پەنجەرەی هاوبەشکردن لە کاتی هەناردەکردن"
           }
         }
       }
@@ -16697,7 +16751,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پشتگیریمان بکە"
+            "value" : "پشتگیریت پیشان بدە"
           }
         }
       }
@@ -16774,7 +16828,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بە بەخشین پشتگیریمان بکە! ئەگەر ناتوانیت ببەخشیت، بڵاوکردنەوەی ناوەکەشمان یارمەتییە!"
+            "value" : "بە بەخشین پشتگیریت پیشان بدە! ئەگەر ناتوانیت ببەخشیت، بڵاوکردنەوەی ئەپەکەش بەس دەبێت!"
           }
         }
       }
@@ -17094,7 +17148,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "هەڵبژاردەکانی واژۆ"
+            "value" : "هەڵبژاردەکانی واژۆکردن"
           }
         }
       }
@@ -17159,7 +17213,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "جۆری واژۆ"
+            "value" : "جۆری واژۆکردن"
           }
         }
       }
@@ -17485,7 +17539,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "سەرچاوەکان لەبەرگیرانەوە"
+            "value" : "سەرچاوەکان لەبەرگیرانەوە بۆ کلیپبۆرد"
           }
         }
       }
@@ -17645,7 +17699,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پشتیوانەکان"
+            "value" : "پاڵپشتەکان"
           }
         }
       }
@@ -17959,7 +18013,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ڕووکاری خانەی فرۆشگا"
+            "value" : "ڕووکاری خانەکانی فرۆشگا"
           }
         }
       }
@@ -18036,7 +18090,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "دەق"
+            "value" : "String"
           }
         }
       }
@@ -18208,7 +18262,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "پشتگیری هاوردەکردن لە KravaSign/MapleSign و ESign دەکات."
+            "value" : "پشتگیری هاوردەکردن دەکات لە KravaSign/MapleSign و ESign."
           }
         }
       }
@@ -18338,7 +18392,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ناسێنەرەکانی تیم"
+            "value" : "ناسێنەری تیم"
           }
         }
       }
@@ -18492,7 +18546,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Heartbeat لە پاشبنەمادا چالاکە، کاتێک ئەپەکە دووبارە دەکرێتەوە یان داوا دەکرێت دەستپێدەکاتەوە. ئەگەر دۆخەکەی خوارەوە دەلەرزێت واتە تەندروستە."
+            "value" : "Heartbeat لە پاشخان چالاکە و کاتێک ئەپەکە دووبارە دەکرێتەوە یان داوا دەکرێت دەست پێدەکاتەوە. ئەگەر دۆخی خوارەوە دەلەرێتەوە واتە لە باشیدایە."
           }
         }
       }
@@ -18557,7 +18611,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تەنها کۆگاکانی AltStore پشتگیری دەکرێن."
+            "value" : "تەنها Repository ی پشتگیریکراو Repository ی AltStore ە."
           }
         }
       }
@@ -18763,7 +18817,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئەم کردارە ناگەڕێتەوە. دەتەوێت بەردەوام بیت؟"
+            "value" : "ئەم کارە ناگەڕێتەوە. دەتەوێت بەردەوام بیت؟"
           }
         }
       }
@@ -18816,7 +18870,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئەمە ڕێگەت پێدەدات یاسا دابنێیت بۆ گۆڕینی خۆکاری Bundle ID/ناوی نیشاندراو لە کاتی واژۆکردنی ئەپ."
+            "value" : "ئەمە ڕێگەت دەدات یاسا دابنێیت بۆ لەبریدانانی خۆکاری Bundle ID/ناوی پیشاندان لە کاتی واژۆکردنی ئەپێکدا."
           }
         }
       }
@@ -18946,7 +19000,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئەم هەڵبژاردەیە ئەپەکان زۆرەملێ دەگۆڕێت بۆ بەکارهێنانی دیزاینە نوێیەکەی liquid glass ی iOS 26، لەوانەیە بۆ هەموو ئەپەکان کار نەکات بەهۆی جیاوازی فرەیمۆرکەکان."
+            "value" : "ئەم هەڵبژاردنە ئەپەکان ناچار دەکات هەوڵ بدەن دیزاینی نوێی Liquid Glass ی iOS 26 بەکاربهێنن، ڕەنگە لە هەموو ئەپێکدا کار نەکات بەهۆی جیاوازی Framework ەکانەوە."
           }
         }
       }
@@ -18963,7 +19017,13 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئەم هەڵبژاردەیە مۆڵەتەکان تێکەڵ دەکات لەگەڵ مۆڵەتە ناوەکییەکانی ئەو ئەپەی واژۆی دەکەیت."
+            "value" : "ئەم هەڵبژاردنە ڕێپێدانەکان تێکەڵ دەکات لەگەڵ ڕێپێدانە نێو-ئەپەکانی ئەو ئەپەی واژۆی دەکەیت."
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يدمج هذا الخيار الصلاحيات مع الصلاحيات المضمّنة في التطبيق الذي تقوم بتوقيعه."
           }
         }
       }
@@ -19028,7 +19088,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ئەمە ئەپە هاوردەکراوەکەت دوای واژۆکردن دەسڕێتەوە، بۆ پاشەکەوتکردنی شوێنی ناپێویست."
+            "value" : "ئەمە ئەپە هاوردەکراوەکەت دوای واژۆکردن دەسڕێتەوە، بۆ ئەوەی شوێنی بێهودە نەگیرێت."
           }
         }
       }
@@ -19158,7 +19218,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "چالاککردنی نیشاندانی sheet دوای ناردن بۆ فایلەکانت لیستی بڵاوکردنەوە نیشان دەدات."
+            "value" : "چالاککردنی پیشاندانی پەنجەرە دوای هەناردەکردن بۆ فایلەکانت پەنجەرەی هاوبەشکردن پیشان دەدات."
           }
         }
       }
@@ -19307,7 +19367,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tweakەکان"
+            "value" : "گۆڕانکارییەکان"
           }
         }
       }
@@ -19427,6 +19487,12 @@
             "state" : "translated",
             "value" : "نوێکردنەوە"
           }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحديث"
+          }
         }
       }
     },
@@ -19448,7 +19514,13 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "نوێکاری بەردەستە"
+            "value" : "نوێکردنەوە بەردەستە"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحديث متاح"
           }
         }
       }
@@ -19702,7 +19774,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بەها"
+            "value" : "نرخ"
           }
         }
       }
@@ -19845,7 +19917,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "وەشانی %@"
+            "value" : "وەشان %@"
           }
         }
       }
@@ -19976,7 +20048,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "بینینی مۆڵەتەکان"
+            "value" : "بینینی ڕێپێدانەکان"
           }
         }
       }
@@ -20256,7 +20328,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ناتوانیت ‘%@‘ بە خۆی نوێ بکەیتەوە، تکایە ئامرازێکی تر بەکاربهێنە."
+            "value" : "ناتوانیت ‘%@‘ بە خۆی نوێ بکەیتەوە، تکایە ئامرازێکی تر بۆ نوێکردنەوەی بەکاربهێنە."
           }
         }
       }
@@ -20321,330 +20393,7 @@
         "ckb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "فایلی Pairing ەکەت دروست نییە و لەگەڵ ئامێرەکەت ناگونجێت، تکایە فایلێکی دروست هاوردە بکە."
-          }
-        }
-      }
-    },
-    "Today" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Today"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ئەمڕۆ"
-          }
-        }
-      }
-    },
-    "Games" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Games"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "یاری"
-          }
-        }
-      }
-    },
-    "Apps" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apps"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ئەپەکان"
-          }
-        }
-      }
-    },
-    "Search" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "گەڕان"
-          }
-        }
-      }
-    },
-    "Official App Channel" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Official App Channel"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "کەناڵی فەرمی ئەپەکە"
-          }
-        }
-      }
-    },
-    "Notifications" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifications"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ئاگادارکردنەوەکان"
-          }
-        }
-      }
-    },
-    "Translation" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Translation"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "وەرگێڕان"
-          }
-        }
-      }
-    },
-    "Install from Server" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Install from Server"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "دامەزراندن لە سێرڤەرەوە"
-          }
-        }
-      }
-    },
-    "Install with idevice" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Install with idevice"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "دامەزراندن بە idevice"
-          }
-        }
-      }
-    },
-    "Language" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Language"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "زمان"
-          }
-        }
-      }
-    },
-    "Choose the app language. English is the default." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Choose the app language. English is the default."
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "زمانی ئەپەکە هەڵبژێرە. ئینگلیزی بنەڕەتییە."
-          }
-        }
-      }
-    },
-    "Some screens may need the app to be reopened." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Some screens may need the app to be reopened."
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "هەندێک شاشە پێویستیان بە کردنەوەی دووبارەی ئەپەکە هەیە."
-          }
-        }
-      }
-    },
-    "More from %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "More from %@"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "زیاتر لە %@"
-          }
-        }
-      }
-    },
-    "Discover your next app" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Discover your next app"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ئەپی داهاتووت بدۆزەرەوە"
-          }
-        }
-      }
-    },
-    "AshteMobile Pick" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AshteMobile Pick"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "هەڵبژاردەی AshteMobile"
-          }
-        }
-      }
-    },
-    "Sign with AshteMobile" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign with AshteMobile"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "واژۆکردن بە AshteMobile"
-          }
-        }
-      }
-    },
-    "Social" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Social"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تۆڕە کۆمەڵایەتییەکان"
-          }
-        }
-      }
-    },
-    "My Sources" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Sources"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "سەرچاوەکانم"
-          }
-        }
-      }
-    },
-    "Back" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Back"
-          }
-        },
-        "ckb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "گەڕانەوە"
+            "value" : "فایلی Pairing ت دروست نییە و لەگەڵ ئامێرەکەت ناگونجێت، تکایە فایلێکی دروست هاوردە بکە."
           }
         }
       }

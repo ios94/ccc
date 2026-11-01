@@ -6,9 +6,9 @@ enum XSignMachOEncryption {
         case invalidExecutable, encryptedExecutable, missingExecutable
         var errorDescription: String? {
             switch self {
-            case .invalidExecutable: return AL("ملف التنفيذ تالف أو ليس بصيغة Mach-O مدعومة.")
-            case .encryptedExecutable: return AL("ملف IPA ما زال يحتوي على تنفيذ مشفّر. التوقيع المحلي لا يفك تشفير FairPlay.")
-            case .missingExecutable: return AL("لا يحتوي IPA على حزمة تطبيق وتنفيذ صالحين.")
+            case .invalidExecutable: return AshteL10n.t("ملف التنفيذ تالف أو ليس بصيغة Mach-O مدعومة.")
+            case .encryptedExecutable: return AshteL10n.t("ملف IPA ما زال يحتوي على تنفيذ مشفّر. التوقيع المحلي لا يفك تشفير FairPlay.")
+            case .missingExecutable: return AshteL10n.t("لا يحتوي IPA على حزمة تطبيق وتنفيذ صالحين.")
             }
         }
     }

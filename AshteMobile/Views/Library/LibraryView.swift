@@ -88,19 +88,19 @@ struct LibraryView: View {
 	) private var _sources: FetchedResults<AltSource>
 	
 	var body: some View {
-		NBNavigationView(AL("التوقيع")) {
+		NBNavigationView(AshteL10n.t("التوقيع")) {
 			NBListAdaptable {
                 Section {
                     Button { _isAppStoreLinkPresenting = true } label: {
-                        Label(AL("رابط App Store"), systemImage: "link.badge.plus")
+                        Label(AshteL10n.t("رابط App Store"), systemImage: "link.badge.plus")
                     }
                     if _filteredSignedApps.isEmpty && _filteredImportedApps.isEmpty {
-                        Text(AL("استورد ملف IPA لتعديل معلوماته وتوقيعه، أو افتح رابط التطبيق في App Store."))
+                        Text(AshteL10n.t("استورد ملف IPA لتعديل معلوماته وتوقيعه، أو افتح رابط التطبيق في App Store."))
                             .font(.footnote).foregroundStyle(.secondary)
                     }
                 }
 				Section {
-					Picker(AL("العرض"), selection: $_selectedScope) {
+					Picker(AshteL10n.t("العرض"), selection: $_selectedScope) {
 						ForEach(Scope.allCases, id: \.displayName) { scope in
 							Text(scope.displayName).tag(scope)
 						}
@@ -125,7 +125,7 @@ struct LibraryView: View {
 				}
 				
 				if !_filteredImportedApps.isEmpty && (_selectedScope == .all || _selectedScope == .imported) {
-					NBSection(AL("جاهزة للتوقيع اللحظي"), secondary: _filteredImportedApps.count.description) {
+					NBSection(AshteL10n.t("جاهزة للتوقيع اللحظي"), secondary: _filteredImportedApps.count.description) {
 						ForEach(_filteredImportedApps, id: \.uuid) { app in
 							VStack(spacing: 8) {
 								LibraryCellView(
@@ -146,12 +146,12 @@ struct LibraryView: View {
 												ProgressView()
 													.tint(AppStoreTheme.contrastingText(forHex: userTintHex))
 													.scaleEffect(0.8)
-												Text(AL("توقيع لحظي..."))
+												Text(AshteL10n.t("توقيع لحظي..."))
 													.font(.footnote.weight(.bold))
 											} else {
 												Image(systemName: "bolt.fill")
 													.font(.footnote.weight(.bold))
-												Text(AL("توقيع وتثبيت لحظي"))
+												Text(AshteL10n.t("توقيع وتثبيت لحظي"))
 													.font(.footnote.weight(.bold))
 											}
 										}
@@ -184,7 +184,7 @@ struct LibraryView: View {
 				}
 				
 				if !_filteredSignedApps.isEmpty && (_selectedScope == .all || _selectedScope == .signed) {
-					NBSection(AL("الموقعة والجاهزة للتثبيت"), secondary: _filteredSignedApps.count.description) {
+					NBSection(AshteL10n.t("الموقعة والجاهزة للتثبيت"), secondary: _filteredSignedApps.count.description) {
 						ForEach(_filteredSignedApps, id: \.uuid) { app in
 							LibraryCellView(
 								app: app,
@@ -198,11 +198,13 @@ struct LibraryView: View {
 					}
 				}
 			}
-			.searchable(text: $_searchText, placement: .platform(), prompt: AL("بحث في التوقيع (عربي / إنجليزي)..."))
+			.searchable(text: $_searchText, placement: .platform(), prompt: AshteL10n.t("بحث في التوقيع (عربي / إنجليزي)..."))
 			.scrollDismissesKeyboard(.interactively)
 			.toolbar {
 				ToolbarItem(placement: .topBarLeading) {
-					EditButton()
+					Button(_editMode.isEditing ? AshteL10n.t("Done") : AshteL10n.t("Edit")) {
+						withAnimation { _editMode = _editMode.isEditing ? .inactive : .active }
+					}
 				}
 				
 				ToolbarItemGroup(placement: .topBarTrailing) {
@@ -211,7 +213,7 @@ struct LibraryView: View {
                             _batchApps = _allSelectedApps
                             _isBulkSigningPresenting = true
                         } label: { Image(systemName: "signature") }
-                        .accessibilityLabel(AL("توقيع التطبيقات المحددة"))
+                        .accessibilityLabel(AshteL10n.t("توقيع التطبيقات المحددة"))
                         .disabled(_allSelectedApps.isEmpty || _isImportingFiles)
 						Button(role: .destructive) {
 							_bulkDeleteSelectedApps()
@@ -221,13 +223,13 @@ struct LibraryView: View {
 						.disabled(_selectedAppUUIDs.isEmpty)
 					} else {
 						Menu {
-							Button(AL("استيراد ملفات IPA"), systemImage: "arrow.down.doc") {
+							Button(AshteL10n.t("استيراد ملفات IPA"), systemImage: "arrow.down.doc") {
 								_isImportingPresenting = true
 							}
-                            Button(AL("رابط App Store"), systemImage: "link.badge.plus") {
+                            Button(AshteL10n.t("رابط App Store"), systemImage: "link.badge.plus") {
                                 _isAppStoreLinkPresenting = true
                             }
-							Button(AL("استيراد وتوقيع من رابط مباشر"), systemImage: "link") {
+							Button(AshteL10n.t("استيراد وتوقيع من رابط مباشر"), systemImage: "link") {
 								_isDownloadingPresenting = true
 							}
 						} label: {
@@ -273,13 +275,13 @@ struct LibraryView: View {
 			.navigationDestination(isPresented: $_isSettingsPresenting) {
 				SettingsView(embedded: true)
 			}
-			.alert(AL("استيراد وتوقيع من رابط مباشر"), isPresented: $_isDownloadingPresenting) {
+			.alert(AshteL10n.t("استيراد وتوقيع من رابط مباشر"), isPresented: $_isDownloadingPresenting) {
 				TextField("https://example.com/app.ipa", text: $_alertDownloadString)
 					.textInputAutocapitalization(.never)
-				Button(AL("إلغاء"), role: .cancel) {
+				Button(AshteL10n.t("إلغاء"), role: .cancel) {
 					_alertDownloadString = ""
 				}
-				Button(AL("تنزيل وتوقيع")) {
+				Button(AshteL10n.t("تنزيل وتوقيع")) {
 					if let url = URL(string: _alertDownloadString) {
 						_ = downloadManager.startDownload(from: url, id: "AshteMobileManualDownload_\(UUID().uuidString)")
 					}
@@ -315,7 +317,7 @@ struct LibraryView: View {
             var failures: [String] = []
             defer { _isImportingFiles = false }
             for (index, url) in urls.enumerated() {
-                _oneClickStatusMessage = ALf("استيراد %@ من %@…", "\(index + 1)", "\(urls.count)")
+                _oneClickStatusMessage = AshteL10n.t("استيراد %ld من %ld…", index + 1, urls.count)
                 let hasAccess = url.startAccessingSecurityScopedResource()
                 let result: Result<String, Error> = await withCheckedContinuation { continuation in
                     FR.importPackageFile(url) { continuation.resume(returning: $0) }
@@ -325,7 +327,7 @@ struct LibraryView: View {
                 case .success(let uuid):
                     if let app = AutoSignPipelineManager.fetchImportedApps().first(where: { $0.uuid == uuid }) {
                         imported.append(app)
-                    } else { failures.append(url.lastPathComponent + AL(": تعذّر العثور على التطبيق المستورد.")) }
+                    } else { failures.append(url.lastPathComponent + AshteL10n.t(": تعذّر العثور على التطبيق المستورد.")) }
                 case .failure(let error): failures.append(url.lastPathComponent + ": " + error.localizedDescription)
                 }
             }
@@ -335,7 +337,7 @@ struct LibraryView: View {
                 else if !imported.isEmpty { _batchApps = imported; _isBulkSigningPresenting = true }
             }
             if !failures.isEmpty {
-                UIAlertController.showAlertWithOk(title: AL("تعذّر استيراد بعض الملفات"), message: failures.prefix(5).joined(separator: "\n"), action: presentResult)
+                UIAlertController.showAlertWithOk(title: AshteL10n.t("تعذّر استيراد بعض الملفات"), message: failures.prefix(5).joined(separator: "\n"), action: presentResult)
             } else { presentResult() }
         }
     }
@@ -353,8 +355,8 @@ struct LibraryView: View {
 		guard let cert = activeCert else {
 			_oneClickStatusMessage = nil
 			UIAlertController.showAlertWithOk(
-				title: AL("لا توجد شهادة"),
-				message: AL("يرجى إضافة شهادة توقيع أولاً من أيقونة الحساب في الأعلى.")
+				title: AshteL10n.t("لا توجد شهادة"),
+				message: AshteL10n.t("يرجى إضافة شهادة توقيع أولاً من أيقونة الحساب في الأعلى.")
 			)
 			return
 		}
@@ -362,7 +364,7 @@ struct LibraryView: View {
 		let uuid = app.uuid ?? ""
 		UIImpactFeedbackGenerator(style: .rigid).impactOccurred()
 		_signingInProgressUUIDs.insert(uuid)
-		_oneClickStatusMessage = ALf("توقيع لحظي لـ %@...", "\(app.name ?? "التطبيق")")
+		_oneClickStatusMessage = AshteL10n.t("توقيع لحظي لـ %@...", (app.name ?? AshteL10n.t("التطبيق")))
 		
 		let options = OptionsManager.shared.options
 		
@@ -380,7 +382,7 @@ struct LibraryView: View {
                 case .failure(let error):
 					UINotificationFeedbackGenerator().notificationOccurred(.error)
 					UIAlertController.showAlertWithOk(
-						title: AL("فشل التوقيع"),
+						title: AshteL10n.t("فشل التوقيع"),
 						message: error.localizedDescription
 					)
                 case .success(let uuid):
@@ -405,9 +407,9 @@ struct LibraryView: View {
 		
 		var displayName: String {
 			switch self {
-			case .all:      return AL("الكل")
-			case .imported: return AL("جاهزة للتوقيع")
-			case .signed:   return AL("الموقعة")
+			case .all:      return AshteL10n.t("الكل")
+			case .imported: return AshteL10n.t("جاهزة للتوقيع")
+			case .signed:   return AshteL10n.t("الموقعة")
 			}
 		}
 	}

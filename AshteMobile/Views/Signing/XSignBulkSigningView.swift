@@ -13,7 +13,7 @@ private final class XSignBulkSigningModel: ObservableObject {
 
     func start(certificate: CertificatePair?, retry: Bool = false) {
         guard !queue.isRunning else { return }
-        guard let certificate else { errorMessage = AL("أضف شهادة ثم اخترها لبدء التوقيع."); return }
+        guard let certificate else { errorMessage = AshteL10n.t("أضف شهادة ثم اخترها لبدء التوقيع."); return }
         var common = OptionsManager.shared.options
         common.signingOption = .default
         // A per-app name/version override must never rename an entire batch to the same identity.
@@ -22,7 +22,7 @@ private final class XSignBulkSigningModel: ObservableObject {
             do {
                 guard let url = Storage.shared.getFile(.provision, from: certificate) else { throw SigningFileHandlerError.missingCertifcate }
                 guard try XSignProvisioningProfile.read(at: url).isWildcard else {
-                    errorMessage = AL("مطابقة App ID المحدد ستعطي التطبيقات البندل نفسه. استخدم بروفايل عامًا للمجموعة أو وقّع تطبيقًا واحدًا.")
+                    errorMessage = AshteL10n.t("مطابقة App ID المحدد ستعطي التطبيقات البندل نفسه. استخدم بروفايل عامًا للمجموعة أو وقّع تطبيقًا واحدًا.")
                     return
                 }
             } catch { errorMessage = error.localizedDescription; return }
@@ -32,7 +32,7 @@ private final class XSignBulkSigningModel: ObservableObject {
         let snapshot = common
         queue.start { app in
             if let managed = app as? NSManagedObject, managed.isDeleted || managed.managedObjectContext == nil {
-                throw NSError(domain: "XSign.Batch", code: 404, userInfo: [NSLocalizedDescriptionKey:AL("التطبيق لم يعد موجودًا في المكتبة.")])
+                throw NSError(domain: "XSign.Batch", code: 404, userInfo: [NSLocalizedDescriptionKey:AshteL10n.t("التطبيق لم يعد موجودًا في المكتبة.")])
             }
             var options = snapshot
             if let identifier = app.identifier {
@@ -78,52 +78,52 @@ struct XSignBulkSigningView: View {
         NavigationView {
             List {
                 Section {
-                    if certificates.isEmpty { Text(AL("أضف شهادة من إعدادات الحساب أولًا.")) }
+                    if certificates.isEmpty { Text(AshteL10n.t("أضف شهادة من إعدادات الحساب أولًا.")) }
                     else {
-                        Picker(AL("الشهادة"), selection: $certificateIndex) {
+                        Picker(AshteL10n.t("الشهادة"), selection: $certificateIndex) {
                             ForEach(Array(certificates.enumerated()), id: \.element.objectID) { index, certificate in
-                                Text(certificate.nickname ?? ALf("شهادة %@", "\(index + 1)")).tag(index)
+                                Text(certificate.nickname ?? AshteL10n.t("شهادة %ld", index + 1)).tag(index)
                             }
                         }.disabled(model.queue.isRunning)
                     }
                     ProgressView(value: Double(completed), total: Double(max(1, model.queue.entries.count)))
-                    Text(ALf("تمت معالجة %@ من %@", "\(completed)", "\(model.queue.entries.count)")).font(.footnote).foregroundStyle(.secondary)
+                    Text(AshteL10n.t("تمت معالجة %ld من %ld", completed, model.queue.entries.count)).font(.footnote).foregroundStyle(.secondary)
                     if let error = model.errorMessage { Text(error).foregroundStyle(.red) }
                     if model.queue.isRunning {
-                        Button(AL("توقّف بعد التطبيق الحالي"), role: .destructive) { model.queue.stopAfterCurrent() }
+                        Button(AshteL10n.t("توقّف بعد التطبيق الحالي"), role: .destructive) { model.queue.stopAfterCurrent() }
                     } else if model.queue.entries.contains(where: { $0.state.isRetryable }) {
-                        Button(AL("إعادة محاولة المتعذر والمتبقي")) { model.start(certificate: selectedCertificate, retry: true) }
+                        Button(AshteL10n.t("إعادة محاولة المتعذر والمتبقي")) { model.start(certificate: selectedCertificate, retry: true) }
                             .disabled(certificates.isEmpty)
                     } else if completed == 0 {
-                        Button(AL("بدء توقيع المجموعة")) { model.start(certificate: selectedCertificate) }.disabled(certificates.isEmpty)
+                        Button(AshteL10n.t("بدء توقيع المجموعة")) { model.start(certificate: selectedCertificate) }.disabled(certificates.isEmpty)
                     }
                 } footer: {
-                    Text(AL("تُوقَّع التطبيقات بالتتابع لتقليل الضغط على الذاكرة. تبقى معلومات كل تطبيق، وتطبّق خيارات التوقيع العامة والتخصيصات المسجلة له. يمكنك تثبيت كل نتيجة بعد اكتمالها."))
+                    Text(AshteL10n.t("تُوقَّع التطبيقات بالتتابع لتقليل الضغط على الذاكرة. تبقى معلومات كل تطبيق، وتطبّق خيارات التوقيع العامة والتخصيصات المسجلة له. يمكنك تثبيت كل نتيجة بعد اكتمالها."))
                 }
-                Section(AL("التطبيقات")) {
+                Section(AshteL10n.t("التطبيقات")) {
                     ForEach(model.queue.entries) { entry in
                         HStack(spacing: 12) {
                             VStack(alignment: .leading, spacing: 4) {
-                                Text(entry.item.name ?? AL("تطبيق")).font(.headline)
+                                Text(entry.item.name ?? AshteL10n.t("تطبيق")).font(.headline)
                                 Text(status(entry.state)).font(.caption).foregroundStyle(.secondary)
                             }
                             Spacer()
                             if case .working = entry.state { ProgressView() }
                             if case .succeeded(let uuid) = entry.state {
-                                Button(AL("تثبيت")) {
+                                Button(AshteL10n.t("تثبيت")) {
                                     if let signed = AutoSignPipelineManager.fetchSignedApps().first(where: { $0.uuid == uuid }) {
                                         installApp = AnyApp(base: signed)
-                                    } else { model.errorMessage = AL("لم تعد النسخة الموقعة موجودة في المكتبة.") }
+                                    } else { model.errorMessage = AshteL10n.t("لم تعد النسخة الموقعة موجودة في المكتبة.") }
                                 }
                             }
                         }
                     }
                 }
             }
-            .navigationTitle(AL("التوقيع الجماعي"))
+            .navigationTitle(AshteL10n.t("التوقيع الجماعي"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) {
-                Button(AL("إغلاق")) { dismiss() }.disabled(model.queue.isRunning)
+                Button(AshteL10n.t("إغلاق")) { dismiss() }.disabled(model.queue.isRunning)
             } }
             .sheet(item: $installApp) { app in InstallPreviewView(app: app.base) }
         }
@@ -134,11 +134,11 @@ struct XSignBulkSigningView: View {
 
     private func status(_ state: XSignBatchQueue<any AppInfoPresentable>.State) -> String {
         switch state {
-        case .waiting: return AL("بانتظار التوقيع")
-        case .working: return AL("جارٍ التوقيع")
-        case .succeeded: return AL("جاهز للتثبيت")
+        case .waiting: return AshteL10n.t("بانتظار التوقيع")
+        case .working: return AshteL10n.t("جارٍ التوقيع")
+        case .succeeded: return AshteL10n.t("جاهز للتثبيت")
         case .failed(let reason): return reason
-        case .cancelled: return AL("أُلغي انتظاره")
+        case .cancelled: return AshteL10n.t("أُلغي انتظاره")
         }
     }
 }

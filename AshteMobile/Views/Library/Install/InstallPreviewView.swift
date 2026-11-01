@@ -147,7 +147,7 @@ struct InstallPreviewView: View {
 	private func _install() {
         guard !didStartPreparation else { return }
         if !isSharing && (app.identifier ?? "").isEmpty {
-            viewModel.status = .broken(NSError(domain: "XSign.Installation", code: 2, userInfo: [NSLocalizedDescriptionKey: AL("معرّف التطبيق مفقود. راجع معلومات التطبيق ثم أعد توقيعه.")]))
+            viewModel.status = .broken(NSError(domain: "XSign.Installation", code: 2, userInfo: [NSLocalizedDescriptionKey: AshteL10n.t("معرّف التطبيق مفقود. راجع معلومات التطبيق ثم أعد توقيعه.")]))
             return
         }
         didStartPreparation = true

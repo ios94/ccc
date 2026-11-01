@@ -4,7 +4,6 @@
 //
 
 import SwiftUI
-import ObjectiveC
 
 // MARK: - Branding (name, logo, social links)
 enum AshteBranding {
@@ -26,8 +25,8 @@ struct AshteLanguage: Identifiable, Hashable {
 
 enum AshteL10n {
 	static let storageKey = "ashtemobile.language"
-	/// The language the app starts with. English is the default.
-	static let defaultCode = "en"
+	/// The language the app starts with before the user picks one ("en", "ar" or "ckb").
+	static let defaultCode = "ar"
 
 	static let languages: [AshteLanguage] = [
 		.init(code: "en", nativeName: "English"),
@@ -37,92 +36,48 @@ enum AshteL10n {
 
 	/// Arabic and Kurdish (Sorani) are right-to-left, English is left-to-right.
 	static var layoutDirection: LayoutDirection {
-		["ar", "ckb"].contains(current) ? .rightToLeft : .leftToRight
+		isRightToLeft ? .rightToLeft : .leftToRight
+	}
+
+	static var isRightToLeft: Bool {
+		["ar", "ckb"].contains(current)
 	}
 
 	static var current: String {
-		UserDefaults.standard.string(forKey: storageKey) ?? defaultCode
+		let code = UserDefaults.standard.string(forKey: storageKey) ?? defaultCode
+		return languages.contains(where: { $0.code == code }) ? code : defaultCode
 	}
 
-	/// Locale matching the language chosen inside the app (not the phone language).
-	static var locale: Locale { Locale(identifier: current) }
-
-	/// `.lproj` bundle of the chosen language (nil for English / when it does not exist).
-	static func languageBundle(for code: String = AshteL10n.current) -> Bundle? {
-		guard code != "en",
-			  let path = Bundle.main.path(forResource: code, ofType: "lproj") else { return nil }
-		return Bundle(path: path)
+	/// Locale matching the selected app language (used for SwiftUI's own strings and formatting).
+	static var locale: Locale {
+		Locale(identifier: current)
 	}
 
-	/// English text is the key.
-	/// Order: small built-in table -> Localizable.xcstrings of the chosen language -> English key.
+	/// Translates `key` into the selected language.
+	///
+	/// The key can be an English text (the original keys) or an Arabic text (the original
+	/// hard-coded strings). Any key that has no translation falls back to itself.
 	static func t(_ key: String) -> String {
-		let code = current
-		guard code != "en" else { return key }
-		if let v = table[code]?[key] { return v }
-		if let b = languageBundle(for: code) {
-			let v = b.localizedString(forKey: key, value: nil, table: nil)
-			if v != key { return v }
-		}
-		return key
+		translate(key, to: current)
 	}
 
 	static func t(_ key: String, _ args: CVarArg...) -> String {
 		String(format: t(key), arguments: args)
 	}
 
-	/// Call once at launch: makes EVERY `NSLocalizedString` / `.localized()` / `Text("key")`
-	/// follow the language chosen inside the app instead of the phone language.
-	static func bootstrap() {
-		object_setClass(Bundle.main, AshteLocalizedBundle.self)
+	static func translate(_ key: String, to code: String) -> String {
+		let tables = AshteTranslations.shared
+		switch code {
+		case "en":  return tables.en[key] ?? key
+		case "ar":  return tables.ar[key] ?? key
+		case "ckb": return tables.ckb[key] ?? key
+		default:    return key
+		}
 	}
 
-	private static let table: [String: [String: String]] = [
-		"ar": [
-			"Today": "اليوم", "Games": "الألعاب", "Apps": "التطبيقات", "Signing": "التوقيع",
-			"Search": "بحث", "Settings": "الإعدادات", "Certificates": "الشهادات",
-			"Official App Channel": "القناة الرسمية للتطبيق", "Notifications": "الإشعارات",
-			"Appearance": "المظهر", "Translation": "الترجمة", "Developer": "المطوّر",
-			"Installation Type": "نوع التثبيت", "Install from Server": "التثبيت من السيرفر",
-			"Install with idevice": "التثبيت عبر idevice", "Features": "الميزات",
-			"Signing Options": "خيارات التوقيع", "Archive & Compression": "الأرشفة والضغط",
-			"Installation": "التثبيت", "Reset": "إعادة الضبط",
-			"Reset the applications sources, certificates, apps, and general contents.": "إعادة ضبط المصادر والشهادات والتطبيقات والمحتوى العام.",
-			"Language": "اللغة", "Choose the app language. English is the default.": "اختر لغة التطبيق. الإنجليزية هي الافتراضية.",
-			"Some screens may need the app to be reopened.": "قد تحتاج بعض الشاشات إلى إعادة فتح التطبيق.",
-			"More from %@": "المزيد من %@", "Discover your next app": "اكتشف تطبيقك القادم",
-			"AshteMobile Pick": "اختيار AshteMobile", "Get": "تنزيل", "Sign with AshteMobile": "توقيع عبر AshteMobile",
-			"Social": "التواصل", "My Sources": "مصادري", "Back": "رجوع"
-		],
-		"ckb": [
-			"Today": "ئەمڕۆ", "Games": "یاری", "Apps": "ئەپەکان", "Signing": "واژۆکردن",
-			"Search": "گەڕان", "Settings": "ڕێکخستنەکان", "Certificates": "بڕوانامەکان",
-			"Official App Channel": "کەناڵی فەرمی ئەپەکە", "Notifications": "ئاگادارکردنەوەکان",
-			"Appearance": "ڕووکار", "Translation": "وەرگێڕان", "Developer": "گەشەپێدەر",
-			"Installation Type": "جۆری دامەزراندن", "Install from Server": "دامەزراندن لە سێرڤەرەوە",
-			"Install with idevice": "دامەزراندن بە idevice", "Features": "تایبەتمەندییەکان",
-			"Signing Options": "هەڵبژاردەکانی واژۆ", "Archive & Compression": "ئەرشیف و پەستان",
-			"Installation": "دامەزراندن", "Reset": "ڕێکخستنەوە",
-			"Reset the applications sources, certificates, apps, and general contents.": "ڕێکخستنەوەی سەرچاوەکان، بڕوانامەکان، ئەپەکان و ناوەڕۆکی گشتی.",
-			"Language": "زمان", "Choose the app language. English is the default.": "زمانی ئەپەکە هەڵبژێرە. ئینگلیزی بنەڕەتییە.",
-			"Some screens may need the app to be reopened.": "هەندێک شاشە پێویستیان بە کردنەوەی دووبارەی ئەپەکە هەیە.",
-			"More from %@": "زیاتر لە %@", "Discover your next app": "ئەپی داهاتووت بدۆزەرەوە",
-			"AshteMobile Pick": "هەڵبژاردەی AshteMobile", "Get": "داگرتن", "Sign with AshteMobile": "واژۆکردن بە AshteMobile",
-			"Social": "تۆڕە کۆمەڵایەتییەکان", "My Sources": "سەرچاوەکانم", "Back": "گەڕانەوە"
-		]
-	]
-}
-
-// MARK: - Bundle override (follow the in-app language)
-private final class AshteLocalizedBundle: Bundle {
-	override func localizedString(forKey key: String, value: String?, table tableName: String?) -> String {
-		if let b = AshteL10n.languageBundle() {
-			return b.localizedString(forKey: key, value: value, table: tableName)
-		}
-		// English: use the development-language (en / Base) strings, never the phone language.
-		if let path = Bundle.main.path(forResource: "en", ofType: "lproj"), let b = Bundle(path: path) {
-			return b.localizedString(forKey: key, value: value, table: tableName)
-		}
-		return value ?? key
+	/// Routes NimbleKit's `String.localized(...)` through the in-app language,
+	/// so every screen follows the language picked inside the app (not the iPhone language).
+	static func install() {
+		NimbleLocalization.resolver = { key in AshteL10n.t(key) }
 	}
 }

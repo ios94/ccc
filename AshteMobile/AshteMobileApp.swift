@@ -214,19 +214,19 @@ final class XSignSecurityEnforcer: ObservableObject {
 		injectedDylibCount: Int
 	) -> (allowed: Bool, errorMessage: String?) {
 		if (locks.require_online_handshake ?? false) && !didCompleteOnlineHandshake {
-			return (false, AL("يجب الاتصال بالإنترنت للتحقق من صلاحيات التوقيع والأمان."))
+			return (false, AshteL10n.t("يجب الاتصال بالإنترنت للتحقق من صلاحيات التوقيع والأمان."))
 		}
 		if isVPNOrProxyDetected {
-			return (false, locks.vpn_warning_message ?? AL("يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً."))
+			return (false, locks.vpn_warning_message ?? AshteL10n.t("يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً."))
 		}
 		if !locks.allowsAppMetadataEditing && (originalName != newName || originalBundleID != newBundleID) {
-			return (false, AL("غير مسموح بتعديل اسم التطبيق أو معرف الحزمة (Bundle ID)."))
+			return (false, AshteL10n.t("غير مسموح بتعديل اسم التطبيق أو معرف الحزمة (Bundle ID)."))
 		}
 		if (locks.lock_icon_change ?? false) && didModifyIcon {
-			return (false, AL("غير مسموح بتغيير أو استبدال أيقونة التطبيق الأصلية."))
+			return (false, AshteL10n.t("غير مسموح بتغيير أو استبدال أيقونة التطبيق الأصلية."))
 		}
 		if (locks.lock_dylib_injection ?? false) && injectedDylibCount > 0 {
-			return (false, AL("غير مسموح بحقن أدوات خارجية (.dylib / .deb) داخل التطبيق."))
+			return (false, AshteL10n.t("غير مسموح بحقن أدوات خارجية (.dylib / .deb) داخل التطبيق."))
 		}
 		return (true, nil)
 	}
@@ -268,10 +268,10 @@ final class XSignRemoteManager: ObservableObject {
         return false
     }
     var blockingReason: String? {
-        if isMaintenanceActive { return config?.maintenance?.message ?? AL("التطبيق قيد الصيانة.") }
-        if isForceUpdateRequired { return config?.force_update?.message ?? AL("يرجى تحديث التطبيق أولاً.") }
+        if isMaintenanceActive { return config?.maintenance?.message ?? AshteL10n.t("التطبيق قيد الصيانة.") }
+        if isForceUpdateRequired { return config?.force_update?.message ?? AshteL10n.t("يرجى تحديث التطبيق أولاً.") }
         let security = XSignSecurityEnforcer.shared
-        if security.isVPNOrProxyDetected { return security.locks.vpn_warning_message ?? AL("يرجى إيقاف VPN أو Proxy.") }
+        if security.isVPNOrProxyDetected { return security.locks.vpn_warning_message ?? AshteL10n.t("يرجى إيقاف VPN أو Proxy.") }
         return nil
     }
 
@@ -366,8 +366,6 @@ struct AshteMobileApp: App {
 	
 	let heartbeat = HeartbeatManager.shared
 	
-	init() { AshteL10n.bootstrap() }
-	
 	@StateObject var downloadManager = DownloadManager.shared
 	@StateObject private var storeCache = AppStoreCacheManager.shared
     @StateObject private var autoSign = AutoSignPipelineManager.shared
@@ -376,11 +374,16 @@ struct AshteMobileApp: App {
 	@StateObject private var securityEnforcer = XSignSecurityEnforcer.shared
 	@StateObject private var storage = Storage.shared
 	
-	@AppStorage(AshteL10n.storageKey) private var _appLanguage: String = AshteL10n.defaultCode
+	@AppStorage(AshteL10n.storageKey) private var _language: String = AshteL10n.defaultCode
 	@AppStorage("AshteMobile.userTintColor") private var userTintHex: String = "#005BBB"
     @AppStorage("AshteMobile.userInterfaceStyle")
     private var userInterfaceStyle: Int = UIUserInterfaceStyle.unspecified.rawValue
 	@State private var _showSplash = true
+	
+	init() {
+		// Route every `.localized(...)` string through the in-app language.
+		AshteL10n.install()
+	}
 	
 	private var activeTintColor: Color {
 		Color(hex: userTintHex)
@@ -474,7 +477,7 @@ struct AshteMobileApp: App {
 				
 				if securityEnforcer.isVPNOrProxyDetected {
 					XSignVPNBlockedOverlayView(
-						message: securityEnforcer.locks.vpn_warning_message ?? AL("عذراً، لا يمكن استخدام التطبيق أو التحميل أثناء تشغيل VPN أو مراقب شبكة.")
+						message: securityEnforcer.locks.vpn_warning_message ?? AshteL10n.t("عذراً، لا يمكن استخدام التطبيق أو التحميل أثناء تشغيل VPN أو مراقب شبكة.")
 					) {
 						securityEnforcer.evaluateNetworkSecurity()
 					}
@@ -485,8 +488,7 @@ struct AshteMobileApp: App {
             .tint(activeTintColor)
             .accentColor(activeTintColor)
 			.preferredColorScheme(preferredAppColorScheme)
-			.environment(\.locale, AshteL10n.locale)
-			.environment(\.layoutDirection, AshteL10n.layoutDirection)
+			.environment(\.locale, Locale(identifier: _language))
             .sheet(item: $autoSign.readyToInstallApp, onDismiss: {
                 autoSign.presentNextReadyApp()
             }) { signedApp in
@@ -540,8 +542,8 @@ struct AshteMobileApp: App {
 		XSignSecurityEnforcer.shared.evaluateNetworkSecurity()
 		if XSignSecurityEnforcer.shared.isVPNOrProxyDetected {
 			UIAlertController.showAlertWithOk(
-				title: AL("تنبيه أمني"),
-				message: XSignSecurityEnforcer.shared.locks.vpn_warning_message ?? AL("يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً.")
+				title: AshteL10n.t("تنبيه أمني"),
+				message: XSignSecurityEnforcer.shared.locks.vpn_warning_message ?? AshteL10n.t("يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً.")
 			)
 			return
 		}
@@ -658,7 +660,7 @@ struct XSignVPNBlockedOverlayView: View {
 					.font(.system(size: 58))
 					.foregroundColor(.red)
 				
-				Text(AL("تم إيقاف الاتصال لحماية التطبيق"))
+				Text(AshteL10n.t("تم إيقاف الاتصال لحماية التطبيق"))
 					.font(.title3.bold())
 					.foregroundColor(.primary)
 				
@@ -669,7 +671,7 @@ struct XSignVPNBlockedOverlayView: View {
 					.padding(.horizontal, 28)
 				
 				Button(action: onRetry) {
-					Text(AL("إعادة الفحص بعد إيقاف الـ VPN"))
+					Text(AshteL10n.t("إعادة الفحص بعد إيقاف الـ VPN"))
 						.font(.headline.bold())
 						.foregroundColor(.white)
 						.frame(maxWidth: .infinity)
@@ -701,15 +703,15 @@ struct XSignRemoteGateOverlayView: View {
 					.foregroundColor(tintColor)
 				
 				Text(remoteManager.isMaintenanceActive
-					 ? (remoteManager.config?.maintenance?.title ?? AL("التطبيق قيد الصيانة"))
-					 : AL("تحديث إجباري مطلوب"))
+					 ? (remoteManager.config?.maintenance?.title ?? AshteL10n.t("التطبيق قيد الصيانة"))
+					 : AshteL10n.t("تحديث إجباري مطلوب"))
 					.font(.title2.bold())
 					.foregroundColor(.primary)
 					.multilineTextAlignment(.center)
 				
 				Text(remoteManager.isMaintenanceActive
-					 ? (remoteManager.config?.maintenance?.message ?? AL("يرجى المحاولة لاحقاً."))
-					 : (remoteManager.config?.force_update?.message ?? AL("يرجى تحديث التطبيق لأحدث إصدار.")))
+					 ? (remoteManager.config?.maintenance?.message ?? AshteL10n.t("يرجى المحاولة لاحقاً."))
+					 : (remoteManager.config?.force_update?.message ?? AshteL10n.t("يرجى تحديث التطبيق لأحدث إصدار.")))
 					.font(.subheadline)
 					.foregroundColor(.secondary)
 					.multilineTextAlignment(.center)
@@ -723,7 +725,7 @@ struct XSignRemoteGateOverlayView: View {
 						UIApplication.shared.open(url)
 					}
 				} label: {
-					Text(remoteManager.isMaintenanceActive ? AL("متابعة قناة التيليجرام") : AL("تحديث التطبيق الآن"))
+					Text(remoteManager.isMaintenanceActive ? AshteL10n.t("متابعة قناة التيليجرام") : AshteL10n.t("تحديث التطبيق الآن"))
 						.font(.headline.bold())
 						.foregroundColor(AppStoreTheme.contrastingText(forHex: userTintHex))
 						.frame(maxWidth: .infinity)
@@ -1092,10 +1094,10 @@ private struct XSignStorageLoadView: View {
         VStack(spacing: 16) {
             if storage.storeLoadError != nil {
                 Image(systemName: "externaldrive.badge.exclamationmark").font(.largeTitle)
-                Text(AL("تعذّر فتح البيانات المحفوظة")).font(.headline)
-                Text(AL("أعد المحاولة لفتح مكتبتك.")).foregroundStyle(.secondary)
-                Button(AL("إعادة المحاولة")) { storage.retryLoadingStore() }
-            } else { ProgressView(); Text(AL("جارٍ فتح مكتبتك…")).foregroundStyle(.secondary) }
+                Text(AshteL10n.t("تعذّر فتح البيانات المحفوظة")).font(.headline)
+                Text(AshteL10n.t("أعد المحاولة لفتح مكتبتك.")).foregroundStyle(.secondary)
+                Button(AshteL10n.t("إعادة المحاولة")) { storage.retryLoadingStore() }
+            } else { ProgressView(); Text(AshteL10n.t("جارٍ فتح مكتبتك…")).foregroundStyle(.secondary) }
         }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
         .environment(\.layoutDirection, AshteL10n.layoutDirection)
     }

@@ -12,7 +12,6 @@ import AltSourceKit
 import SwiftUI
 import Combine
 import NaturalLanguage
-import Translation
 import NimbleViews
 import NukeUI
 import Nuke
@@ -1342,6 +1341,13 @@ final class AutoSignPipelineManager: ObservableObject {
 	@Published var activeStates: [String: Stage] = [:]
 	@Published var downloadProgress: [String: Int] = [:]
 	@Published var readyToInstallApp: AnyApp? = nil
+	struct DownloadBannerInfo: Equatable {
+		let name: String
+		let iconURL: URL?
+	}
+	/// Name + icon shown in the top download banner, keyed like `activeStates`.
+	@Published var bannerInfo: [String: DownloadBannerInfo] = [:]
+	private var userCancelledKeys: Set<String> = []
     private var packagePipeline = XSignBoundedPipeline<ASRepository.App, URL>()
     private var pendingInstallApps: [AnyApp] = []
     private var activeNetworkTask: URLSessionDownloadTask?
@@ -1424,10 +1430,19 @@ final class AutoSignPipelineManager: ObservableObject {
             activeStates[key] = .failed("رابط التنزيل غير صالح.")
             return
         }
+        bannerInfo[key] = DownloadBannerInfo(name: app.currentName, iconURL: app.iconURL)
         guard packagePipeline.enqueue(key: key, job: app) else { return }
         activeStates[key] = .queued
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         startNextDownload()
+    }
+
+    /// Stop button of the top download banner.
+    func cancelActiveDownload(key: String) {
+        guard activeStates[key] == .downloading, packagePipeline.activeDownload?.key == key else { return }
+        userCancelledKeys.insert(key)
+        activeNetworkTask?.cancel()
+        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
     }
 
     func applyRemotePolicy() {
@@ -1566,7 +1581,12 @@ final class AutoSignPipelineManager: ObservableObject {
         activeNetworkTask = nil
         progressObservations.removeValue(forKey: key)
         downloadProgress.removeValue(forKey: key)
-        activeStates[key] = .failed(message)
+        if userCancelledKeys.remove(key) != nil {
+            activeStates.removeValue(forKey: key)
+            bannerInfo.removeValue(forKey: key)
+        } else {
+            activeStates[key] = .failed(message)
+        }
         startNextProcessing()
         startNextDownload()
     }
@@ -1959,7 +1979,7 @@ struct AppStoreTodayView: View {
                         }
                         Spacer()
                         AppStoreAccountAppIconButton { showSettingsSheet = true }
-                    }.padding(.top, 12)
+                    }.padding(.top, 12).zIndex(10)
 
                     ForEach(cache.primaryEditorialNews) { instruction in
                         XSignAnnouncementCard(instruction: instruction)
@@ -2018,6 +2038,9 @@ struct XSignTodayFeatureCard: View {
                         LazyImage(url: artwork) { state in
                             if let image = state.image { image.resizable().scaledToFill().opacity(0.5) }
                         }.processors([.resize(size: CGSize(width: 700, height: 700))])
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .clipped()
+                            .allowsHitTesting(false)
                     } else {
                         VStack {
                             Spacer(minLength: 16)
@@ -2032,7 +2055,7 @@ struct XSignTodayFeatureCard: View {
                         Text(item.app.currentName).font(.system(.largeTitle, design: .rounded).bold()).lineLimit(2)
                         Text(item.arabicSubtitle).font(.subheadline.weight(.medium)).lineLimit(2).foregroundStyle(.white.opacity(0.85))
                     }.foregroundStyle(.white).frame(maxWidth: .infinity, alignment: .leading).padding(24)
-                }.frame(height: 350).clipped()
+                }.frame(height: 350).clipped().contentShape(Rectangle())
             }.buttonStyle(.plain)
             HStack(spacing: 12) {
                 NavigationLink { AppStore2026DetailView(item: item) } label: {
@@ -2559,6 +2582,7 @@ struct AppStore2026TopHeader: View {
 		}
 		.padding(.horizontal, 18)
 		.padding(.top, 10)
+		.zIndex(10)
 	}
 }
 
@@ -2576,6 +2600,7 @@ struct AppStoreAccountAppIconButton: View {
                 }
         }
         .buttonStyle(.plain)
+        .contentShape(Circle())
         .accessibilityLabel(AshteL10n.t("Settings"))
     }
 }
@@ -2638,6 +2663,9 @@ struct TodayLiveEventHeroCard: View {
 									}
 								}
 								.processors([.resize(size: CGSize(width: 500, height: 500))])
+								.frame(maxWidth: .infinity, maxHeight: .infinity)
+								.clipped()
+								.allowsHitTesting(false)
 							} else {
 								AppStoreIconView(
 									url: item.app.iconURL,
@@ -2980,6 +3008,9 @@ struct TodayFullArtworkDockCard: View {
 							}
 						}
 						.processors([.resize(size: CGSize(width: 500, height: 500))])
+								.frame(maxWidth: .infinity, maxHeight: .infinity)
+								.clipped()
+								.allowsHitTesting(false)
 					} else {
 						AppStoreIconView(
 							url: item.app.iconURL,
@@ -3499,6 +3530,42 @@ struct AppStore2026ThreeRowSection: View {
 struct AppStore2026FeaturedBanner: View {
 	let item: AppStoreAppItem
 	@AppStorage("AshteMobile.userTintColor") private var userTintHex: String = "#005BBB"
+	@State private var liveScreenshots: [URL] = []
+
+	@ViewBuilder private var artwork: some View {
+		let shot = item.screenshots.first ?? liveScreenshots.first
+		ZStack {
+			LinearGradient(
+				colors: [bannerColor.opacity(0.88), AppStoreTheme.deepOcean],
+				startPoint: .topTrailing,
+				endPoint: .bottomLeading
+			)
+			if let shot {
+				LazyImage(url: shot) { state in
+					if let image = state.image {
+						image.resizable().scaledToFill()
+					}
+				}
+				.processors([.resize(size: CGSize(width: 700, height: 400))])
+				.frame(maxWidth: .infinity, maxHeight: .infinity)
+				.clipped()
+				.allowsHitTesting(false)
+			} else {
+				// No screenshot in the source: blurred icon backdrop + tilted icon.
+				AppStoreIconView(url: item.app.iconURL, bundleID: item.app.id, appName: item.app.currentName, size: 220)
+					.blur(radius: 30)
+					.opacity(0.55)
+					.scaleEffect(1.5)
+				AppStoreIconView(url: item.app.iconURL, bundleID: item.app.id, appName: item.app.currentName, size: 92)
+					.rotationEffect(.degrees(-8))
+					.shadow(color: .black.opacity(0.35), radius: 14, y: 8)
+					.offset(y: -28)
+			}
+			LinearGradient(colors: [.clear, .black.opacity(0.3)], startPoint: .center, endPoint: .bottom)
+		}
+		.clipped()
+		.allowsHitTesting(false)
+	}
 	
 	private var bannerColor: Color {
 		item.app.tintColor ?? Color(hex: userTintHex)
@@ -3519,11 +3586,7 @@ struct AppStore2026FeaturedBanner: View {
 				.lineLimit(1)
 			
 			ZStack(alignment: .bottom) {
-				LinearGradient(
-					colors: [bannerColor.opacity(0.88), AppStoreTheme.deepOcean],
-					startPoint: .topTrailing,
-					endPoint: .bottomLeading
-				)
+				artwork
 				
 				HStack(spacing: 12) {
 					AppStoreIconView(
@@ -3555,6 +3618,18 @@ struct AppStore2026FeaturedBanner: View {
 			.clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
 		}
 		.frame(width: min(UIScreen.main.bounds.width - 44, 336))
+		.task {
+			guard item.screenshots.isEmpty, liveScreenshots.isEmpty,
+				  !AppStoreLiveMetadataBridge.hasExtractedGitHubIcon(item.app.iconURL) else { return }
+			if let meta = await AppStoreLiveMetadataBridge.shared.fetchMetadata(
+				bundleID: item.app.id,
+				appName: item.app.currentName,
+				iconURL: item.app.iconURL,
+				skipLookup: item.app.skipAppStoreLookup == true
+			) {
+				liveScreenshots = meta.screenshots
+			}
+		}
 	}
 }
 
@@ -3733,55 +3808,21 @@ struct AppStore2026EmptyState: View {
 	}
 }
 
-// MARK: - XSign Inline Description Translation
+// MARK: - Description (plain text, no translate button)
 struct XSignTranslatableDescription: View {
     let text: String
     let accentColor: Color
-
-    var body: some View {
-        Group {
-            if #available(iOS 18.0, *) {
-                XSignInlineTranslation(text: text, accentColor: accentColor)
-                    .id(text)
-            } else {
-                XSignLegacyTranslation(text: text, accentColor: accentColor)
-                    .id(text)
-            }
-        }
-    }
-}
-
-private struct XSignDescriptionContent: View {
-    let text: String
-    let translated: String?
-    let accentColor: Color
-    let isBusy: Bool
-    let canTranslate: Bool
-    let translate: () -> Void
-    let restore: () -> Void
     @State private var expanded = false
 
-    private var visibleText: String { translated ?? text }
-
     private var isArabic: Bool {
-        NLLanguageRecognizer.dominantLanguage(for: visibleText) == .arabic
+        NLLanguageRecognizer.dominantLanguage(for: text) == .arabic
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            ViewThatFits(in: .horizontal) {
-                HStack {
-                    Text("الوصف").font(.title2.bold())
-                    Spacer(minLength: 12)
-                    translationButton
-                }
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("الوصف").font(.title2.bold())
-                    translationButton
-                }
-            }
+            Text("الوصف").font(.title2.bold())
 
-            Text(verbatim: visibleText)
+            Text(verbatim: text)
                 .font(.body)
                 .foregroundStyle(Color.primary.opacity(0.88))
                 .lineSpacing(5)
@@ -3799,147 +3840,9 @@ private struct XSignDescriptionContent: View {
             .foregroundStyle(accentColor)
         }
         .buttonStyle(.plain)
-        .onChange(of: translated) { _ in
-            expanded = true
-        }
-    }
-
-    @ViewBuilder private var translationButton: some View {
-        if translated != nil {
-            Button("عرض الأصل", action: restore)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(accentColor)
-        } else if canTranslate && NLLanguageRecognizer.dominantLanguage(for: text) != .arabic {
-            Button(action: translate) {
-                HStack(spacing: 6) {
-                    if isBusy {
-                        ProgressView().tint(accentColor)
-                    }
-                    Label(
-                        isBusy ? "جارٍ الترجمة…" : "ترجمة للعربية",
-                        systemImage: "translate"
-                    )
-                }
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(accentColor)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(accentColor.opacity(0.12), in: Capsule())
-            }
-            .disabled(
-                isBusy ||
-                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-            )
-        }
     }
 }
-
-@available(iOS 18.0, *)
-private struct XSignInlineTranslation: View {
-    let text: String
-    let accentColor: Color
-
-    @State private var configuration: TranslationSession.Configuration?
-    @State private var translated: String?
-    @State private var isBusy = false
-    @State private var showError = false
-
-    var body: some View {
-        XSignDescriptionContent(
-            text: text,
-            translated: translated,
-            accentColor: accentColor,
-            isBusy: isBusy,
-            canTranslate: true,
-            translate: {
-                isBusy = true
-                if configuration == nil {
-                    configuration = TranslationSession.Configuration(
-                        source: nil,
-                        target: Locale.Language(identifier: "ar")
-                    )
-                } else {
-                    configuration?.invalidate()
-                }
-            },
-            restore: {
-                translated = nil
-            }
-        )
-        .translationTask(configuration) { session in
-            do {
-                let response = try await session.translate(text)
-                try Task.checkCancellation()
-
-                await MainActor.run {
-                    translated = response.targetText
-                    isBusy = false
-                }
-            } catch {
-                let cancelled = Task.isCancelled || error is CancellationError
-                await MainActor.run {
-                    isBusy = false
-                    if !cancelled {
-                        showError = true
-                    }
-                }
-            }
-        }
-        .alert("تعذّرت الترجمة", isPresented: $showError) {
-            Button("حسنًا", role: .cancel) {}
-        } message: {
-            Text("تأكد من توفر لغات الترجمة واتصال الإنترنت عند تنزيلها، ثم أعد المحاولة.")
-        }
-    }
-}
-
-private struct XSignLegacyTranslation: View {
-    let text: String
-    let accentColor: Color
-
-    @State private var presented = false
-    @State private var translated: String?
-
-    private var content: some View {
-        XSignDescriptionContent(
-            text: text,
-            translated: translated,
-            accentColor: accentColor,
-            isBusy: false,
-            canTranslate: supportsTranslation,
-            translate: {
-                presented = true
-            },
-            restore: {
-                translated = nil
-            }
-        )
-    }
-
-    private var supportsTranslation: Bool {
-        if #available(iOS 17.4, *) {
-            return true
-        }
-        return false
-    }
-
-    var body: some View {
-        Group {
-            if #available(iOS 17.4, *) {
-                content.translationPresentation(
-                    isPresented: $presented,
-                    text: text
-                ) { result in
-                    translated = result
-                    presented = false
-                }
-            } else {
-                content
-            }
-        }
-    }
-}
-// MARK: - End XSign Inline Description Translation
+// MARK: - End Description
 
 // MARK: - Configured source identity, taxonomy and announcements
 private struct XSignSourceIdentity: View {

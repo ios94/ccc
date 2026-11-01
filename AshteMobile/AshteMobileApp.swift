@@ -446,6 +446,9 @@ struct AshteMobileApp: App {
 				.animation(.smooth, value: downloadManager.manualDownloads.description)
 				
 
+				XSignDownloadBanner(pipeline: autoSign)
+					.zIndex(500)
+
 				if _showSplash {
 					XSignPhotoIdenticalSplashView(
 						cache: storeCache,
@@ -848,81 +851,76 @@ struct XSignPhotoIdenticalSplashView: View {
     var onFinished: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var beganAt = Date()
-    @State private var animated = false
+    @State private var appeared = false
+    @State private var pulse = false
     @State private var dismissed = false
 
-    private var settings: XSignSplashConfig? { remoteManager.config?.splash_screen }
-    private var duration: Double { min(7, max(1.5, settings?.duration_seconds ?? 3.2)) }
-    private var style: String { settings?.animation_style ?? "laser_draw" }
-    private var logoColor: Color { Color(hex: remoteManager.config?.theme?.splash_logo_hex ?? "#FFFFFF") }
-    private var useCSS: Bool { settings?.engine == "custom_css" && !(settings?.custom_code ?? "").isEmpty }
+    private let minimumDuration: Double = 2.6
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [Color(hex: remoteManager.config?.theme?.splash_bg_top_hex ?? "#002B66"),
-                                    Color(hex: remoteManager.config?.theme?.splash_bg_bottom_hex ?? "#00183B")],
-                           startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-            if useCSS, let code = settings?.custom_code {
-                XSignCustomCSSSplashWebView(htmlCode: code).ignoresSafeArea()
-            } else {
-                VStack(spacing: 8) {
-                    vector
-                    Text(settings?.subtitle ?? "AshteMobile")
-                        .font(.caption.bold()).tracking(3).foregroundStyle(logoColor.opacity(0.8))
+            LinearGradient(
+                colors: [Color(hex: "#02060F"), Color(hex: "#06173A"), Color(hex: "#02060F")],
+                startPoint: .top, endPoint: .bottom
+            ).ignoresSafeArea()
+
+            RadialGradient(
+                colors: [Color(hex: "#2F6BFF").opacity(0.5), .clear],
+                center: .center, startRadius: 10, endRadius: 300
+            )
+            .scaleEffect(pulse ? 1.12 : 0.92)
+            .opacity(appeared ? 1 : 0)
+            .ignoresSafeArea()
+
+            VStack(spacing: 30) {
+                ZStack {
+                    Circle()
+                        .stroke(
+                            LinearGradient(
+                                colors: [Color(hex: "#6FB1FF"), Color(hex: "#7A4DFF"), Color(hex: "#6FB1FF")],
+                                startPoint: .topLeading, endPoint: .bottomTrailing
+                            ),
+                            lineWidth: 2
+                        )
+                        .frame(width: 252, height: 252)
+                        .scaleEffect(pulse ? 1.07 : 0.97)
+                        .opacity(pulse ? 0.25 : 0.75)
+
+                    Image("AshteLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 214, height: 214)
+                        .shadow(color: Color(hex: "#3D7BFF").opacity(0.7), radius: 30)
                 }
+                .scaleEffect(appeared ? 1 : 0.55)
+                .opacity(appeared ? 1 : 0)
+
+                Text(AshteBranding.appName)
+                    .font(.system(size: 36, weight: .heavy, design: .rounded))
+                    .tracking(1.5)
+                    .foregroundStyle(
+                        LinearGradient(colors: [.white, Color(hex: "#9CC4FF")], startPoint: .leading, endPoint: .trailing)
+                    )
+                    .shadow(color: Color(hex: "#3D7BFF").opacity(0.55), radius: 12)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 16)
+                    .animation(reduceMotion ? nil : .easeOut(duration: 0.7).delay(0.35), value: appeared)
             }
         }
-        .task(id: settings) {
-            animated = false
+        .task {
             await Task.yield()
-            withAnimation(animation) { animated = true }
-            let remaining = max(0, duration - Date().timeIntervalSince(beganAt))
+            if reduceMotion {
+                appeared = true
+            } else {
+                withAnimation(.spring(response: 0.9, dampingFraction: 0.72)) { appeared = true }
+                withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) { pulse = true }
+            }
+            let remaining = max(0, minimumDuration - Date().timeIntervalSince(beganAt))
             do { try await Task.sleep(nanoseconds: UInt64(remaining * 1_000_000_000)) } catch { return }
             guard !dismissed else { return }
             dismissed = true
             onFinished()
         }
-    }
-
-    private var animation: Animation {
-        if reduceMotion { return .linear(duration: 0.15) }
-        switch style {
-        case "neon_pulse", "liquid_shine": return .easeInOut(duration: 0.85).repeatForever(autoreverses: true)
-        case "twin_slash": return .spring(response: 0.72, dampingFraction: 0.72)
-        case "cyber_glitch": return .interpolatingSpring(stiffness: 170, damping: 10)
-        default: return .easeInOut(duration: min(duration * 0.55, 1.6))
-        }
-    }
-    private var vector: some View {
-        let side = CGFloat(min(310, max(150, settings?.size_px ?? 225)))
-        let moving = animated || reduceMotion
-        let drawing = style == "laser_draw"
-        let slashing = style == "twin_slash" && !moving
-        let neon = style == "neon_pulse"
-        let liquid = style == "liquid_shine"
-        return PhotoIdenticalXVectorView(
-            progress: drawing && !moving ? 0 : 1,
-            fillAlpha: drawing && !moving ? 0 : 1,
-            glow: moving ? 0.9 : 0.35,
-            logoColor: logoColor,
-            showSignAndAshteMobile: settings?.show_sign_feather ?? true,
-            leftOffset: slashing ? CGSize(width: -120, height: 120) : .zero,
-            rightOffset: slashing ? CGSize(width: 120, height: -120) : .zero,
-            strokeWidth: CGFloat(min(18, max(2, settings?.stroke_width ?? 8)) * 0.32),
-            glowRadius: CGFloat(min(45, max(0, settings?.glow_radius ?? 18))))
-            .overlay {
-                if liquid {
-                    LinearGradient(colors: [.clear, Color.white.opacity(moving ? 0.7 : 0.05), .clear],
-                                   startPoint: moving ? .topLeading : .bottomTrailing,
-                                   endPoint: moving ? .bottomTrailing : .topLeading)
-                        .mask(ExactImageXLeftRibbon().fill().overlay(ExactImageXRightRibbon().fill()))
-                }
-            }
-            .scaleEffect(side / 320 * (neon && moving ? 0.96 : moving ? 1 : 0.88))
-            .rotationEffect(.degrees(style == "cyber_glitch" && !moving ? 12 : 0))
-            .offset(y: liquid && moving ? -8 : 0)
-            .frame(width: side, height: side)
-            .opacity(moving ? 1 : drawing || slashing ? 1 : 0)
     }
 }
 

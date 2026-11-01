@@ -106,6 +106,7 @@ enum TabEnum: String, CaseIterable, Hashable {
 enum AppStoreCustomTabIcons {
 	// Today: outlined card with two text lines and a filled block (App Store "Today" icon)
 	static let todayIcon: UIImage = {
+		if let asset = UIImage(named: "TabToday") { return asset.withRenderingMode(.alwaysTemplate) }
 		let size = CGSize(width: 26, height: 26)
 		let renderer = UIGraphicsImageRenderer(size: size)
 		let image = renderer.image { _ in
@@ -125,6 +126,7 @@ enum AppStoreCustomTabIcons {
 	
 	// Apps: three stacked layers (App Store "Apps" icon)
 	static let appsLayersIcon: UIImage = {
+		if let asset = UIImage(named: "TabApps") { return asset.withRenderingMode(.alwaysTemplate) }
 		let size = CGSize(width: 26, height: 26)
 		let renderer = UIGraphicsImageRenderer(size: size)
 		let image = renderer.image { _ in
@@ -153,6 +155,7 @@ enum AppStoreCustomTabIcons {
 	}()
 	
 	static let gamesRocketIcon: UIImage = {
+		if let asset = UIImage(named: "TabGames") { return asset.withRenderingMode(.alwaysTemplate) }
 		let size = CGSize(width: 26, height: 26)
 		let renderer = UIGraphicsImageRenderer(size: size)
 		let image = renderer.image { ctx in
@@ -221,6 +224,7 @@ enum AppStoreCustomTabIcons {
 	
 	// أيقونة عصا الأركيد الماسية ثلاثية الأبعاد المطابقة لأيقونة Apple Arcade
 	static let arcadeJoystickIcon: UIImage = {
+		if let asset = UIImage(named: "TabArcade") { return asset.withRenderingMode(.alwaysTemplate) }
 		let size = CGSize(width: 26, height: 26)
 		let renderer = UIGraphicsImageRenderer(size: size)
 		let image = renderer.image { ctx in

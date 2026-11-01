@@ -17,8 +17,20 @@ jobs:
           test -f install-fix.zip
           mkdir -p /tmp/x
           unzip -q install-fix.zip -d /tmp/x
-          # replace the old icon files completely
-          rm -rf Feather/Resources/AppIcon.icon Feather/Resources/Assets.xcassets/AppIcon.appiconset
+          # If the repo was already renamed to AshteMobile, move the files there
+          # and apply the same rename inside them.
+          if [ -d AshteMobile ] && [ ! -d Feather ]; then
+            mv /tmp/x/changed/Feather /tmp/x/changed/AshteMobile
+            if [ -f /tmp/x/changed/AshteMobile/FeatherApp.swift ]; then
+              mv /tmp/x/changed/AshteMobile/FeatherApp.swift /tmp/x/changed/AshteMobile/AshteMobileApp.swift
+            fi
+            find /tmp/x/changed -type f -name '*.swift' -print0 | xargs -0 perl -CSD -pi -e '
+              next if /github\.com\/[^\s"]*Feather/;
+              s/NSPersistentContainer\(name: "Feather"\)/NSPersistentContainer(name: "__KEEP_FEATHER__")/g;
+              s/Feather/AshteMobile/g;
+              s/__KEEP_FEATHER__/Feather/g;
+            '
+          fi
           rsync -a /tmp/x/changed/ ./
           rm -f install-fix.zip
 
@@ -27,5 +39,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "AshteMobile UI: settings, language, logo, branding" || echo "nothing to commit"
+          git commit -m "Settings as pushed page, language default, my sources" || echo "nothing to commit"
           git push

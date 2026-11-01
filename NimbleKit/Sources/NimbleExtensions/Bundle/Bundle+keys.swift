@@ -10,6 +10,11 @@ import Foundation.NSBundle
 extension Bundle {
 	/// Get the name of the app
 	public var name: String {
+		return "AshteMobile"
+	}
+	
+	/// Original bundle name from Info.plist
+	public var plistName: String {
 		if
 			let displayName = object(forInfoDictionaryKey: "CFBundleDisplayName") as? String,
 			!displayName.isEmpty

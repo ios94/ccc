@@ -1955,9 +1955,7 @@ struct AppStoreTodayView: View {
                 LazyVStack(alignment: .leading, spacing: 24) {
                     HStack(alignment: .bottom) {
                         VStack(alignment: .leading, spacing: 5) {
-                            Text(Date(), format: .dateTime.weekday(.wide).day().month(.wide))
-                                .font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
-                            Text("اليوم").font(.largeTitle.bold())
+                            Text(AshteL10n.t("Today")).font(.largeTitle.bold())
                         }
                         Spacer()
                         AppStoreAccountAppIconButton { showSettingsSheet = true }
@@ -1981,7 +1979,7 @@ struct AppStoreTodayView: View {
                         let remaining = Array(todayApps.dropFirst(3).prefix(8))
                         if !remaining.isEmpty {
                             TodayFourAppsListCard(outerTitle: nil, outerSubtitle: nil,
-                                innerCaption: "المزيد من \(cache.sourceName)", innerTitle: "اكتشف تطبيقك القادم", items: remaining)
+                                innerCaption: AshteL10n.t("More from %@", cache.sourceName), innerTitle: AshteL10n.t("Discover your next app"), items: remaining)
                         }
                         HStack(spacing: 8) {
                             Image(systemName: "checkmark.seal.fill").foregroundStyle(Color.accentColor)
@@ -2030,7 +2028,7 @@ struct XSignTodayFeatureCard: View {
                     }
                     LinearGradient(colors: [.clear, .black.opacity(0.85)], startPoint: .center, endPoint: .bottom)
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("اختيار AshteMobile").font(.caption.weight(.bold)).tracking(1.2).foregroundStyle(.white.opacity(0.8))
+                        Text(AshteL10n.t("AshteMobile Pick")).font(.caption.weight(.bold)).tracking(1.2).foregroundStyle(.white.opacity(0.8))
                         Text(item.app.currentName).font(.system(.largeTitle, design: .rounded).bold()).lineLimit(2)
                         Text(item.arabicSubtitle).font(.subheadline.weight(.medium)).lineLimit(2).foregroundStyle(.white.opacity(0.85))
                     }.foregroundStyle(.white).frame(maxWidth: .infinity, alignment: .leading).padding(24)
@@ -2578,7 +2576,7 @@ struct AppStoreAccountAppIconButton: View {
                 }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("الإعدادات")
+        .accessibilityLabel(AshteL10n.t("Settings"))
     }
 }
 
@@ -3345,7 +3343,7 @@ struct AppStore2026DownloadButton: View {
 				
 			case nil:
 				VStack(spacing: 3) {
-					Text("تنزيل")
+					Text(AshteL10n.t("Get"))
 						.font(.system(size: 15, weight: .bold))
 						.foregroundStyle(AppStoreTheme.contrastingText(forHex: userTintHex))
 						.frame(width: 78, height: 32)
@@ -3354,7 +3352,7 @@ struct AppStore2026DownloadButton: View {
 								.fill(accentColor)
 						)
 					
-					Text("توقيع عبر AshteMobile")
+					Text(AshteL10n.t("Sign with AshteMobile"))
 						.font(.system(size: 7.5, weight: .medium))
 						.foregroundStyle(isLightPill ? .white.opacity(0.75) : .secondary)
 						.lineLimit(1)

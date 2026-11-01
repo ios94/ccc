@@ -20,13 +20,13 @@ enum TabEnum: String, CaseIterable, Hashable {
 	
 	var title: String {
 		switch self {
-		case .today:        return "اليوم"
-		case .games:        return "الألعاب"
-		case .sources:     	return "التطبيقات"
-		case .library: 		return "التوقيع"
-		case .search:       return "بحث"
-		case .settings: 	return "الإعدادات"
-		case .certificates:	return "الشهادات"
+		case .today:        return AshteL10n.t("Today")
+		case .games:        return AshteL10n.t("Games")
+		case .sources:     	return AshteL10n.t("Apps")
+		case .library: 		return AshteL10n.t("Signing")
+		case .search:       return AshteL10n.t("Search")
+		case .settings: 	return AshteL10n.t("Settings")
+		case .certificates:	return AshteL10n.t("Certificates")
 		}
 	}
 	

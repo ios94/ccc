@@ -3579,46 +3579,45 @@ struct AppStore2026FeaturedBanner: View {
 			Text(item.category.title)
 				.font(.caption2.weight(.bold))
 				.foregroundStyle(Color(hex: userTintHex))
-			Text(item.app.currentName)
+			Text(item.category.defaultArabicSubtitle)
 				.font(.title3.weight(.bold))
 				.foregroundStyle(.primary)
 				.lineLimit(1)
-			Text(item.arabicSubtitle)
-				.font(.subheadline)
-				.foregroundStyle(.secondary)
-				.lineLimit(1)
 			
-			ZStack(alignment: .bottom) {
-				artwork
-				
-				HStack(spacing: 12) {
-					AppStoreIconView(
-						url: item.app.iconURL,
-						bundleID: item.app.id,
-						appName: item.app.currentName,
-						size: 50
-					)
-					
-					VStack(alignment: .leading, spacing: 2) {
-						Text(item.app.currentName)
-							.font(.subheadline.weight(.bold))
-							.foregroundStyle(.white)
-							.lineLimit(1)
-						Text(item.arabicSubtitle)
-							.font(.caption)
-							.foregroundStyle(.white.opacity(0.75))
-							.lineLimit(1)
+			// App Store style: the app icon, name and Get button sit inside the artwork.
+			artwork
+				.frame(maxWidth: .infinity)
+				.frame(height: 175)
+				.overlay(alignment: .bottom) {
+					HStack(spacing: 12) {
+						AppStoreIconView(
+							url: item.app.iconURL,
+							bundleID: item.app.id,
+							appName: item.app.currentName,
+							size: 50
+						)
+						
+						VStack(alignment: .leading, spacing: 2) {
+							Text(item.app.currentName)
+								.font(.subheadline.weight(.bold))
+								.foregroundStyle(.white)
+								.lineLimit(1)
+							Text(item.arabicSubtitle)
+								.font(.caption)
+								.foregroundStyle(.white.opacity(0.75))
+								.lineLimit(1)
+						}
+						
+						Spacer()
+						
+						AppStore2026DownloadButton(app: item.app, isLightPill: true)
 					}
-					
-					Spacer()
-					
-					AppStore2026DownloadButton(app: item.app, isLightPill: true)
+					.padding(14)
+					.background(
+						LinearGradient(colors: [.clear, .black.opacity(0.7)], startPoint: .top, endPoint: .bottom)
+					)
 				}
-				.padding(14)
-				.background(Color.black.opacity(0.55))
-			}
-			.frame(height: 175)
-			.clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+				.clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
 		}
 		.frame(width: min(UIScreen.main.bounds.width - 44, 336))
 		.task {

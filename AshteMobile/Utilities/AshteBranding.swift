@@ -26,8 +26,8 @@ struct AshteLanguage: Identifiable, Hashable {
 
 enum AshteL10n {
 	static let storageKey = "ashtemobile.language"
-	/// The language the app starts with before the user picks one ("en", "ar" or "ckb").
-	static let defaultCode = "ar"
+	/// The language the app starts with before the user picks one ("en", "ar" or "ckb"). English first; the user can switch to Arabic or Kurdish in Settings > Translation.
+	static let defaultCode = "en"
 
 	static let languages: [AshteLanguage] = [
 		.init(code: "en", nativeName: "English"),

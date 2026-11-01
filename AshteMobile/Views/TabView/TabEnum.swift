@@ -45,6 +45,18 @@ enum TabEnum: String, CaseIterable, Hashable {
 	@ViewBuilder
 	var tabLabel: some View {
 		switch self {
+		case .today:
+			Label {
+				Text(title)
+			} icon: {
+				Image(uiImage: AppStoreCustomTabIcons.todayIcon)
+			}
+		case .sources:
+			Label {
+				Text(title)
+			} icon: {
+				Image(uiImage: AppStoreCustomTabIcons.appsLayersIcon)
+			}
 		case .games:
 			Label {
 				Text(title)
@@ -92,6 +104,54 @@ enum TabEnum: String, CaseIterable, Hashable {
 
 // MARK: - Exact App Store Custom Vector Icons (Rocket + Apple Arcade Isometric Joystick)
 enum AppStoreCustomTabIcons {
+	// Today: outlined card with two text lines and a filled block (App Store "Today" icon)
+	static let todayIcon: UIImage = {
+		let size = CGSize(width: 26, height: 26)
+		let renderer = UIGraphicsImageRenderer(size: size)
+		let image = renderer.image { _ in
+			UIColor.white.setFill()
+			UIColor.white.setStroke()
+			
+			let card = UIBezierPath(roundedRect: CGRect(x: 4.6, y: 2.2, width: 16.8, height: 21.6), cornerRadius: 4.2)
+			card.lineWidth = 2.2
+			card.stroke()
+			
+			UIBezierPath(roundedRect: CGRect(x: 8.0, y: 5.6, width: 9.0, height: 1.8), cornerRadius: 0.9).fill()
+			UIBezierPath(roundedRect: CGRect(x: 8.0, y: 8.8, width: 5.2, height: 1.8), cornerRadius: 0.9).fill()
+			UIBezierPath(roundedRect: CGRect(x: 7.6, y: 12.6, width: 10.8, height: 8.2), cornerRadius: 1.8).fill()
+		}
+		return image.withRenderingMode(.alwaysTemplate)
+	}()
+	
+	// Apps: three stacked layers (App Store "Apps" icon)
+	static let appsLayersIcon: UIImage = {
+		let size = CGSize(width: 26, height: 26)
+		let renderer = UIGraphicsImageRenderer(size: size)
+		let image = renderer.image { _ in
+			UIColor.white.setFill()
+			UIColor.white.setStroke()
+			
+			func layer(_ points: [CGPoint]) {
+				let path = UIBezierPath()
+				path.move(to: points[0])
+				for point in points.dropFirst() { path.addLine(to: point) }
+				path.close()
+				path.lineWidth = 1.4
+				path.lineJoinStyle = .round
+				path.fill()
+				path.stroke()
+			}
+			
+			// top diamond
+			layer([CGPoint(x: 13, y: 2.6), CGPoint(x: 22.4, y: 7.0), CGPoint(x: 13, y: 11.4), CGPoint(x: 3.6, y: 7.0)])
+			// middle band
+			layer([CGPoint(x: 3.6, y: 9.8), CGPoint(x: 13, y: 14.2), CGPoint(x: 22.4, y: 9.8), CGPoint(x: 22.4, y: 12.2), CGPoint(x: 13, y: 16.6), CGPoint(x: 3.6, y: 12.2)])
+			// bottom band
+			layer([CGPoint(x: 3.6, y: 15.0), CGPoint(x: 13, y: 19.4), CGPoint(x: 22.4, y: 15.0), CGPoint(x: 22.4, y: 17.4), CGPoint(x: 13, y: 21.8), CGPoint(x: 3.6, y: 17.4)])
+		}
+		return image.withRenderingMode(.alwaysTemplate)
+	}()
+	
 	static let gamesRocketIcon: UIImage = {
 		let size = CGSize(width: 26, height: 26)
 		let renderer = UIGraphicsImageRenderer(size: size)

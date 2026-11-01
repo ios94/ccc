@@ -1,0 +1,62 @@
+name: Rename Feather to AshteMobile
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rename everything
+        run: |
+          # Renames Feather -> AshteMobile (folders, project, scheme, code).
+          # The Core Data model name stays "Feather" on purpose (same as the old AshteMobile project),
+          # so existing app data keeps working. Run from the repository root.
+          set -euo pipefail
+
+          test -d Feather && test -d Feather.xcodeproj
+
+          # ---- 1. rename files and folders (inner items first) ----
+          git mv "Feather/Supporting Files/Feather.entitlements"      "Feather/Supporting Files/AshteMobile.entitlements"
+          git mv "Feather/Supporting Files/Feather-Bridging-Header.h" "Feather/Supporting Files/AshteMobile-Bridging-Header.h"
+          git mv Feather/FeatherApp.swift                             Feather/AshteMobileApp.swift
+          git mv Feather.xcconfig                                     AshteMobile.xcconfig
+          git mv Feather.xcodeproj/xcshareddata/xcschemes/Feather.xcscheme Feather.xcodeproj/xcshareddata/xcschemes/AshteMobile.xcscheme
+          git mv Feather.xcodeproj                                    AshteMobile.xcodeproj
+          git mv Feather.xcworkspace                                  AshteMobile.xcworkspace
+          git mv Feather                                              AshteMobile
+
+          # ---- 2. replace the name inside the files ----
+          find . -type f \
+            \( -name '*.swift' -o -name '*.h' -o -name '*.m' -o -name '*.mm' -o -name '*.plist' \
+               -o -name '*.pbxproj' -o -name '*.xcscheme' -o -name '*.xcworkspacedata' \
+               -o -name '*.xcconfig' -o -name '*.xcstrings' -o -name '*.storyboard' \
+               -o -name '*.entitlements' -o -name 'Makefile' \) \
+            -not -path './.git/*' -not -path './.github/*' \
+            -not -path './Zsign/*' -not -path './IDeviceKitten/*' \
+            -not -path '*/Feather.xcdatamodeld/*' \
+            -print0 | xargs -0 grep -lZ 'Feather' | xargs -0 -r perl -CSD -pi -e '
+              next if /github\.com\/[^\s"]*Feather/;
+              s/NSPersistentContainer\(name: "Feather"\)/NSPersistentContainer(name: "__KEEP_FEATHER__")/g;
+              s/Feather(?=\.xcdatamodel)/__KEEP_FEATHER__/g;
+              s/Feather/AshteMobile/g;
+              s/__KEEP_FEATHER__/Feather/g;
+            '
+
+          echo "Done. Remaining 'Feather' mentions:"
+          grep -rIn 'Feather' . --exclude-dir=.git --exclude-dir=.github --exclude-dir=Zsign --exclude-dir=IDeviceKitten \
+            --exclude='LICENSE*' --exclude='README.md' --exclude='DISTRIBUTION' | cut -c1-140 || true
+
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Rename Feather to AshteMobile"
+          git push

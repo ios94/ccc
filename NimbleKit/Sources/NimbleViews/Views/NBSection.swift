@@ -1,6 +1,6 @@
 //
 //  SectionProminentHeaderWrapper.swift
-//  Feather
+//  AshteMobile
 //
 //  Created by samara on 11.04.2025.
 //

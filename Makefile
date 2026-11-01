@@ -1,7 +1,7 @@
-NAME := Feather
+NAME := AshteMobile
 IPA_NAME := AshteMobile
 PLATFORM := iphoneos
-SCHEMES := Feather
+SCHEMES := AshteMobile
 TMP := $(TMPDIR)/$(NAME)
 STAGE := $(TMP)/stage
 APP := $(TMP)/Build/Products/Release-$(PLATFORM)
@@ -28,7 +28,7 @@ deps:
 
 $(SCHEMES): deps
 	xcodebuild \
-	    -project Feather.xcodeproj \
+	    -project AshteMobile.xcodeproj \
 	    -scheme "$@" \
 	    -configuration Release \
 	    -arch arm64 \

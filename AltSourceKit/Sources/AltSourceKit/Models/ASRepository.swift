@@ -1,6 +1,6 @@
 //
 //  Repository.swift
-//  Feather
+//  AshteMobile
 //
 //  Created by Lakhan Lothiyi on 19/04/2025.
 //
@@ -90,7 +90,7 @@ public struct ASRepository: Sendable, Decodable, Hashable, Identifiable {
 			let apps = decodedApps
 		else {
 			throw NSError(
-				domain: "FeatherSources",
+				domain: "AshteMobileSources",
 				code: 44521,
 				userInfo: [
 					NSLocalizedDescriptionKey: "This source does not contain any apps."
@@ -346,7 +346,7 @@ extension ASRepository {
 				!marketplaceID.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
 			{
 				throw NSError(
-					domain: "FeatherSources",
+					domain: "AshteMobileSources",
 					code: 112789, userInfo: [NSLocalizedDescriptionKey: "AltStore PAL repositories aren't supported: \(id ?? "")"]
 				)
 			}

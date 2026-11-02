@@ -53,7 +53,14 @@ struct InstallPreviewView: View {
 			_button()
 		}
 		.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-		.background(Color(UIColor.secondarySystemBackground))
+		.background(
+			LinearGradient(
+				colors: [Color.accentColor.opacity(0.16), Color(UIColor.secondarySystemBackground)],
+				startPoint: .top,
+				endPoint: .center
+			)
+			.background(Color(UIColor.secondarySystemBackground))
+		)
 		.cornerRadius(cornerRadius)
 		.padding()
 		.sheet(isPresented: $_isWebviewPresenting) {
@@ -121,9 +128,14 @@ struct InstallPreviewView: View {
 	@ViewBuilder
 	private func _status() -> some View {
 		Label(viewModel.statusLabel, systemImage: viewModel.statusImage)
-			.padding()
+			.font(.subheadline.weight(.medium))
 			.labelStyle(.titleAndIcon)
-			.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+			.padding(.horizontal, 16)
+			.padding(.vertical, 9)
+			.background(.thinMaterial, in: Capsule())
+			.overlay(Capsule().stroke(Color.primary.opacity(0.06), lineWidth: 0.8))
+			.padding(.bottom, 20)
+			.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 			.animation(.smooth, value: viewModel.statusImage)
 	}
 	
@@ -134,13 +146,19 @@ struct InstallPreviewView: View {
 				Button {
 					UIApplication.openApp(with: app.identifier ?? "")
 				} label: {
-					NBButton("Open", systemImage: "", style: .text)
+					Text(AshteL10n.t("Open"))
+						.font(.headline)
+						.foregroundStyle(.white)
+						.padding(.horizontal, 40)
+						.padding(.vertical, 12)
+						.background(Color.accentColor, in: Capsule())
 				}
-				.padding()
+				.buttonStyle(.plain)
+				.padding(.bottom, 74)
 				.compatTransition()
 			}
 		}
-		.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+		.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 		.animation(.easeInOut(duration: 0.3), value: viewModel.isCompleted)
 	}
 	

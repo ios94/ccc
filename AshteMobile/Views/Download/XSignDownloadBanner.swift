@@ -24,8 +24,8 @@ struct XSignDownloadBanner: View {
 					percent: pipeline.downloadProgress[key] ?? 0,
 					stop: { pipeline.cancelActiveDownload(key: key) }
 				)
-				.padding(.horizontal, 14)
-				.padding(.top, 6)
+				.padding(.horizontal, 40)
+				.padding(.top, 2)
 				.transition(.move(edge: .top).combined(with: .opacity))
 			}
 			Spacer(minLength: 0)
@@ -36,16 +36,16 @@ struct XSignDownloadBanner: View {
 	}
 
 	private func banner(name: String, iconURL: URL?, percent: Int, stop: @escaping () -> Void) -> some View {
-		HStack(spacing: 16) {
-			AppStoreIconView(url: iconURL, appName: name, size: 54)
+		HStack(spacing: 10) {
+			AppStoreIconView(url: iconURL, appName: name, size: 38)
 
-			VStack(alignment: .leading, spacing: 2) {
+			VStack(alignment: .leading, spacing: 0) {
 				Text(name)
-					.font(.system(size: 22, weight: .semibold))
+					.font(.system(size: 15, weight: .semibold))
 					.foregroundStyle(.primary)
 					.lineLimit(1)
 				Text(verbatim: "\(percent)%")
-					.font(.system(size: 21, weight: .regular))
+					.font(.system(size: 13, weight: .regular))
 					.monospacedDigit()
 					.foregroundStyle(.primary.opacity(0.9))
 					.contentTransition(.numericText())
@@ -56,28 +56,28 @@ struct XSignDownloadBanner: View {
 			Button(action: stop) {
 				ZStack {
 					Circle()
-						.stroke(Color.primary.opacity(0.18), lineWidth: 6)
+						.stroke(Color.primary.opacity(0.18), lineWidth: 4)
 					Circle()
 						.trim(from: 0, to: max(0.03, CGFloat(percent) / 100))
-						.stroke(Color.primary, style: StrokeStyle(lineWidth: 6, lineCap: .round))
+						.stroke(Color.primary, style: StrokeStyle(lineWidth: 4, lineCap: .round))
 						.rotationEffect(.degrees(-90))
 						.animation(.easeOut(duration: 0.25), value: percent)
-					RoundedRectangle(cornerRadius: 5, style: .continuous)
+					RoundedRectangle(cornerRadius: 3.5, style: .continuous)
 						.fill(Color.primary)
-						.frame(width: 24, height: 24)
+						.frame(width: 14, height: 14)
 				}
-				.frame(width: 60, height: 60)
+				.frame(width: 38, height: 38)
 				.contentShape(Circle())
 			}
 			.buttonStyle(.plain)
 		}
-		.padding(.horizontal, 18)
-		.padding(.vertical, 12)
-		.background(.regularMaterial, in: RoundedRectangle(cornerRadius: 32, style: .continuous))
+		.padding(.horizontal, 12)
+		.padding(.vertical, 8)
+		.background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
 		.overlay(
-			RoundedRectangle(cornerRadius: 32, style: .continuous)
+			RoundedRectangle(cornerRadius: 22, style: .continuous)
 				.stroke(Color.primary.opacity(0.08), lineWidth: 0.8)
 		)
-		.shadow(color: .black.opacity(0.18), radius: 18, y: 8)
+		.shadow(color: .black.opacity(0.14), radius: 10, y: 4)
 	}
 }

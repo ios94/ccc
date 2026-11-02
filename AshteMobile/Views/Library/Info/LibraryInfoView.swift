@@ -26,12 +26,6 @@ struct LibraryInfoView: View {
 				_certSection(for: app)
 				_bundleSection(for: app)
 				_executableSection(for: app)
-				
-				Section {
-					Button(.localized("Open in Files"), systemImage: "folder") {
-						UIApplication.open(Storage.shared.getUuidDirectory(for: app)!.toSharedDocumentsURL()!)
-					}
-				}
 			}
 			.toolbar {
 				NBToolbarButton(role: .close)

@@ -381,6 +381,8 @@ struct AshteMobileApp: App {
 	@State private var _showSplash = true
 	
 	init() {
+		// Installation type picker was removed from Settings: always install from the server.
+		UserDefaults.standard.set(0, forKey: "AshteMobile.installationMethod")
 		// Route every `.localized(...)` string through the in-app language.
 		AshteL10n.install()
 	}
@@ -1097,7 +1099,7 @@ private struct XSignStorageLoadView: View {
                 Text(AshteL10n.t("تعذّر فتح البيانات المحفوظة")).font(.headline)
                 Text(AshteL10n.t("أعد المحاولة لفتح مكتبتك.")).foregroundStyle(.secondary)
                 Button(AshteL10n.t("إعادة المحاولة")) { storage.retryLoadingStore() }
-            } else { ProgressView(); Text(AshteL10n.t("جارٍ فتح مكتبتك…")).foregroundStyle(.secondary) }
+            } else { Color.clear.frame(width: 1, height: 1) }
         }.padding(24).frame(maxWidth: .infinity, maxHeight: .infinity)
         .environment(\.layoutDirection, AshteL10n.layoutDirection)
     }

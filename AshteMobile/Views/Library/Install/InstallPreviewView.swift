@@ -39,30 +39,22 @@ struct InstallPreviewView: View {
 	
 	// MARK: Body
 	var body: some View {
-		let cornerRadius = {
-			if #available(iOS 26.0, *) {
-				28.0
-			} else {
-				10.5
-			}
-		}()
-		
-		ZStack {
+		VStack(spacing: 0) {
+			Spacer(minLength: 12)
 			InstallProgressView(app: app, viewModel: viewModel)
-			_status()
+			Spacer(minLength: 12)
 			_button()
 		}
 		.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
 		.background(
 			LinearGradient(
-				colors: [Color.accentColor.opacity(0.16), Color(UIColor.secondarySystemBackground)],
+				colors: [Color.accentColor.opacity(0.18), Color(UIColor.systemBackground)],
 				startPoint: .top,
 				endPoint: .center
 			)
-			.background(Color(UIColor.secondarySystemBackground))
+			.background(Color(UIColor.systemBackground))
+			.ignoresSafeArea()
 		)
-		.cornerRadius(cornerRadius)
-		.padding()
 		.sheet(isPresented: $_isWebviewPresenting) {
 			SafariRepresentableView(url: installer.pageEndpoint).ignoresSafeArea()
 		}
@@ -126,20 +118,6 @@ struct InstallPreviewView: View {
 	}
 	
 	@ViewBuilder
-	private func _status() -> some View {
-		Label(viewModel.statusLabel, systemImage: viewModel.statusImage)
-			.font(.subheadline.weight(.medium))
-			.labelStyle(.titleAndIcon)
-			.padding(.horizontal, 16)
-			.padding(.vertical, 9)
-			.background(.thinMaterial, in: Capsule())
-			.overlay(Capsule().stroke(Color.primary.opacity(0.06), lineWidth: 0.8))
-			.padding(.bottom, 20)
-			.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-			.animation(.smooth, value: viewModel.statusImage)
-	}
-	
-	@ViewBuilder
 	private func _button() -> some View {
 		ZStack {
 			if viewModel.isCompleted {
@@ -149,16 +127,17 @@ struct InstallPreviewView: View {
 					Text(AshteL10n.t("Open"))
 						.font(.headline)
 						.foregroundStyle(.white)
-						.padding(.horizontal, 40)
-						.padding(.vertical, 12)
+						.frame(maxWidth: .infinity)
+						.padding(.vertical, 14)
 						.background(Color.accentColor, in: Capsule())
 				}
 				.buttonStyle(.plain)
-				.padding(.bottom, 74)
+				.padding(.horizontal, 32)
 				.compatTransition()
 			}
 		}
-		.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+		.frame(height: 52)
+		.padding(.bottom, 24)
 		.animation(.easeInOut(duration: 0.3), value: viewModel.isCompleted)
 	}
 	

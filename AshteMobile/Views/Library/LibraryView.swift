@@ -252,7 +252,7 @@ struct LibraryView: View {
 			}
 			.sheet(item: $_selectedInstallAppPresenting, onDismiss: { AutoSignPipelineManager.shared.presentNextReadyApp() }) { app in
 				InstallPreviewView(app: app.base, isSharing: app.archive)
-					.presentationDetents([.height(200)])
+					.presentationDetents([.height(470)])
 					.presentationDragIndicator(.visible)
 			}
 			.fullScreenCover(item: $_selectedSigningAppPresenting, onDismiss: { AutoSignPipelineManager.shared.presentNextReadyApp() }) { app in

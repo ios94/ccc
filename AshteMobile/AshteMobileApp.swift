@@ -495,7 +495,7 @@ struct AshteMobileApp: App {
                 autoSign.presentNextReadyApp()
             }) { signedApp in
                 InstallPreviewView(app: signedApp.base, isSharing: signedApp.archive)
-                    .presentationDetents([.height(200)])
+                    .presentationDetents([.height(470)])
                     .presentationDragIndicator(.visible)
             }
             .task(id: scenePhase) {

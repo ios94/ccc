@@ -14,91 +14,157 @@ struct InstallProgressView: View {
 	var app: AppInfoPresentable
 	@ObservedObject var viewModel: InstallerStatusViewModel
 	
+	private let _ringSize: CGFloat = 156
+	private let _iconSize: CGFloat = 112
+	private let _lineWidth: CGFloat = 8
+	
+	private var _progress: Double {
+		max(0, min(1, viewModel.overallProgress))
+	}
+	
+	private var _isBroken: Bool {
+		if case .broken = viewModel.status { return true }
+		return false
+	}
+	
+	private var _statusColor: Color {
+		if _isBroken { return .red }
+		if viewModel.isCompleted { return .green }
+		return .accentColor
+	}
+	
 	var body: some View {
-		VStack(spacing: 16) {
+		VStack(spacing: 0) {
 			_appIcon()
-				.scaleEffect(viewModel.isCompleted ? 1.0 : (_isPulsing ? 1.03 : 0.98))
-				.animation(.easeInOut(duration: 1.1).repeatForever(autoreverses: true), value: _isPulsing)
+				.scaleEffect(viewModel.isCompleted ? 1.0 : (_isPulsing ? 1.025 : 0.985))
+				.animation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true), value: _isPulsing)
 				.onAppear { _isPulsing = true }
+				.padding(.bottom, 20)
 			
-			VStack(spacing: 4) {
-				Text(app.name ?? "")
-					.font(.title3.weight(.semibold))
-					.foregroundStyle(.primary)
-					.lineLimit(1)
-				Text(verbatim: "\(Int((viewModel.overallProgress * 100).rounded()))%")
-					.font(.subheadline.weight(.medium))
-					.monospacedDigit()
-					.foregroundStyle(.secondary)
-					.contentTransition(.numericText())
-					.animation(.smooth, value: viewModel.overallProgress)
-			}
+			_titleBlock()
+				.padding(.bottom, 16)
+			
+			_statusPill()
+				.padding(.bottom, 14)
+			
+			_percentage()
 		}
 		.padding(.horizontal, 24)
 	}
 	
+	// MARK: Icon + ring
 	@ViewBuilder
 	private func _appIcon() -> some View {
 		ZStack {
+			// Soft glow behind the icon
 			Circle()
-				.stroke(Color.primary.opacity(0.08), lineWidth: 6)
-				.frame(width: 132, height: 132)
+				.fill(_statusColor.opacity(0.16))
+				.frame(width: _ringSize + 28, height: _ringSize + 28)
+				.blur(radius: 22)
 			
+			// Ring track
 			Circle()
-				.trim(from: 0, to: max(0.02, min(1, viewModel.overallProgress)))
+				.stroke(Color.primary.opacity(0.09), lineWidth: _lineWidth)
+				.frame(width: _ringSize, height: _ringSize)
+			
+			// Ring progress
+			Circle()
+				.trim(from: 0, to: max(0.015, _progress))
 				.stroke(
 					AngularGradient(
-						colors: [Color.accentColor.opacity(0.35), Color.accentColor],
+						colors: [_statusColor.opacity(0.35), _statusColor],
 						center: .center,
 						startAngle: .degrees(0),
-						endAngle: .degrees(360)
+						endAngle: .degrees(360 * max(0.015, _progress))
 					),
-					style: StrokeStyle(lineWidth: 6, lineCap: .round)
+					style: StrokeStyle(lineWidth: _lineWidth, lineCap: .round)
 				)
 				.rotationEffect(.degrees(-90))
-				.frame(width: 132, height: 132)
-				.opacity(viewModel.isCompleted ? 0 : 1)
-				.animation(.smooth, value: viewModel.overallProgress)
+				.frame(width: _ringSize, height: _ringSize)
+				.opacity(viewModel.isCompleted || _isBroken ? 0 : 1)
+				.animation(.smooth, value: _progress)
 				.animation(.smooth, value: viewModel.isCompleted)
 			
-			FRAppIconView(app: app)
-				.frame(width: 94, height: 94)
-				.clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-				.shadow(color: Color.accentColor.opacity(0.25), radius: 14, y: 6)
+			// Completed / error full ring
+			Circle()
+				.stroke(_statusColor.opacity(0.9), lineWidth: _lineWidth)
+				.frame(width: _ringSize, height: _ringSize)
+				.opacity(viewModel.isCompleted || _isBroken ? 1 : 0)
+				.animation(.smooth, value: viewModel.isCompleted)
 			
-			if viewModel.isCompleted {
-				Image(systemName: "checkmark.circle.fill")
-					.font(.system(size: 30))
+			// App icon
+			FRAppIconView(app: app, size: _iconSize)
+				.frame(width: _iconSize, height: _iconSize)
+				.clipShape(RoundedRectangle(cornerRadius: _iconSize * 0.225, style: .continuous))
+				.overlay(
+					RoundedRectangle(cornerRadius: _iconSize * 0.225, style: .continuous)
+						.stroke(Color.primary.opacity(0.08), lineWidth: 0.8)
+				)
+				.shadow(color: Color.black.opacity(0.22), radius: 14, y: 8)
+			
+			// Badge
+			if viewModel.isCompleted || _isBroken {
+				Image(systemName: _isBroken ? "xmark.circle.fill" : "checkmark.circle.fill")
+					.font(.system(size: 34))
 					.symbolRenderingMode(.palette)
-					.foregroundStyle(.white, Color.green)
+					.foregroundStyle(.white, _statusColor)
 					.background(Circle().fill(Color(UIColor.secondarySystemBackground)).padding(2))
-					.offset(x: 38, y: 38)
+					.offset(x: 46, y: 46)
 					.transition(.scale.combined(with: .opacity))
 			}
 		}
+		.frame(width: _ringSize + 8, height: _ringSize + 8)
 		.animation(.spring(response: 0.4, dampingFraction: 0.7), value: viewModel.isCompleted)
 	}
 	
-	struct PieShape: Shape {
-		var progress: Double
-		
-		func path(in rect: CGRect) -> Path {
-			var path = Path()
-			let center = CGPoint(x: rect.midX, y: rect.midY)
-			let radius = min(rect.width, rect.height) / 2
-			let startAngle = Angle(degrees: -90)
-			let endAngle = Angle(degrees: -90 + progress * 360)
+	// MARK: App name + version
+	@ViewBuilder
+	private func _titleBlock() -> some View {
+		VStack(spacing: 5) {
+			Text(app.name ?? "")
+				.font(.title2.weight(.bold))
+				.foregroundStyle(.primary)
+				.lineLimit(1)
+				.minimumScaleFactor(0.7)
 			
-			path.move(to: center)
-			path.addArc(center: center, radius: radius, startAngle: startAngle, endAngle: endAngle, clockwise: false)
-			path.closeSubpath()
+			let details = [app.version, app.identifier]
+				.compactMap { $0 }
+				.filter { !$0.isEmpty }
+				.joined(separator: " • ")
 			
-			return path
+			if !details.isEmpty {
+				Text(details)
+					.font(.footnote)
+					.foregroundStyle(.secondary)
+					.lineLimit(1)
+					.truncationMode(.middle)
+			}
 		}
-		
-		var animatableData: Double {
-			get { progress }
-			set { progress = newValue }
-		}
+		.multilineTextAlignment(.center)
+	}
+	
+	// MARK: Status pill
+	@ViewBuilder
+	private func _statusPill() -> some View {
+		Label(viewModel.statusLabel, systemImage: viewModel.statusImage)
+			.font(.subheadline.weight(.semibold))
+			.foregroundStyle(_statusColor)
+			.padding(.horizontal, 16)
+			.padding(.vertical, 8)
+			.background(_statusColor.opacity(0.14), in: Capsule())
+			.overlay(Capsule().stroke(_statusColor.opacity(0.22), lineWidth: 0.8))
+			.animation(.smooth, value: viewModel.statusImage)
+	}
+	
+	// MARK: Percentage
+	@ViewBuilder
+	private func _percentage() -> some View {
+		Text(verbatim: "\(Int((_progress * 100).rounded()))%")
+			.font(.system(size: 40, weight: .bold, design: .rounded))
+			.monospacedDigit()
+			.foregroundStyle(.primary)
+			.contentTransition(.numericText())
+			.animation(.smooth, value: _progress)
+			.opacity(_isBroken ? 0.35 : 1)
 	}
 }

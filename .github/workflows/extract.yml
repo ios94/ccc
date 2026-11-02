@@ -14,30 +14,57 @@ jobs:
 
       - name: Unzip into the repository
         run: |
-          test -f install-fix.zip
-          mkdir -p /tmp/x
-          unzip -q install-fix.zip -d /tmp/x
-          # If the repo was already renamed to AshteMobile, move the files there
-          # and apply the same rename inside them.
-          if [ -d AshteMobile ] && [ ! -d Feather ]; then
-            mv /tmp/x/changed/Feather /tmp/x/changed/AshteMobile
-            if [ -f /tmp/x/changed/AshteMobile/FeatherApp.swift ]; then
-              mv /tmp/x/changed/AshteMobile/FeatherApp.swift /tmp/x/changed/AshteMobile/AshteMobileApp.swift
+          set -euo pipefail
+
+          # 1. Find the zip in the repo root (install-fix.zip first, otherwise the newest .zip)
+          if [ -f install-fix.zip ]; then
+            ZIP="install-fix.zip"
+          else
+            ZIP="$(find . -maxdepth 1 -type f -name '*.zip' -printf '%T@ %f\n' | sort -nr | head -n1 | cut -d' ' -f2-)"
+          fi
+          if [ -z "${ZIP:-}" ] || [ ! -f "$ZIP" ]; then
+            echo "::error::No .zip file found in the repository root. Upload install-fix.zip to the main page of the repo first, then run this workflow again."
+            exit 1
+          fi
+          echo "Using zip: $ZIP"
+
+          # 2. Unzip
+          rm -rf /tmp/x && mkdir -p /tmp/x
+          unzip -q "$ZIP" -d /tmp/x
+
+          # 3. Find the folder that holds the files
+          #    (either /changed, or a single top-level folder, or the zip root itself)
+          SRC=/tmp/x
+          if [ -d "$SRC/changed" ]; then
+            SRC="$SRC/changed"
+          elif [ "$(find "$SRC" -mindepth 1 -maxdepth 1 | wc -l)" -eq 1 ] && [ -d "$(find "$SRC" -mindepth 1 -maxdepth 1)" ]; then
+            SRC="$(find "$SRC" -mindepth 1 -maxdepth 1)"
+          fi
+          echo "Content root: $SRC"
+
+          # 4. If the repo was already renamed to AshteMobile but the zip still uses
+          #    Feather, rename the folder and the names inside the files.
+          if [ -d AshteMobile ] && [ ! -d Feather ] && [ -d "$SRC/Feather" ]; then
+            mv "$SRC/Feather" "$SRC/AshteMobile"
+            if [ -f "$SRC/AshteMobile/FeatherApp.swift" ]; then
+              mv "$SRC/AshteMobile/FeatherApp.swift" "$SRC/AshteMobile/AshteMobileApp.swift"
             fi
-            find /tmp/x/changed -type f -name '*.swift' -print0 | xargs -0 perl -CSD -pi -e '
+            find "$SRC" -type f -name '*.swift' -print0 | xargs -0 -r perl -CSD -pi -e '
               next if /github\.com\/[^\s"]*Feather/;
               s/NSPersistentContainer\(name: "Feather"\)/NSPersistentContainer(name: "__KEEP_FEATHER__")/g;
               s/Feather/AshteMobile/g;
               s/__KEEP_FEATHER__/Feather/g;
             '
           fi
-          rsync -a /tmp/x/changed/ ./
-          rm -f install-fix.zip
+
+          # 5. Copy into the repository and remove the zip
+          rsync -a --exclude='.git' "$SRC"/ ./
+          rm -f "$ZIP"
 
       - name: Commit extracted files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "Settings as pushed page, language default, my sources" || echo "nothing to commit"
+          git commit -m "Apply uploaded zip" || echo "nothing to commit"
           git push

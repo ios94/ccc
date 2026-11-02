@@ -57,8 +57,10 @@ jobs:
             '
           fi
 
-          # 5. Copy into the repository and remove the zip
-          rsync -a --exclude='.git' "$SRC"/ ./
+          # 5. Copy into the repository and remove the zip.
+          #    .github is skipped on purpose: GitHub does not let the workflow token
+          #    change files under .github/workflows (push would be rejected).
+          rsync -a --exclude='.git' --exclude='.github' "$SRC"/ ./
           rm -f "$ZIP"
 
       - name: Commit extracted files

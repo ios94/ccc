@@ -14,8 +14,26 @@ struct SigningOptionsView: View {
 	@Binding var options: Options
 	var temporaryOptions: Options?
 	
+	// One-time flag: lets us switch the old "Remove Provisioning" default off once
+	@AppStorage("hasResetRemoveProvisioningOff") private var hasResetRemoveProvisioningOff = false
+	
 	// MARK: Body
 	var body: some View {
+		Group {
+			_content
+		}
+		.onAppear {
+			// Remove Provisioning is OFF by default. It is switched on automatically
+			// only for Video Star (see SigningHandler). One-time reset of the old default.
+			if !hasResetRemoveProvisioningOff {
+				options.removeProvisioning = false
+				hasResetRemoveProvisioningOff = true
+			}
+		}
+	}
+	
+	@ViewBuilder
+	private var _content: some View {
 		if (temporaryOptions == nil) {
 			NBSection(.localized("Protection")) {
 				_toggle(

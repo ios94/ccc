@@ -1807,48 +1807,23 @@ struct AppStore2026DetailView: View {
 					Divider().background(Color.primary.opacity(0.1)).padding(.horizontal, 18)
 					
 					VStack(alignment: .leading, spacing: 14) {
-						Text(AshteL10n.t("معاينة"))
-							.font(.title2.bold())
-							.foregroundStyle(.primary)
+						AppStoreScreenshotsHeader(title: AshteL10n.t("Screenshots"))
 							.padding(.horizontal, 18)
-						
+
 						if !displayScreenshots.isEmpty {
 							ScrollView(.horizontal, showsIndicators: false) {
-								HStack(spacing: 12) {
+								HStack(alignment: .top, spacing: 12) {
 									ForEach(displayScreenshots, id: \.self) { screenURL in
-										LazyImage(url: screenURL) { state in
-											if let image = state.image {
-												image
-													.resizable()
-													.scaledToFit()
-											} else {
-												RoundedRectangle(cornerRadius: 20, style: .continuous)
-													.fill(AppStoreTheme.controlSurface)
-													.overlay { ProgressView().tint(AppStoreTheme.dynamicAccent) }
-											}
-										}
-										.processors([.resize(size: CGSize(width: 460, height: 920))])
-										.frame(width: min(UIScreen.main.bounds.width * 0.62, 280), height: 440)
-										.background(AppStoreTheme.controlSurface)
-										.clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-										.overlay(
-											RoundedRectangle(cornerRadius: 20, style: .continuous)
-												.stroke(Color.primary.opacity(0.12), lineWidth: 0.6)
-										)
+										AppStoreScreenshotCard(url: screenURL)
 									}
 								}
 								.padding(.horizontal, 18)
 							}
 						} else if isLoadingMetadata {
 							ScrollView(.horizontal, showsIndicators: false) {
-								HStack(spacing: 12) {
+								HStack(alignment: .top, spacing: 12) {
 									ForEach(0..<2, id: \.self) { _ in
-										RoundedRectangle(cornerRadius: 20, style: .continuous)
-											.fill(AppStoreTheme.controlSurface)
-											.frame(width: min(UIScreen.main.bounds.width * 0.62, 280), height: 440)
-											.overlay {
-												ProgressView().tint(accentColor)
-											}
+										AppStoreScreenshotPlaceholder(showsProgress: true)
 									}
 								}
 								.padding(.horizontal, 18)

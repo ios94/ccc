@@ -100,7 +100,7 @@ actor XSignCatalogIO {
             config.timeoutIntervalForResource = 90
             config.urlCache = nil
             config.waitsForConnectivity = false
-            self.session = URLSession(configuration: config)
+            self.session = URLSession(configuration: NetworkShield.protect(config))
         }
     }
 

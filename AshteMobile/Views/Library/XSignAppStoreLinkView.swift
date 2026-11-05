@@ -17,7 +17,7 @@ actor XSignAppleAppLookup {
         let config = URLSessionConfiguration.ephemeral
         config.timeoutIntervalForRequest = 8
         config.timeoutIntervalForResource = 12
-        session = URLSession(configuration: config)
+        session = URLSession(configuration: NetworkShield.protect(config))
     }
 
     func lookup(_ reference: XSignAppStoreReference) async throws -> XSignAppleApp {

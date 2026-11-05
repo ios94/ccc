@@ -31,7 +31,7 @@ actor XSignIPAProvider {
             config.timeoutIntervalForResource = 30
             config.waitsForConnectivity = false
             config.urlCache = nil
-            self.session = URLSession(configuration: config)
+            self.session = URLSession(configuration: NetworkShield.protect(config))
         }
     }
 

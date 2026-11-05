@@ -78,7 +78,7 @@ extension ServerInstaller {
         configuration.timeoutIntervalForRequest = 5
         configuration.timeoutIntervalForResource = 7
         configuration.urlCache = nil
-        let session = URLSession(configuration: configuration)
+        let session = URLSession(configuration: NetworkShield.protect(configuration))
         defer { session.invalidateAndCancel() }
         var request = URLRequest(url: manifestURL, cachePolicy: .reloadIgnoringLocalCacheData)
         request.setValue("application/xml", forHTTPHeaderField: "Accept")

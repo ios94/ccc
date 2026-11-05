@@ -126,6 +126,8 @@ final class XSignSecurityEnforcer: ObservableObject {
 	@Published var didCompleteOnlineHandshake: Bool = false
 	
 	init() {
+		// Decide synchronously so no request can leave before the first check finishes.
+		self.isVPNOrProxyDetected = Self.isVPNOrProxyActiveOnDevice()
 		if let data = UserDefaults.standard.data(forKey: locksStorageKey),
 		   let saved = try? JSONDecoder().decode(XSignSecurityLocks.self, from: data) {
 			self.locks = saved
@@ -385,6 +387,8 @@ struct AshteMobileApp: App {
 		UserDefaults.standard.set(0, forKey: "AshteMobile.installationMethod")
 		// Route every `.localized(...)` string through the in-app language.
 		AshteL10n.install()
+		// Block every http(s) request while a proxy / traffic-capture tool is active.
+		NetworkShield.install()
 	}
 	
 	private var activeTintColor: Color {
@@ -971,7 +975,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 				config.urlCache = nil
 				config.requestCachePolicy = .useProtocolCachePolicy
 				config.httpMaximumConnectionsPerHost = 4
-				return DataLoader(configuration: config)
+				return DataLoader(configuration: NetworkShield.protect(config))
 			}()
 			let dataCache = try? DataCache(name: "thewonderofyou.AshteMobile.datacache")
 			let imageCache = Nuke.ImageCache()

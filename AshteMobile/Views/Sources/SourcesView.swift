@@ -1378,7 +1378,7 @@ final class AutoSignPipelineManager: ObservableObject {
         config.timeoutIntervalForResource = 3600
 		config.requestCachePolicy = .reloadIgnoringLocalCacheData
 		config.urlCache = nil
-		return URLSession(configuration: config)
+		return URLSession(configuration: NetworkShield.protect(config))
 	}()
 	
 	init() {

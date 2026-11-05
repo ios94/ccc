@@ -153,7 +153,7 @@ final class XSignSecurityEnforcer: ObservableObject {
 			Task { @MainActor [weak self] in
 				guard let self = self else { return }
 				if !connected { self.didCompleteOnlineHandshake = false }
-                let shouldBlock = (self.locks.anti_vpn_proxy ?? false) && detected
+                let shouldBlock = detected
 				if self.isVPNOrProxyDetected != shouldBlock {
 					self.isVPNOrProxyDetected = shouldBlock
                     NotificationCenter.default.post(name: .xsignPolicyChanged, object: nil)
@@ -164,7 +164,7 @@ final class XSignSecurityEnforcer: ObservableObject {
 	}
 	
 	func evaluateNetworkSecurity() {
-		let antiVPNEnabled = locks.anti_vpn_proxy ?? false
+		let antiVPNEnabled = true
 		DispatchQueue.global(qos: .utility).async { [weak self] in
 			let detected = antiVPNEnabled ? Self.isVPNOrProxyActiveOnDevice() : false
 			DispatchQueue.main.async {
@@ -279,7 +279,7 @@ final class XSignRemoteManager: ObservableObject {
         await fetchRemoteConfig()
         let security = XSignSecurityEnforcer.shared
         // Evaluate synchronously at the operation boundary as well as on path changes.
-        security.isVPNOrProxyDetected = (security.locks.anti_vpn_proxy ?? false) && XSignSecurityEnforcer.isVPNOrProxyActiveOnDevice()
+        security.isVPNOrProxyDetected = XSignSecurityEnforcer.isVPNOrProxyActiveOnDevice()
         if let reason = blockingReason { return reason }
         return nil
     }
@@ -478,9 +478,7 @@ struct AshteMobileApp: App {
 				}
 				
 				if securityEnforcer.isVPNOrProxyDetected {
-					XSignVPNBlockedOverlayView(
-						message: securityEnforcer.locks.vpn_warning_message ?? AshteL10n.t("عذراً، لا يمكن استخدام التطبيق أو التحميل أثناء تشغيل VPN أو مراقب شبكة.")
-					) {
+					ProxyDetectionView {
 						securityEnforcer.evaluateNetworkSecurity()
 					}
 					.transition(.opacity)
@@ -514,6 +512,9 @@ struct AshteMobileApp: App {
                 if remoteManager.blockingReason != nil {
                     for download in downloadManager.downloads where download.task != nil { downloadManager.cancelDownload(download) }
                 }
+            }
+            .onChange(of: scenePhase) { phase in
+                if phase == .active { securityEnforcer.evaluateNetworkSecurity() }
             }
             .onChange(of: userTintHex) { _ in
                 applyAppearanceToWindows()

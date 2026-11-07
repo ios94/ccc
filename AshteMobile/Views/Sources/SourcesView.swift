@@ -1692,27 +1692,12 @@ final class AutoSignPipelineManager: ObservableObject {
                     self.finishDownload(key: appKey, error: AshteL10n.t("تعذّر العثور على التطبيق الموقّع."))
                     return
                 }
-                // The unsigned copy is not needed any more: keep nothing extra in the Library.
-                Storage.shared.deleteApp(for: importedApp)
                 self.activeStates[appKey] = .ready
                 self.enqueueInstallation(signed)
                 self.finishDownload(key: appKey, error: nil)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
                     if self?.activeStates[appKey] == .ready { self?.activeStates[appKey] = nil }
                 }
-            }
-        }
-    }
-
-    /// Removes the signed copy of a store app after it was installed (or failed) so it never stays in the Library.
-    func cleanupAfterInstall(uuid: String) {
-        Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
-            let request = NSFetchRequest<Signed>(entityName: "Signed")
-            request.fetchLimit = 1
-            request.predicate = NSPredicate(format: "uuid == %@", uuid)
-            if let signed = (try? Storage.shared.context.fetch(request))?.first {
-                Storage.shared.deleteApp(for: signed)
             }
         }
     }

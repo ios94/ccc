@@ -6,7 +6,13 @@
 - Reviewed the app's plist and build workflow configuration.
 - A full iOS build was not possible in this environment because Apple's Xcode/iOS SDK and signing environment are not available here. A successful Swift parse is not the same as a successful iOS build.
 
-## Fix applied
+## Fixes applied
+### VPN/proxy policy consistency
+`AshteMobile/AshteMobileApp.swift`
+- Removed the hard-coded `antiVPNEnabled = true` override.
+- The UI/security gate now follows the configured `anti_vpn_proxy` policy instead of blocking users when that setting is false.
+- Applied the same policy during startup, path updates, protected operations, deep-link handling, and the URL loading shield.
+
 ### Debian AR archive reader
 `AshteMobile/Utilities/ARDecompression/AR.swift`
 - Removed `try!` from archive file loading. A missing or unreadable file now returns a normal error instead of terminating the app.
@@ -35,5 +41,5 @@ Recommended next design pass:
 
 ## Validation
 - Swift syntax parse: 166/166 files passed.
-- Targeted syntax parse after the archive-reader change: passed.
+- Targeted syntax parse after the archive-reader and VPN-policy changes: passed.
 - Full iOS compile, simulator run, device run, signing, and network integration tests: not run (Xcode/iOS SDK unavailable).

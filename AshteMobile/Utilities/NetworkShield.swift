@@ -21,6 +21,8 @@ enum NetworkShield {
 
     /// True while a proxy / VPN is detected on the device.
     static var isHostileNetwork: Bool {
+        // Keep the transport-level block aligned with the app's remote security policy.
+        guard UserDefaults.standard.bool(forKey: "AshteMobile.antiVPNProxyEnabled") else { return false }
         guard let cf = CFNetworkCopySystemProxySettings()?.takeRetainedValue(),
               let settings = cf as NSDictionary as? [String: Any] else { return false }
 

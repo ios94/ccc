@@ -1,5 +1,6 @@
 # AshteMobile update
 
+- Fixed VPN/proxy enforcement so UI gates and the URL loading shield respect the configured `anti_vpn_proxy` security policy instead of a hard-coded enabled value.
 - Hardened Debian AR archive reading against unreadable files, malformed headers, invalid numeric fields, and out-of-bounds member sizes.
 - Removed force-try and unsafe range access from the AR archive reader.
 - Corrected archive permission parsing to octal.

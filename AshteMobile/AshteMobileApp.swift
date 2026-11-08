@@ -126,13 +126,15 @@ final class XSignSecurityEnforcer: ObservableObject {
 	@Published var didCompleteOnlineHandshake: Bool = false
 	
 	init() {
-		// Decide synchronously so no request can leave before the first check finishes.
-		self.isVPNOrProxyDetected = Self.isVPNOrProxyActiveOnDevice()
 		if let data = UserDefaults.standard.data(forKey: locksStorageKey),
 		   let saved = try? JSONDecoder().decode(XSignSecurityLocks.self, from: data) {
 			self.locks = saved
 		}
-		evaluateNetworkSecurity()
+		// Apply the configured policy immediately. A detected VPN/proxy must not
+		// block the app when the anti-VPN lock is disabled.
+		let antiVPNEnabled = self.locks.anti_vpn_proxy == true
+		UserDefaults.standard.set(antiVPNEnabled, forKey: "AshteMobile.antiVPNProxyEnabled")
+		self.isVPNOrProxyDetected = antiVPNEnabled && Self.isVPNOrProxyActiveOnDevice()
 		startEventDrivenNetworkMonitor()
 	}
 	
@@ -145,6 +147,7 @@ final class XSignSecurityEnforcer: ObservableObject {
 		if let encoded = try? JSONEncoder().encode(newLocks) {
 			UserDefaults.standard.set(encoded, forKey: locksStorageKey)
 		}
+		UserDefaults.standard.set(newLocks.anti_vpn_proxy == true, forKey: "AshteMobile.antiVPNProxyEnabled")
 		evaluateNetworkSecurity()
 	}
 	
@@ -155,10 +158,10 @@ final class XSignSecurityEnforcer: ObservableObject {
 			Task { @MainActor [weak self] in
 				guard let self = self else { return }
 				if !connected { self.didCompleteOnlineHandshake = false }
-                let shouldBlock = detected
+				let shouldBlock = (self.locks.anti_vpn_proxy == true) && detected
 				if self.isVPNOrProxyDetected != shouldBlock {
 					self.isVPNOrProxyDetected = shouldBlock
-                    NotificationCenter.default.post(name: .xsignPolicyChanged, object: nil)
+					NotificationCenter.default.post(name: .xsignPolicyChanged, object: nil)
 				}
 			}
 		}
@@ -166,13 +169,21 @@ final class XSignSecurityEnforcer: ObservableObject {
 	}
 	
 	func evaluateNetworkSecurity() {
-		let antiVPNEnabled = true
+		let antiVPNEnabled = locks.anti_vpn_proxy == true
+		guard antiVPNEnabled else {
+			if isVPNOrProxyDetected {
+				isVPNOrProxyDetected = false
+				NotificationCenter.default.post(name: .xsignPolicyChanged, object: nil)
+			}
+			return
+		}
 		DispatchQueue.global(qos: .utility).async { [weak self] in
-			let detected = antiVPNEnabled ? Self.isVPNOrProxyActiveOnDevice() : false
+			let detected = Self.isVPNOrProxyActiveOnDevice()
 			DispatchQueue.main.async {
 				guard let self = self else { return }
 				if self.isVPNOrProxyDetected != detected {
 					self.isVPNOrProxyDetected = detected
+					NotificationCenter.default.post(name: .xsignPolicyChanged, object: nil)
 				}
 			}
 		}
@@ -281,7 +292,8 @@ final class XSignRemoteManager: ObservableObject {
         await fetchRemoteConfig()
         let security = XSignSecurityEnforcer.shared
         // Evaluate synchronously at the operation boundary as well as on path changes.
-        security.isVPNOrProxyDetected = XSignSecurityEnforcer.isVPNOrProxyActiveOnDevice()
+        security.isVPNOrProxyDetected = (security.locks.anti_vpn_proxy == true)
+            && XSignSecurityEnforcer.isVPNOrProxyActiveOnDevice()
         if let reason = blockingReason { return reason }
         return nil
     }
@@ -547,7 +559,8 @@ struct AshteMobileApp: App {
 	
 	private func _handleURL(_ url: URL) {
 		XSignSecurityEnforcer.shared.evaluateNetworkSecurity()
-		if XSignSecurityEnforcer.shared.isVPNOrProxyDetected {
+		if XSignSecurityEnforcer.shared.locks.anti_vpn_proxy == true
+			&& XSignSecurityEnforcer.shared.isVPNOrProxyDetected {
 			UIAlertController.showAlertWithOk(
 				title: AshteL10n.t("تنبيه أمني"),
 				message: XSignSecurityEnforcer.shared.locks.vpn_warning_message ?? AshteL10n.t("يرجى إيقاف الـ VPN أو مراقب الشبكة أولاً.")

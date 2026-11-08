@@ -1,72 +1,112 @@
 //
-//  SwiftAR.swift
-//  SwiftAR
+//  AR.swift
+//  AshteMobile
 //
-//  Created by nekohaxx on 8/18/24.
+//  Hardened reader for Debian ar archives.
 //
 
 import Foundation
 
-class AR: NSObject {
-	private var _data: Data
-	
-	init(with url: URL) {
-		self._data = try! Data(contentsOf: url)
-		super.init()
-	}
-	
-	func extract() async throws -> [ARFileModel] {
-		if [UInt8](_data.subdata(in: Range(0...7))) != [0x21, 0x3c, 0x61, 0x72, 0x63, 0x68, 0x3e, 0x0a] {
-			throw ARError.badArchive("Invalid magic")
-		}
-		
-		let data = _data.subdata(in: 8..<_data.endIndex)
-		
-		var offset = 0
-		var files: [ARFileModel] = []
-		while offset < data.count {
-			let fileInfo = try _getFileInfo(data, offset)
-			files.append(fileInfo)
-			offset += fileInfo.size + 60
-			offset += offset % 2
-		}
-		return files
-	}
-	
-	private func _getFileInfo(_ data: Data, _ offset: Int) throws -> ARFileModel {
-		let size = Int(_removePadding(String(data: data.subdata(in: offset+48..<offset+48+10), encoding: .ascii) ?? "0"))!
-		if size < 1 {
-			throw ARError.badArchive("Invalid size")
-		}
-		
-		let name = _removePadding(String(data: data.subdata(in: offset..<offset+16), encoding: .ascii) ?? "")
-		guard name != "" else {
-			throw ARError.badArchive("Invalid name")
-		}
-		
-		return ARFileModel(
-			name: name,
-			modificationDate: NSDate(timeIntervalSince1970: Double(_removePadding(String(data: data.subdata(in: offset+16..<offset+16+12), encoding: .ascii) ?? "0"))!) as Date,
-			ownerId: Int(_removePadding(String(data: data.subdata(in: offset+28..<offset+28+6), encoding: .ascii) ?? "0"))!,
-			groupId: Int(_removePadding(String(data: data.subdata(in: offset+34..<offset+34+6), encoding: .ascii) ?? "0"))!,
-			mode: Int(_removePadding(String(data: data.subdata(in: offset+40..<offset+40+8), encoding: .ascii) ?? "0"))!,
-			size: size,
-			content: data.subdata(in: offset+60..<offset+60+size)
-		)
-	}
-	
-	private func _removePadding(_ paddedString: String) -> String {
-		let data = paddedString.data(using: .utf8)!
-		
-		guard let firstNonSpaceIndex = data.firstIndex(of: UInt8(ascii: " ")) else {
-			return paddedString
-		}
-		
-		let actualData = data[..<firstNonSpaceIndex]
-		return String(data: actualData, encoding: .utf8)!
-	}
+final class AR: NSObject {
+    private let data: Data
+
+    /// Reads the archive without force-try. Invalid or unreadable files are reported
+    /// to the caller instead of crashing the app.
+    init(with url: URL) throws {
+        do {
+            self.data = try Data(contentsOf: url, options: [.mappedIfSafe])
+        } catch {
+            throw ARError.badArchive("Unable to read archive: \\(error.localizedDescription)")
+        }
+        super.init()
+    }
+
+    func extract() async throws -> [ARFileModel] {
+        let magic: [UInt8] = [0x21, 0x3c, 0x61, 0x72, 0x63, 0x68, 0x3e, 0x0a]
+        guard data.count >= magic.count, Array(data.prefix(magic.count)) == magic else {
+            throw ARError.badArchive("Invalid archive signature")
+        }
+
+        var offset = magic.count
+        var files: [ARFileModel] = []
+
+        while offset < data.count {
+            // Every ar member starts with a fixed 60-byte header.
+            guard data.count - offset >= 60 else {
+                throw ARError.badArchive("Truncated archive header")
+            }
+
+            let headerEnd = offset + 60
+            guard data[offset + 58] == 0x60, data[offset + 59] == 0x0a else {
+                throw ARError.badArchive("Invalid archive member header")
+            }
+
+            var name = try Self.field(data, offset, 16)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            if name.hasSuffix("/") { name.removeLast() }
+            guard !name.isEmpty else {
+                throw ARError.badArchive("Archive member has no name")
+            }
+
+            let modificationDate = try Self.integerField(data, offset + 16, 12, radix: 10)
+            let ownerId = try Self.integerField(data, offset + 28, 6, radix: 10)
+            let groupId = try Self.integerField(data, offset + 34, 6, radix: 10)
+            let mode = try Self.integerField(data, offset + 40, 8, radix: 8)
+            let size = try Self.integerField(data, offset + 48, 10, radix: 10)
+
+            guard size >= 0, size <= data.count - headerEnd else {
+                throw ARError.badArchive("Archive member size is out of bounds")
+            }
+
+            let contentEnd = headerEnd + size
+            let content = data.subdata(in: headerEnd..<contentEnd)
+
+            files.append(
+                ARFileModel(
+                    name: name,
+                    modificationDate: Date(timeIntervalSince1970: TimeInterval(modificationDate)),
+                    ownerId: ownerId,
+                    groupId: groupId,
+                    mode: mode,
+                    size: size,
+                    content: content
+                )
+            )
+
+            // ar members are padded to an even byte boundary.
+            let padding = size % 2
+            guard contentEnd <= data.count, padding <= data.count - contentEnd else {
+                throw ARError.badArchive("Truncated archive padding")
+            }
+            offset = contentEnd + padding
+        }
+
+        return files
+    }
+
+    private static func field(_ data: Data, _ offset: Int, _ length: Int) throws -> String {
+        guard offset >= 0, length >= 0, offset <= data.count, length <= data.count - offset,
+              let value = String(data: data[offset..<(offset + length)], encoding: .ascii) else {
+            throw ARError.badArchive("Invalid archive field")
+        }
+        return value
+    }
+
+    private static func integerField(_ data: Data, _ offset: Int, _ length: Int, radix: Int) throws -> Int {
+        let raw = try field(data, offset, length)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !raw.isEmpty, let value = Int(raw, radix: radix) else {
+            throw ARError.badArchive("Invalid numeric archive field")
+        }
+        return value
+    }
 }
 
-enum ARError: Error {
-	case badArchive(String)
+enum ARError: Error, LocalizedError {
+    case badArchive(String)
+
+    var errorDescription: String? {
+        if case .badArchive(let message) = self { return message }
+        return "Invalid archive"
+    }
 }
